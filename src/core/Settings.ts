@@ -10,8 +10,6 @@ export interface GameSettings {
   sfxVolume: number // 0..1
   muted: boolean
   textSpeed: TextSpeed
-  lookSensitivity: number // 0.4..2.0
-  invertLook: boolean
   quality: QualityLevel
   reducedMotion: boolean
   markerMode: MarkerMode
@@ -24,8 +22,6 @@ export const DEFAULT_SETTINGS: GameSettings = {
   sfxVolume: 0.85,
   muted: false,
   textSpeed: 'normal',
-  lookSensitivity: 1.0,
-  invertLook: false,
   quality: 'high',
   reducedMotion: false,
   markerMode: 'proximity',
@@ -93,11 +89,8 @@ export class SettingsStore {
       textSpeed: (['slow', 'normal', 'fast', 'instant'] as const).includes(s.textSpeed)
         ? s.textSpeed
         : 'normal',
-      lookSensitivity:
-        typeof s.lookSensitivity === 'number' && Number.isFinite(s.lookSensitivity)
-          ? Math.max(0.4, Math.min(2, s.lookSensitivity))
-          : 1,
-      invertLook: !!s.invertLook,
+      // lookSensitivity and invertLook used to live here. Saved settings from
+      // the free-look build may still carry them; they are simply dropped.
       quality: (['low', 'medium', 'high'] as const).includes(s.quality) ? s.quality : 'high',
       reducedMotion: !!s.reducedMotion,
       markerMode: (['always', 'proximity', 'off'] as const).includes(s.markerMode)

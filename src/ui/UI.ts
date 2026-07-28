@@ -873,15 +873,8 @@ export class GameUI {
       s.textSpeed,
       (v) => this.cb.onSettingChanged('textSpeed', v),
     )
-    slider('視点の感度', 'ドラッグで首を振る速さ', s.lookSensitivity, 0.4, 2, 0.05, (v) => `${v.toFixed(2)}倍`, (v) =>
-      this.cb.onSettingChanged('lookSensitivity', v),
-    )
-    seg('視点の上下', '上下の向きを入れ替える', [
-      ['off', 'そのまま'],
-      ['on', '反転'],
-    ] as Array<['off' | 'on', string]>, s.invertLook ? 'on' : 'off', (v) =>
-      this.cb.onSettingChanged('invertLook', v === 'on'),
-    )
+    // No look sensitivity or invert-look here on purpose: the camera is fixed,
+    // so both would be dials that turn and do nothing.
     seg(
       '画質',
       '重いときは下げる。影と後処理が変わる',
@@ -899,15 +892,17 @@ export class GameUI {
     ] as Array<['off' | 'on', string]>, s.reducedMotion ? 'on' : 'off', (v) =>
       this.cb.onSettingChanged('reducedMotion', v === 'on'),
     )
+    // Two states, not three. There are no standing markers to show "always"
+    // versus "when near" - the only thing this setting still governs is whether
+    // the 見渡す key lights the room's hotspots for a moment.
     seg(
-      '調べられる場所の印',
-      '常に出す／近づいたときだけ／出さない',
+      '見渡す（Ｑ）',
+      '調べられる場所を一度だけ光らせる',
       [
-        ['always', '常に'],
-        ['proximity', '近くで'],
-        ['off', '出さない'],
+        ['proximity', '使う'],
+        ['off', '使わない'],
       ] as Array<[GameSettings['markerMode'], string]>,
-      s.markerMode,
+      s.markerMode === 'off' ? 'off' : 'proximity',
       (v) => this.cb.onSettingChanged('markerMode', v),
     )
     slider('画面の文字の大きさ', '持ち物や地の文の大きさ', s.uiScale, 0.85, 1.3, 0.05, (v) => `${Math.round(v * 100)}％`, (v) =>
