@@ -29,6 +29,8 @@ export interface HallProps {
   breakerLever: THREE.Group
   /** Reception drawer that holds the spare fuse. */
   receptionDrawer: THREE.Group
+  /** The pedestal the drawer slides in, so the hotspot has a findable target. */
+  drawerUnit: THREE.Group
   drawerContents: THREE.Group
   /** The 1985 record photograph in its frame. */
   recordPhoto: THREE.Group
@@ -846,6 +848,7 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     fuseSpare,
     breakerLever,
     receptionDrawer,
+    drawerUnit: drawers.group,
     drawerContents,
     recordPhoto,
     lockRings,

@@ -611,7 +611,10 @@ export class Chapter01 {
     // reception drawer
     this.hs({
       id: 'hall:drawer',
-      target: hall.receptionDrawer,
+      // The whole pedestal, not just the sliding box. As the drawer alone it
+      // was a forty-pixel band on an unlit counter front with nothing to
+      // distinguish it, and a player sweeping for it went straight past.
+      target: [hall.receptionDrawer, hall.drawerUnit],
       label: '受付の抽斗',
       verb: 'open',
       scope: ['hall_n'],
@@ -700,6 +703,10 @@ export class Chapter01 {
         label: i === 1 ? '空の受け金' : '受け金',
         verb: 'examine',
         scope: 'cu_fusebox',
+        // Above the lever: they are the smaller, more specific targets, and
+        // where the two overlap the player pointing at a fuse holder was being
+        // told they were pointing at the main lever.
+        priority: 2,
         visible: () => this.flag('fusebox_open'),
         verbFor: (ctx) => (ctx.selectedItem === 'spare_fuse' ? 'use' : 'examine'),
         onActivate: (ctx) => {

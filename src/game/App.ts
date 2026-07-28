@@ -433,7 +433,20 @@ export class App {
       this.ui.advanceNarration()
       return
     }
-    const hovered = this.interaction.currentHover
+    // Pick fresh at the pointer rather than trusting the cached hover.
+    //
+    // The cache is only refreshed by a rendered frame, and a click that arrives
+    // before the next one - which is every click made straight after a camera
+    // move settles - was tested against whatever was under the cursor one frame
+    // ago. The player clicked a lever they could plainly see and got told they
+    // had clicked a wall. Re-picking here costs one raycast and makes a click
+    // mean what the screen says it means.
+    this.scene.updateMatrixWorld(true)
+    this.interaction.setScope(this.chapter.currentScope)
+    const hovered =
+      this.interaction.pick(this.pointerNdc.x, this.pointerNdc.y, {
+        selectedItem: this.state.selectedItemId,
+      }) ?? this.interaction.currentHover
     if (!hovered) {
       // A click that lands on nothing must still answer. Silence is the one
       // response a player cannot read: it is indistinguishable from a missed
@@ -443,7 +456,7 @@ export class App {
       }
       return
     }
-    this.interaction.activateHovered({ selectedItem: this.state.selectedItemId })
+    hovered.hotspot.onActivate({ selectedItem: this.state.selectedItemId })
   }
 
   private survey(): void {
@@ -643,6 +656,11 @@ export class App {
 
     if (this.inGame) {
       this.state.addPlaytime(dt * 1000)
+      // While a panel is up or the camera is moving the pick is meaningless, so
+      // the label is cleared rather than left standing. Left up, it survived
+      // across rooms and named the last thing hovered while the cursor sat on
+      // something else entirely - a label that lies is worse than no label.
+      if (this.ui.isPanelOpen || this.chapter.isBusy) this.ui.setHover(null, null)
       if (!this.ui.isPanelOpen && !this.chapter.isBusy) {
         this.interaction.setScope(this.chapter.currentScope)
         const hover = this.interaction.pick(this.pointerNdc.x, this.pointerNdc.y, {

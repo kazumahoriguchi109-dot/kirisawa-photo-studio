@@ -586,6 +586,13 @@ export class GameUI {
   }
 
   private showPanel(title: string, sub = ''): void {
+    // Every renderer calls this first, and several of them redraw in place -
+    // the hint ladder redraws after each reveal, the inventory after each
+    // selection. Appending to a body nobody emptied stacked a fresh copy each
+    // time, so the player ended up with three identical hint blocks and three
+    // side-by-side 閉じる buttons.
+    this.panelBody.innerHTML = ''
+    this.panelFoot.innerHTML = ''
     this.panelTitle.textContent = title
     this.panelSub.textContent = sub
     this.panel.style.display = ''
