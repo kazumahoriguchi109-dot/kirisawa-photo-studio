@@ -290,6 +290,14 @@ export class App {
           this.timeline.update(step)
           this.rig.update(step)
           this.lighting.update(step)
+          // The close-up light too, or every measurement taken through `pump`
+          // reports a close-up as darker than any player will ever see it.
+          this.inspectionLight.intensity = damp(
+            this.inspectionLight.intensity,
+            this.rig.currentMode === 'closeup' ? INSPECTION_LIGHT[this.state.lighting] : 0,
+            7,
+            step,
+          )
           this.chapter?.update(step)
         }
       },
@@ -427,7 +435,12 @@ export class App {
     }
     const hovered = this.interaction.currentHover
     if (!hovered) {
-      this.ui.advanceNarration()
+      // A click that lands on nothing must still answer. Silence is the one
+      // response a player cannot read: it is indistinguishable from a missed
+      // hitbox, from scenery, and from the game having stopped responding.
+      if (!this.ui.advanceNarration()) {
+        this.chapter.remarkOnNothing(this.pointerNdc.x, this.pointerNdc.y)
+      }
       return
     }
     this.interaction.activateHovered({ selectedItem: this.state.selectedItemId })

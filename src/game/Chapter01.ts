@@ -389,11 +389,14 @@ export class Chapter01 {
     opts: { fov?: number; margin?: number; label?: string; maxDist?: number } = {},
   ): Promise<void> {
     const targets = (Array.isArray(subject) ? subject : [subject]).filter((o) => o)
+    // From the scene root. `updateMatrixWorld` on the subject refreshes it and
+    // its children but takes its parent's matrix on trust, so measuring a prop
+    // whose ancestors have not been updated this frame yields a box in local
+    // space: the drawer measured the right size around the world origin, and
+    // the close-up flew to a point in the next room.
+    this.d.scene.updateMatrixWorld(true)
     const box = new THREE.Box3()
-    for (const o of targets) {
-      o.updateMatrixWorld(true)
-      box.expandByObject(o)
-    }
+    for (const o of targets) box.expandByObject(o)
     const fov = opts.fov ?? 38
     const centre = new THREE.Vector3()
     const size = new THREE.Vector3()
@@ -414,12 +417,53 @@ export class Chapter01 {
       Math.max(0.24, Math.max(halfH / Math.tan(vHalf), halfW / Math.tan(hHalf)) * margin),
     )
 
+    // Kept for the audit tooling: when a close-up frames the wrong thing, the
+    // question is always whether the bounds or the distance was wrong.
+    ;(this as unknown as Record<string, unknown>).lastCloseupFit = {
+      id,
+      centre: centre.toArray(),
+      size: size.toArray(),
+      dist,
+      aspect,
+      empty: box.isEmpty(),
+    }
     await this.enterCloseup(
       id,
       [centre.x + dir.x * dist, centre.y + dir.y * dist, centre.z + dir.z * dist],
       [centre.x, centre.y, centre.z],
       { fov, label: opts.label },
     )
+  }
+
+  private lastNothingAt = 0
+
+  /**
+   * Answer a click that hit nothing interactive.
+   *
+   * What the surface is decides what gets said: a wall, the floor, or simply
+   * nothing within reach. Throttled, because a player hunting for a hotspot
+   * clicks a lot and the room should sound patient rather than nagging.
+   */
+  remarkOnNothing(ndcX: number, ndcY: number): void {
+    const now = this.d.timeline.getMotionScale() >= 0 ? Date.now() : 0
+    if (now - this.lastNothingAt < 900) return
+    this.lastNothingAt = now
+
+    const ray = new THREE.Raycaster()
+    ray.setFromCamera(new THREE.Vector2(ndcX, ndcY), this.d.rig.camera)
+    const hit = ray.intersectObject(this.d.scene, true).find((h) => h.object.visible)
+    let line: string = FEEDBACK.nothingHere
+    if (hit) {
+      const n = hit.face?.normal
+        ? hit.face.normal.clone().transformDirection(hit.object.matrixWorld)
+        : null
+      if (n && Math.abs(n.y) > 0.7) {
+        line = hit.point.y < 0.5 ? FEEDBACK.nothingFloor : FEEDBACK.nothingHere
+      } else if (n) {
+        line = FEEDBACK.nothingWall
+      }
+    }
+    this.say(line)
   }
 
   async exitCloseup(): Promise<void> {
@@ -567,7 +611,12 @@ export class Chapter01 {
       label: '受付の抽斗',
       verb: 'open',
       scope: ['hall_n'],
-      onActivate: () => void this.closeupOn('cu_drawer', hall.receptionDrawer, [0, 0.7, 1], { fov: 42 }),
+      onActivate: () => void this.closeupOn('cu_drawer', hall.receptionDrawer, [0.18, 0.8, 1], {
+          fov: 42,
+          // Looked into, not looked at: the drawer is half a metre deep, so a
+          // distance that just fits its bounds puts the near edge on the lens.
+          margin: 2.4,
+        }),
     })
     this.hs({
       id: 'cu:drawer:pull',
