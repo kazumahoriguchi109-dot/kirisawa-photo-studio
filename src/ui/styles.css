@@ -253,10 +253,12 @@ button {
 }
 .turn-zone .zone-label {
   position: absolute;
-  bottom: 16%;
-  /* Anchored to the outer edge so a long destination name overflows *inward*,
-     across the picture, instead of off the side of the screen where it gets
-     cut in half. */
+  top: calc(50% + 24px);
+  /* Sits directly under the chevron, not down at the bottom of a full-height
+     zone: at the old position the name of the destination was some 350 px away
+     from the arrow it belongs to and read as a caption for whatever happened to
+     be behind it. Anchored to the outer edge so a long name overflows *inward*,
+     across the picture, rather than off the side of the screen. */
   font-size: 0.72em;
   letter-spacing: 0.14em;
   color: #e8dcc2;
@@ -1398,4 +1400,11 @@ body[data-reduced-motion="1"] * {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* While any modal layer is up, the title screen behind it stops taking clicks.
+   It stacks above the panel layer by design (the shutter has to cover
+   everything), which meant its menu was still live underneath an open overlay. */
+#ui[data-panel="1"] #title {
+  pointer-events: none;
 }

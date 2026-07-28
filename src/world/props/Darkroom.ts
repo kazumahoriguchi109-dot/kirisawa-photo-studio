@@ -333,8 +333,12 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     })
     lab.position.set(0, 0.055, 0.026)
     safelightSwitch.add(lab)
-    safelightSwitch.position.set(D.x1 - 0.085, 1.42, OPENINGS.darkroomDoor.z1 + 0.24)
-    safelightSwitch.rotation.y = Math.PI / 2
+    // Faces into the room. Turned the other way the box, the lever and the
+    // label all grew toward +x - which here is the inside of a 16 cm wall whose
+    // room-side face is at -3.28, so nine tenths of the safelight lever was
+    // buried in masonry. It is a switch the player has to find and pull.
+    safelightSwitch.position.set(D.x1 - 0.12, 1.42, OPENINGS.darkroomDoor.z1 + 0.24)
+    safelightSwitch.rotation.y = -Math.PI / 2
     group.add(safelightSwitch)
   }
 
@@ -527,8 +531,8 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     key.position.set(0.0, -0.055, 0.024)
     key.name = 'office-key'
     officeKey.add(key)
-    officeKey.position.set(D.x1 - 0.085, 1.46, OPENINGS.darkroomDoor.z0 - 0.28)
-    officeKey.rotation.y = Math.PI / 2
+    officeKey.position.set(D.x1 - 0.12, 1.46, OPENINGS.darkroomDoor.z0 - 0.28)
+    officeKey.rotation.y = -Math.PI / 2
     group.add(officeKey)
   }
 

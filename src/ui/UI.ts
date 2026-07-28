@@ -466,9 +466,18 @@ export class GameUI {
     const verb = def.verbFor ? def.verbFor({ selectedItem: ctxSelected }) : def.verb
     const label = def.labelFor ? def.labelFor({ selectedItem: ctxSelected }) : def.label
     this.verbChip.innerHTML = `${label}<span class="verb">${VERB_LABEL[verb]}</span>`
-    this.verbChip.style.left = `${info.screen.x}%`
+    // Kept inside the viewport. The chip is centred on the object it names, so
+    // anything the composition puts near an edge had half its name cut off by
+    // the side of the screen - 「外套掛け」 arrived as 「外套掛」 and then nothing.
+    // The ring below stays on the object itself; only the words are nudged.
     this.verbChip.style.top = `${info.screen.y}%`
     this.verbChip.dataset.show = '1'
+    const vw = this.root.clientWidth
+    const half = this.verbChip.offsetWidth / 2
+    const pad = 10
+    const wanted = (info.screen.x / 100) * vw
+    const clamped = Math.max(half + pad, Math.min(vw - half - pad, wanted))
+    this.verbChip.style.left = `${clamped}px`
     this.noticeRing.style.left = `${info.screen.x}%`
     this.noticeRing.style.top = `${info.screen.y}%`
     this.noticeRing.dataset.show = '1'
@@ -500,6 +509,11 @@ export class GameUI {
     if (!id) return
     if (this.openPanel) this.closePanelDom()
     this.openPanel = id
+    // The title screen stacks above the panel layer, so without this its menu
+    // stayed clickable *through* an open overlay: reading あそびかた and then
+    // clicking 閉じる started a new game through the card, with the opening
+    // narration playing behind it.
+    this.root.dataset.panel = '1'
     this.cb.onPanelOpen()
     this.scrim.style.display = ''
     requestAnimationFrame(() => (this.scrim.dataset.open = '1'))
@@ -566,6 +580,7 @@ export class GameUI {
   }
 
   private closePanelDom(): void {
+    this.root.dataset.panel = ''
     this.panel.dataset.open = ''
     this.doc.dataset.open = ''
     this.scrim.dataset.open = ''
