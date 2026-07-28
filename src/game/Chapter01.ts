@@ -146,7 +146,8 @@ export class Chapter01 {
     studio.darkroomKey.visible = s.flag('key_revealed') && !s.hasItem('key_darkroom')
     studio.lensInDrawer.visible = !s.hasItem('lens') && !s.hasItem('loupe')
     hall.drawerContents.visible = s.flag('drawer_open')
-    ;(hall.fuseSpare as unknown as THREE.Object3D).visible = !s.hasItem('spare_fuse')
+    ;(hall.fuseSpare as unknown as THREE.Object3D).visible =
+      !s.hasItem('spare_fuse') && !s.flag('fuse_seated')
     hall.receptionDrawer.position.z = s.flag('drawer_open') ? 0.28 : 0
     hall.fuseBoxDoor.rotation.y = s.flag('fusebox_open') ? -2.1 : 0
     hall.breakerLever.rotation.x = s.flag('power_on') ? 0.34 : -0.34
@@ -645,7 +646,10 @@ export class Chapter01 {
           this.d.save.save()
           return
         }
-        if (!this.d.state.hasItem('spare_fuse')) {
+        // Once it is in the box it is gone from the drawer for good: the item
+        // leaves the inventory when it is seated, so "not held" is no longer
+        // enough on its own to mean "still there to take".
+        if (!this.d.state.hasItem('spare_fuse') && !this.flag('fuse_seated')) {
           this.grant('spare_fuse')
           ;(hall.fuseSpare as unknown as THREE.Object3D).visible = false
           return
@@ -720,7 +724,10 @@ export class Chapter01 {
               return
             }
             this.d.state.setFlag('fuse_seated')
-            this.d.state.setItemState('spare_fuse', 'spent')
+            // Out of the pocket, not just marked used: it is in the wall now,
+            // and a fuse still sitting in the inventory after you watched it
+            // drop into the holder reads as one that never went in.
+            this.d.state.removeItem('spare_fuse')
             this.d.state.selectItem(null)
             this.d.audio.play('fuseSeat')
             this.syncWorldToState()

@@ -593,6 +593,7 @@ export class GameUI {
     // side-by-side 閉じる buttons.
     this.panelBody.innerHTML = ''
     this.panelFoot.innerHTML = ''
+    this.panelFoot.classList.remove('has-actions')
     this.panelTitle.textContent = title
     this.panelSub.textContent = sub
     this.panel.style.display = ''
@@ -724,13 +725,20 @@ export class GameUI {
       readBtn.addEventListener('click', () => this.openDocument(def.document as string))
       actions.appendChild(readBtn)
     }
-    this.detailHost.appendChild(actions)
 
     this.inspector.setHeldItems(this.state.inventory.map((e) => e.id))
     this.inspector.show(def, entry.found)
     this.bindInspectorInput(stage)
 
+    // 選ぶ and 合わせる live in the footer, not at the bottom of the detail
+    // column. The column scrolls, and on a short window the turntable and the
+    // description filled it, so the two buttons that are the entire point of
+    // opening an item sat below the fold with nothing on screen to say so - a
+    // player holding the right item had no way to select it and no way to know
+    // one existed. The footer is laid out separately and cannot be pushed off.
     this.panelFoot.innerHTML = ''
+    this.panelFoot.classList.add('has-actions')
+    this.panelFoot.appendChild(actions)
     const close = this.el('button', 'btn clickable', UI_TEXT.close)
     close.addEventListener('click', () => this.closeTop())
     this.panelFoot.appendChild(close)

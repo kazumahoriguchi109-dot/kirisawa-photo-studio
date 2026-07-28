@@ -632,6 +632,13 @@ button {
   justify-content: flex-end;
   gap: 0.6em;
 }
+/* An item's own actions sit at the left of the footer, 閉じる stays at the
+   right, so the primary verbs are on screen whatever the window is doing. */
+.panel-foot.has-actions {
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
 
 .btn {
   padding: 0.6em 1.4em;
