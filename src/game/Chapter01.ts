@@ -20,7 +20,6 @@ import type { LightingRig } from '../world/Lighting'
 import type { MaterialLibrary } from '../world/Materials'
 import { lastFrameCanvas, photoTexture, portraitCanvas, studioRecordCanvas } from '../world/Photographs'
 import { mesh } from '../world/Geo'
-import { OPENINGS } from '../world/Layout'
 
 /**
  * Chapter one: the whole game logic of 霧沢写真館.
@@ -369,6 +368,60 @@ export class Chapter01 {
     this.busy = false
   }
 
+  /**
+   * Frame a close-up on the object itself, rather than on hand-written
+   * coordinates.
+   *
+   * Hard-coded eye and target points rot silently. The entrance lock was the
+   * proof: the plate was lowered to y = 0.86 in an earlier fix and its close-up
+   * kept aiming at y = 1.06, so the puzzle sat 1.74 screens below the bottom
+   * edge and what the player got instead was a blank stretch of door with two
+   * lamp reflections bloomed across it. Nothing in the build could notice.
+   *
+   * Here the subject's own bounds decide the distance, at the aspect ratio the
+   * player actually has - a 4:3 window sees a narrower slice than a widescreen
+   * one, so a distance that frames something on one is not enough on the other.
+   */
+  private async closeupOn(
+    id: string,
+    subject: THREE.Object3D | THREE.Object3D[],
+    from: [number, number, number],
+    opts: { fov?: number; margin?: number; label?: string; maxDist?: number } = {},
+  ): Promise<void> {
+    const targets = (Array.isArray(subject) ? subject : [subject]).filter((o) => o)
+    const box = new THREE.Box3()
+    for (const o of targets) {
+      o.updateMatrixWorld(true)
+      box.expandByObject(o)
+    }
+    const fov = opts.fov ?? 38
+    const centre = new THREE.Vector3()
+    const size = new THREE.Vector3()
+    box.getCenter(centre)
+    box.getSize(size)
+
+    const dir = new THREE.Vector3(...from).normalize()
+    // The extents that matter are the ones across the view, not along it.
+    const across = new THREE.Vector3(-dir.z, 0, dir.x).normalize()
+    const halfW = Math.abs(across.x * size.x) / 2 + Math.abs(across.z * size.z) / 2
+    const halfH = size.y / 2
+    const margin = opts.margin ?? 1.35
+    const vHalf = (fov * Math.PI) / 360
+    const aspect = Math.max(1, this.d.rig.camera.aspect)
+    const hHalf = Math.atan(Math.tan(vHalf) * aspect)
+    const dist = Math.min(
+      opts.maxDist ?? 3,
+      Math.max(0.24, Math.max(halfH / Math.tan(vHalf), halfW / Math.tan(hHalf)) * margin),
+    )
+
+    await this.enterCloseup(
+      id,
+      [centre.x + dir.x * dist, centre.y + dir.y * dist, centre.z + dir.z * dist],
+      [centre.x, centre.y, centre.z],
+      { fov, label: opts.label },
+    )
+  }
+
   async exitCloseup(): Promise<void> {
     if (!this.closeup || this.busy) return
     this.busy = true
@@ -514,7 +567,7 @@ export class Chapter01 {
       label: '受付の抽斗',
       verb: 'open',
       scope: ['hall_n'],
-      onActivate: () => void this.enterCloseup('cu_drawer', [0.52, 1.24, 4.12], [0.52, 0.42, 3.4], { fov: 42 }),
+      onActivate: () => void this.closeupOn('cu_drawer', hall.receptionDrawer, [0, 0.7, 1], { fov: 42 }),
     })
     this.hs({
       id: 'cu:drawer:pull',
@@ -554,7 +607,19 @@ export class Chapter01 {
       // The board is on the west wall: from the reception view it sits a full
       // 68 degrees off axis, i.e. off screen. It belongs to the west frame.
       scope: ['hall_w'],
-      onActivate: () => void this.enterCloseup('cu_fusebox', [-2.62, 1.52, 4.1], [-3.12, 1.5, 4.1], { fov: 40 }),
+      onActivate: () =>
+        void this.closeupOn(
+          'cu_fusebox',
+          // The interior only. Including the door swings the frame out with it
+          // when it opens, and it is the sockets and the lever the player has
+          // come to read.
+          [...hall.fuseSockets, hall.breakerLever],
+          // From the east and a little to the south. The cabinet door swings
+          // out along +z when it opens, so a straight-on view puts the back of
+          // the open door across the whole frame.
+          [1, 0.08, -0.5],
+          { fov: 40, margin: 1.45 },
+        ),
     })
     this.hs({
       id: 'cu:fusebox:door',
@@ -681,12 +746,10 @@ export class Chapter01 {
       verb: 'examine',
       scope: 'hall_s',
       onActivate: () =>
-        void this.enterCloseup(
-          'cu_lock',
-          [(OPENINGS.exitDoor.x0 + OPENINGS.exitDoor.x1) / 2, 1.06, OPENINGS.exitDoor.z - 0.52],
-          [(OPENINGS.exitDoor.x0 + OPENINGS.exitDoor.x1) / 2, 1.06, OPENINGS.exitDoor.z - 0.06],
-          { fov: 34 },
-        ),
+        void this.closeupOn('cu_lock', [hall.lockPlate, ...hall.lockRings], [0, 0.12, -1], {
+          fov: 34,
+          margin: 1.5,
+        }),
     })
     this.hs({
       id: 'cu:lock:leave',

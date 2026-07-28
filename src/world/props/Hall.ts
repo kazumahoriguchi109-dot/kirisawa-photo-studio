@@ -247,12 +247,29 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     const bw = 0.34
     const bh = 0.44
     const bd = 0.11
-    const carcass = mesh(texturedBox(bw, bh, bd, 2), mats.steelDark)
-    carcass.position.z = -bd / 2
-    fuseBox.add(carcass)
-    // interior back board
-    const board = mesh(texturedBox(bw - 0.03, bh - 0.03, 0.012, 2.4), mats.bakelite)
-    board.position.z = -bd + 0.02
+    // The carcass is five plates around an opening, not a solid block. It used
+    // to be one filled box with the fuse holders buried inside it, which meant
+    // the cabinet had no opening at all: opening the door revealed the front
+    // face of the steel, the holders and the lever were sealed behind 5 cm of
+    // it, and from across the room the whole thing read as a black rectangle
+    // stuck on the wall. The first puzzle was behind a wall of its own cabinet.
+    const wallT = 0.012
+    const plate = (w: number, h: number, dpt: number, x: number, y: number, z: number): void => {
+      const m = mesh(texturedBox(w, h, dpt, 2), mats.steelDark)
+      m.position.set(x, y, z)
+      fuseBox.add(m)
+    }
+    // back
+    plate(bw, bh, wallT, 0, 0, -bd + wallT / 2)
+    // top and bottom
+    plate(bw, wallT, bd, 0, bh / 2 - wallT / 2, -bd / 2)
+    plate(bw, wallT, bd, 0, -bh / 2 + wallT / 2, -bd / 2)
+    // sides
+    plate(wallT, bh - wallT * 2, bd, -bw / 2 + wallT / 2, 0, -bd / 2)
+    plate(wallT, bh - wallT * 2, bd, bw / 2 - wallT / 2, 0, -bd / 2)
+    // interior back board the holders are screwed to
+    const board = mesh(texturedBox(bw - 0.05, bh - 0.05, 0.012, 2.4), mats.bakelite)
+    board.position.z = -bd + wallT + 0.008
     fuseBox.add(board)
 
     // ceramic fuse holders
@@ -353,7 +370,12 @@ export function buildHall(mats: MaterialLibrary): HallProps {
       fuseBox.add(fuseBoxDoor)
     }
 
-    fuseBox.position.set(H.x0 + 0.09, 1.52, 4.1)
+    // Surface-mounted, with the back plate against the plaster. At the old
+    // depth the cabinet sat 10 cm inside a solid 16 cm wall whose inner face is
+    // at x = -3.12: nine tenths of it was buried, the room showed a 1 cm lip of
+    // steel, and the close-up flew to a point where the only thing between the
+    // lens and the fuses was the wall. The first puzzle was inside the masonry.
+    fuseBox.position.set(H.x0 + WALL_THICKNESS / 2 + bd, 1.52, 4.1)
     fuseBox.rotation.y = Math.PI / 2
     group.add(fuseBox)
   }

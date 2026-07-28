@@ -300,6 +300,42 @@ export class App {
        */
       renderer: () => this.stack.renderer,
       composer: () => this.stack.composer,
+      /**
+       * Render a frame and measure it. "Looks blown out" and "looks unreadably
+       * dark" are the two failure modes close-ups keep falling into, and both
+       * are far easier to catch as a number than by eye across seventeen
+       * compositions.
+       */
+      frameStats: (step = 96) => {
+        const r = this.stack.renderer
+        this.scene.updateMatrixWorld(true)
+        this.stack.render(1 / 60)
+        const gl = r.getContext()
+        const w = gl.drawingBufferWidth
+        const h = gl.drawingBufferHeight
+        const px = new Uint8Array(w * h * 4)
+        gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, px)
+        let n = 0
+        let sum = 0
+        let blown = 0
+        let dark = 0
+        for (let y = 0; y < h; y += step) {
+          for (let x = 0; x < w; x += step) {
+            const i = (y * w + x) * 4
+            const l = (0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2]) / 255
+            sum += l
+            if (l > 0.94) blown++
+            if (l < 0.05) dark++
+            n++
+          }
+        }
+        return {
+          samples: n,
+          mean: +(sum / n).toFixed(3),
+          blown: +(blown / n).toFixed(3),
+          dark: +(dark / n).toFixed(3),
+        }
+      },
       /** Draw calls and triangles for one freshly rendered frame. */
       renderCost: () => {
         const r = this.stack.renderer
