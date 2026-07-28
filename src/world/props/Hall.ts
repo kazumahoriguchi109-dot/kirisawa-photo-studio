@@ -416,13 +416,15 @@ export function buildHall(mats: MaterialLibrary): HallProps {
       lockPlate.add(ring)
       lockRings.push(ring)
     }
-    // a small brass plate under the rings
-    const engraved = labelPlate('工程順', 0.09, 0.022, {
+    // The brass plate under the rings. Bigger than it was: this is the one line
+    // that tells the player what the four symbols are for, and at the old size
+    // it rendered about six pixels tall on a desktop screen - a smudge.
+    const engraved = labelPlate('工程の順に', 0.17, 0.036, {
       bg: '#8d7238',
-      fg: '#f2e6c4',
-      font: '500 26px "Hiragino Mincho ProN", serif',
+      fg: '#f8efd6',
+      font: '600 40px "Hiragino Mincho ProN", serif',
     })
-    engraved.position.set(0, -0.058, 0.016)
+    engraved.position.set(0, -0.066, 0.016)
     lockPlate.add(engraved)
 
     // On the lower panel, below the lock rail, on the face of the leaf.

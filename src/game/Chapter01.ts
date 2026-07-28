@@ -671,7 +671,9 @@ export class Chapter01 {
           // out along +z when it opens, so a straight-on view puts the back of
           // the open door across the whole frame.
           [1, 0.08, -0.5],
-          { fov: 40, margin: 1.45 },
+          // Room for the cabinet's nameplate above and its lever below; at a
+          // tighter margin both were clipped by the frame edges.
+          { fov: 40, margin: 1.75 },
         ),
     })
     this.hs({
@@ -798,11 +800,19 @@ export class Chapter01 {
       label: '玄関の引き戸',
       verb: 'examine',
       scope: 'hall_s',
-      onActivate: () =>
+      onActivate: () => {
+        // Say what this door is before pushing in on it. Arriving in a close-up
+        // of four brass rings with no framing sentence, the player has no way to
+        // know they are looking at the way out, or that it is what stops them.
+        if (!this.flag('saw_exit_locked')) {
+          this.d.state.setFlag('saw_exit_locked')
+          this.say('入ってきた引き戸。内側から錠が下りている。環が四つ、横に並んでいる。')
+        }
         void this.closeupOn('cu_lock', [hall.lockPlate, ...hall.lockRings], [0, 0.12, -1], {
           fov: 34,
           margin: 1.5,
-        }),
+        })
+      },
     })
     this.hs({
       id: 'cu:lock:leave',
