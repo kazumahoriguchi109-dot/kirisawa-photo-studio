@@ -1081,7 +1081,10 @@ export class Chapter01 {
       label: '巻き上げ軸',
       verb: 'examine',
       scope: ['studio_n'],
-      onActivate: () => void this.enterCloseup('cu_socket', [1.56, 2.35, -1.5], [1.56, 2.62, -2.6], { fov: 38 }),
+      onActivate: () => void this.closeupOn('cu_socket', [studio.crankSocket, studio.crankFitted], [0.4, 0.22, 1], {
+          fov: 38,
+          margin: 1.9,
+        }),
     })
     this.hs({
       id: 'cu:socket:hole',
@@ -1205,7 +1208,10 @@ export class Chapter01 {
       // Stands east of centre, so it is 48 degrees off the axis of the backdrop
       // view - never on screen there. The east frame is composed around it.
       scope: ['studio_e'],
-      onActivate: () => void this.enterCloseup('cu_camera', [1.18, 1.62, 0.86], [1.18, 1.6, 0.2], { fov: 40 }),
+      onActivate: () => void this.closeupOn('cu_camera', studio.viewCamera, [0.2, 0.28, 1], {
+          fov: 40,
+          margin: 1.25,
+        }),
     })
     this.hs({
       id: 'cu:camera:glass',
@@ -1561,7 +1567,12 @@ export class Chapter01 {
       label: '薬品棚',
       verb: 'examine',
       scope: ['darkroom_s'],
-      onActivate: () => void this.enterCloseup('cu_shelf', [-4.4, 1.5, -0.32], [-4.4, 1.5, 0.24], { fov: 42 }),
+      onActivate: () => void this.closeupOn(
+          'cu_shelf',
+          [darkroom.chemShelf, darkroom.powderTin, darkroom.waterBottle],
+          [0, 0.1, -1],
+          { fov: 42, margin: 1.3 },
+        ),
     })
     this.hs({
       id: 'cu:shelf:powder',
@@ -1607,7 +1618,12 @@ export class Chapter01 {
       label: '引き伸ばし機',
       verb: 'examine',
       scope: ['darkroom_w'],
-      onActivate: () => void this.enterCloseup('cu_enlarger', [-5.18, 1.32, -1.15], [-5.62, 0.92, -1.15], { fov: 42 }),
+      onActivate: () => void this.closeupOn(
+          'cu_enlarger',
+          [darkroom.enlargerHead, darkroom.negativeCarrier, darkroom.enlarger],
+          [1, 0.16, 0.34],
+          { fov: 42, margin: 1.2 },
+        ),
     })
     this.hs({
       id: 'cu:enlarger:carrier',
@@ -1726,7 +1742,7 @@ export class Chapter01 {
       label: '鍵板',
       verb: 'examine',
       scope: ['darkroom_e'],
-      onActivate: () => void this.enterCloseup('cu_keys', [-3.62, 1.46, -1.5], [-3.14, 1.46, -1.5], { fov: 36 }),
+      onActivate: () => void this.closeupOn('cu_keys', darkroom.officeKey, [-1, 0.12, 0.18], { fov: 36 }),
     })
     this.hs({
       id: 'cu:keys:take',
@@ -2109,7 +2125,12 @@ export class Chapter01 {
       label: '金庫',
       verb: 'examine',
       scope: ['office_n', 'office_e'],
-      onActivate: () => void this.enterCloseup('cu_safe', [5.16, 0.62, -1.3], [5.66, 0.52, -1.3], { fov: 40 }),
+      onActivate: () => void this.closeupOn('cu_safe', office.safeDial, [-1, 0.2, 0.05], {
+          fov: 40,
+          // Generous: the whole dial has to be on screen, and the bottom of the
+          // frame is under the action bar.
+          margin: 2.6,
+        }),
     })
     this.hs({
       id: 'cu:safe:dial',
