@@ -232,24 +232,32 @@ button {
   opacity: 1;
 }
 .turn-zone .chev {
-  width: 26px;
-  height: 26px;
+  /* A real button, big enough to hit: this is the one part of the zone that
+     always turns, so it has to be reliably clickable. */
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  box-sizing: border-box;
   border-top: 1.5px solid rgba(230, 205, 150, 0.92);
   border-left: 1.5px solid rgba(230, 205, 150, 0.92);
   filter: drop-shadow(0 1px 5px rgba(0, 0, 0, 0.85));
   transition: transform 0.24s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .turn-zone.left .chev {
-  transform: rotate(-45deg) translate(2px, 2px);
+  border-width: 0 0 2px 2px;
+  transform: rotate(45deg) translate(4px, -4px);
 }
 .turn-zone.right .chev {
-  transform: rotate(135deg) translate(2px, 2px);
+  border-width: 2px 2px 0 0;
+  transform: rotate(45deg) translate(-4px, 4px);
 }
 .turn-zone.left:hover .chev {
-  transform: rotate(-45deg) translate(6px, 6px);
+  transform: rotate(45deg) translate(8px, -8px);
 }
 .turn-zone.right:hover .chev {
-  transform: rotate(135deg) translate(6px, 6px);
+  transform: rotate(45deg) translate(-8px, 8px);
 }
 .turn-zone .zone-label {
   position: absolute;

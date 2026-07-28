@@ -135,13 +135,26 @@ export class GameUI {
       z.setAttribute('role', 'button')
       z.setAttribute('aria-label', side === 'left' ? '左を向く' : '右を向く')
       z.tabIndex = 0
-      z.innerHTML = '<span class="chev"></span><span class="zone-label"></span>'
+      const arrow = this.el('button', 'chev clickable')
+      arrow.setAttribute('aria-hidden', 'true')
+      arrow.tabIndex = -1
+      const zlabel = this.el('span', 'zone-label')
+      z.append(arrow, zlabel)
+      // The arrow always turns. Everything else in the zone asks the world
+      // first and only turns if there is nothing there.
+      //
+      // Both halves of that are needed. Letting the whole zone win swallowed
+      // clicks on anything the composition put near an edge; letting the world
+      // always win made the turn itself impossible wherever a hotspot happened
+      // to lie under the edge - in the entrance view the coat rack covered the
+      // right-hand arrow, so the arrow lit up on hover and then did nothing,
+      // which reads as a broken build rather than as a busy pixel.
+      arrow.addEventListener('click', (e) => {
+        e.stopPropagation()
+        if (z.dataset.live === '1') this.cb.onTurn(side)
+      })
       z.addEventListener('click', (e) => {
         if (z.dataset.live !== '1') return
-        // The zone sits on top of the canvas, so anything the composition puts
-        // near an edge would otherwise have its clicks swallowed and the player
-        // would just turn away from the thing they were trying to examine. Ask
-        // the world first; only turn if there is nothing there.
         if (this.cb.onEdgeClick(e.clientX, e.clientY)) return
         this.cb.onTurn(side)
       })

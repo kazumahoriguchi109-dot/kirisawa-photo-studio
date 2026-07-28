@@ -356,6 +356,11 @@ export class Chapter01 {
     const label = opts.label ?? CLOSEUP_TITLES[id] ?? ''
     this.busy = true
     this.d.audio.play('closeupIn')
+    // Title and exit go up as the move begins, not when it lands. Shown only on
+    // arrival, the player spends the whole push-in inside a nameless frame with
+    // no way out on screen - which on a slow machine reads as a hang rather
+    // than as a camera move.
+    this.d.ui.setCloseup(true, label)
     await this.d.rig.enterCloseup({
       position: new THREE.Vector3(...position),
       target: new THREE.Vector3(...target),
@@ -363,7 +368,6 @@ export class Chapter01 {
     })
     this.closeup = id
     this.d.interaction.setScope(id)
-    this.d.ui.setCloseup(true, label)
     this.refreshTurnZones()
     this.busy = false
   }
@@ -471,9 +475,9 @@ export class Chapter01 {
     this.busy = true
     this.dragHandler = null
     this.stopProjection()
-    this.d.ui.setCloseup(false)
     this.d.audio.play('closeupOut')
     await this.d.rig.exitCloseup()
+    this.d.ui.setCloseup(false)
     this.closeup = null
     this.d.interaction.setScope(this.d.state.nodeId)
     this.refreshTurnZones()

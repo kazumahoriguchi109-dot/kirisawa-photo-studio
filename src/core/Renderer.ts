@@ -160,6 +160,31 @@ export const QUALITY_PROFILES: Record<
   },
 }
 
+/**
+ * Hold the horizontal field of view, not the vertical one, once the window gets
+ * narrow.
+ *
+ * Three keeps `fov` vertical, so a narrowing window crops the sides away. In a
+ * game of fixed compositions that is not a cosmetic difference: on a phone the
+ * fuse box and the coat rack left the frame entirely, and nothing on screen
+ * told the player that a third of the room - including the first puzzle - was
+ * simply not there. Below the reference shape the vertical angle is widened
+ * instead, so the width the composition was framed for is preserved and the
+ * extra pixels go above and below.
+ *
+ * Applied around the render and reverted afterwards, because the camera rig
+ * writes `fov` every frame and damps toward its own target: a permanent
+ * rewrite here and the two would fight.
+ */
+const REFERENCE_ASPECT = 4 / 3
+
+function framedFov(authored: number, aspect: number): number {
+  if (aspect >= REFERENCE_ASPECT) return authored
+  const halfH = THREE.MathUtils.degToRad(authored) / 2
+  const halfW = Math.atan(Math.tan(halfH) * REFERENCE_ASPECT)
+  return THREE.MathUtils.radToDeg(Math.atan(Math.tan(halfW) / aspect)) * 2
+}
+
 export function createRenderStack(
   canvas: HTMLCanvasElement,
   scene: THREE.Scene,
@@ -284,7 +309,17 @@ export function createRenderStack(
     render(dt: number) {
       elapsed += dt
       grade.uniforms.uTime.value = elapsed
+      const authored = camera.fov
+      const framed = framedFov(authored, camera.aspect)
+      if (framed !== authored) {
+        camera.fov = framed
+        camera.updateProjectionMatrix()
+      }
       composer.render(dt)
+      if (framed !== authored) {
+        camera.fov = authored
+        camera.updateProjectionMatrix()
+      }
     },
     dispose() {
       composer.dispose()
