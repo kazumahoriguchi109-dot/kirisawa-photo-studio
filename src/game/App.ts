@@ -30,7 +30,7 @@ import { QUALITY_PROFILES } from '../core/Renderer'
  * UI. Chapter logic lives in Chapter01; nothing game-specific belongs here.
  */
 
-const START_NODE = 'hall_door'
+const START_NODE = 'hall_s'
 const TOTAL_ENDINGS = 3
 
 /**
@@ -42,8 +42,6 @@ const TITLE_VIEW = {
   position: new THREE.Vector3(-1.15, 1.52, 3.95),
   yaw: Math.PI - 0.14,
   pitch: -0.02,
-  yawRange: [Math.PI - 0.28, Math.PI] as [number, number],
-  pitchRange: [-0.12, 0.06] as [number, number],
   fov: 44,
 }
 
@@ -110,6 +108,8 @@ export class App {
     })
 
     this.ui = new GameUI(this.state, this.settings, this.inspector, {
+      onTurn: (dir) => void this.chapter.turn(dir),
+      onCloseupBack: () => void this.chapter.exitCloseup(),
       onNewGame: () => void this.startNewGame(),
       onContinue: () => void this.continueGame(),
       onSelectItem: (id) => this.state.selectItem(id),
@@ -203,6 +203,8 @@ export class App {
       chapterHotspot: (id: string) => this.interaction.get(id),
       scope: () => this.chapter.currentScope,
       three: THREE,
+      camera: this.rig.camera,
+      scene: this.scene,
       nodeIds: () => NODES.map((n) => n.id),
       allHotspotIds: () => this.interaction.allIds(),
       setLook: (yaw: number, pitch: number) => this.rig.setLookForTest(yaw, pitch),
@@ -226,16 +228,15 @@ export class App {
     this.input.events.on('hover', (s) => {
       this.pointerNdc = { x: s.ndcX, y: s.ndcY }
     })
+    // Dragging never steers the camera. The only thing that consumes a drag is
+    // a puzzle that has explicitly captured it, such as the safe dial.
     this.input.events.on('drag', ({ dx, dy, sample }) => {
       this.pointerNdc = { x: sample.ndcX, y: sample.ndcY }
       const captured = this.chapter?.activeDragHandler
       if (captured) {
         captured(dx, dy)
         this.canvas.dataset.cursor = 'dragging'
-        return
       }
-      this.rig.look(dx, dy)
-      this.canvas.dataset.cursor = 'dragging'
     })
     this.input.events.on('dragEnd', () => {
       this.canvas.dataset.cursor = ''
@@ -244,8 +245,8 @@ export class App {
       this.pointerNdc = { x: s.ndcX, y: s.ndcY }
       void this.onClick()
     })
-    this.input.events.on('wheel', ({ delta }) => {
-      this.rig.zoom(delta)
+    this.input.events.on('wheel', () => {
+      /* the fixed compositions do not zoom; the inspector handles its own wheel */
     })
     this.input.events.on('keydown', ({ code, event }) => {
       if (!this.inGame) return
@@ -259,6 +260,16 @@ export class App {
       if (code === 'Backspace') {
         event.preventDefault()
         void this.chapter.exitCloseup()
+      }
+      if (!this.ui.isPanelOpen) {
+        if (code === 'ArrowLeft' || code === 'KeyA') {
+          event.preventDefault()
+          void this.chapter.turn('left')
+        }
+        if (code === 'ArrowRight' || code === 'KeyD') {
+          event.preventDefault()
+          void this.chapter.turn('right')
+        }
       }
     })
     // right click / two-finger back out of a close-up
@@ -337,6 +348,7 @@ export class App {
     this.inGame = true
     this.interaction.setEnabled(true)
     this.ui.setHudVisible(true)
+    this.chapter.refreshTurnZones()
     this.audio.play('select')
     await this.ui.openShutter()
     if (fresh) {
@@ -417,7 +429,6 @@ export class App {
       this.stack.setQuality(s.quality)
     }
     if (key === 'reducedMotion') this.applyMotionScale()
-    this.rig.setSensitivity(s.lookSensitivity, s.invertLook)
     this.audio.applyVolumes()
   }
 
@@ -455,24 +466,6 @@ export class App {
   private frame(dt: number): void {
     this.elapsed += dt
     this.timeline.update(dt)
-    this.rig.setSensitivity(this.settings.get().lookSensitivity, this.settings.get().invertLook)
-
-    // keyboard look
-    if (this.inGame && !this.ui.isPanelOpen) {
-      const speed = 1.4 * dt
-      let dy = 0
-      let dp = 0
-      if (this.input.isKeyDown('ArrowLeft') || this.input.isKeyDown('KeyA')) dy += speed
-      if (this.input.isKeyDown('ArrowRight') || this.input.isKeyDown('KeyD')) dy -= speed
-      if (this.input.isKeyDown('ArrowUp') || this.input.isKeyDown('KeyW')) dp += speed * 0.6
-      if (this.input.isKeyDown('ArrowDown') || this.input.isKeyDown('KeyS')) dp -= speed * 0.6
-      if (dy || dp) this.rig.lookBy(dy, dp)
-    }
-
-    if (!this.inGame && this.ui.titleVisible && !this.settings.get().reducedMotion) {
-      // a 24-second breath, so the title image is never quite still
-      this.rig.lookBy(Math.sin(this.elapsed * 0.26) * dt * 0.012, Math.cos(this.elapsed * 0.19) * dt * 0.006)
-    }
 
     this.rig.update(dt)
     this.lighting.update(dt)
@@ -494,7 +487,7 @@ export class App {
             hover.hotspot.verb === 'advance' ? 'walk' : this.state.selectedItemId ? 'use' : 'examine'
         } else {
           this.ui.setHover(null, null)
-          this.canvas.dataset.cursor = 'look'
+          this.canvas.dataset.cursor = ''
         }
       } else {
         this.ui.setHover(null, null)

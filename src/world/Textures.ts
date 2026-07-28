@@ -45,7 +45,7 @@ function toTexture(canvas: HTMLCanvasElement, srgb: boolean, repeat: [number, nu
   t.wrapS = THREE.RepeatWrapping
   t.wrapT = THREE.RepeatWrapping
   t.repeat.set(repeat[0], repeat[1])
-  t.anisotropy = 8
+  t.anisotropy = 16
   t.needsUpdate = true
   return t
 }
@@ -253,11 +253,14 @@ export function stainedWood(
     for (let x = 0; x < size; x++) {
       const u = grainAcross ? x / size : y / size
       const v = grainAcross ? y / size : x / size
-      // growth rings: warped stripes along the grain direction
-      const warp = n.fbm(u * 0.6, v * 3, 4, 3) * 0.55
-      const rings = Math.sin((u * 26 + warp * 12) * Math.PI) * 0.5 + 0.5
-      const fibre = n.fbm(u * 40, v * 1.5, 3, 9)
-      const k = 0.74 + rings * 0.20 + fibre * 0.20
+      // Growth rings, warped along the grain. Frequencies are kept low on
+      // purpose: the previous fibre term ran at roughly one cycle per pixel,
+      // which is not a texture but an aliasing pattern, and it turned every
+      // large flat door into moire the moment it was seen at an angle.
+      const warp = n.fbm(u, v * 3, 4, 3) * 0.5
+      const rings = Math.sin((u * 9 + warp * 4) * Math.PI) * 0.5 + 0.5
+      const fibre = n.fbm(u, v, 3, 18)
+      const k = 0.80 + rings * 0.13 + (fibre - 0.5) * 0.16
       const i = (y * size + x) * 4
       img.data[i] = Math.min(255, img.data[i] * k * 1.04)
       img.data[i + 1] = Math.min(255, img.data[i + 1] * k)
@@ -288,8 +291,8 @@ export function stainedWood(
 
   const set: TextureSet = {
     map: toTexture(c, true, repeat),
-    normalMap: toTexture(normalFromCanvas(c, 0.55), false, repeat),
-    roughnessMap: toTexture(greyscaleCanvas(c, 0.55, 0.28), false, repeat),
+    normalMap: toTexture(normalFromCanvas(c, 0.4), false, repeat),
+    roughnessMap: toTexture(greyscaleCanvas(c, 0.58, 0.2), false, repeat),
   }
   cache.set(key, set)
   return set

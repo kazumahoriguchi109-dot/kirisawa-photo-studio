@@ -1,49 +1,57 @@
 /**
- * Reachability sweep.
+ * Reachability sweep for fixed compositions.
  *
- * For every viewpoint (and every close-up the chapter can enter), turn the
- * camera through a full circle and cast rays across the frame, recording which
- * hotspots the player could actually hit. A hotspot that is registered but
- * never hit from anywhere is unfindable - that is a softlock waiting to happen,
- * not a difficulty setting.
+ * The camera can no longer be steered, so a hotspot is reachable only if it
+ * falls inside the one frame its viewpoint is locked to. This casts a dense ray
+ * grid across each node's actual frame and records what a player could hit.
+ * Anything registered but never hit is unfindable - a softlock, not difficulty.
  */
 window.__reachability = async function reachability() {
   const app = window.__kirisawa
   const d = app.debug
-  const THREE = d.three
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
   const reached = new Set()
   const perNode = {}
 
-  const nodes = d.nodeIds()
-  for (const nodeId of nodes) {
+  for (const nodeId of d.nodeIds()) {
     await d.go(nodeId)
-    await sleep(30)
+    await sleep(40)
     const hits = new Set()
-    // Sweep the full yaw circle and the whole permitted pitch range, with a
-    // ray grid across the frame - i.e. everything a player could point at.
-    for (let a = 0; a < 48; a++) {
-      for (let p = -6; p <= 4; p++) {
-        d.setLook((a / 48) * Math.PI * 2, p * 0.16)
-        d.syncCamera()
-        for (let gx = -3; gx <= 3; gx++) {
-          for (let gy = -3; gy <= 3; gy++) {
-            const info = d.pick(gx * 0.3, gy * 0.3)
-            if (info) {
-              hits.add(info.hotspot.id)
-              reached.add(info.hotspot.id)
-            }
-          }
+    // 41 x 41 rays across the whole frame, i.e. everything on screen
+    for (let gx = -20; gx <= 20; gx++) {
+      for (let gy = -20; gy <= 20; gy++) {
+        const info = d.pick(gx / 20.5, gy / 20.5)
+        if (info) {
+          hits.add(info.hotspot.id)
+          reached.add(info.hotspot.id)
         }
       }
     }
     perNode[nodeId] = Array.from(hits).sort()
-    void THREE
   }
 
   const all = d.allHotspotIds()
   const nodeScoped = all.filter((id) => !id.startsWith('cu:'))
   const missing = nodeScoped.filter((id) => !reached.has(id))
   return { perNode, reachedCount: reached.size, total: nodeScoped.length, missing }
+}
+
+/** Turn all the way round each room and confirm the ring closes. */
+window.__ringCheck = async function ringCheck() {
+  const d = window.__kirisawa.debug
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+  const out = []
+  for (const start of ['hall_n', 'studio_n', 'darkroom_n', 'office_n']) {
+    await d.go(start)
+    await sleep(60)
+    const seen = [d.scope()]
+    for (let i = 0; i < 4; i++) {
+      await d.chapter.turn('right')
+      for (let w = 0; w < 60 && d.chapter.isBusy; w++) await sleep(50)
+      seen.push(d.scope())
+    }
+    out.push({ start, seen, closes: seen[0] === seen[4], unique: new Set(seen).size })
+  }
+  return out
 }

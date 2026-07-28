@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { boxAt, extrude, lathe, mesh, roundedBox, texturedBox } from '../Geo'
 import type { MaterialLibrary } from '../Materials'
-import { OPENINGS, ROOM } from '../Layout'
+import { EXTERIOR_THICKNESS, OPENINGS, ROOM, WALL_THICKNESS } from '../Layout'
 import {
   bottle,
   drawerUnit,
@@ -44,6 +44,8 @@ export interface HallProps {
   stairs: THREE.Group
   pendant: THREE.Group
   heightMarks: THREE.Group
+  /** The threshold board in the archway - the clickable way through. */
+  archThreshold: THREE.Group
 }
 
 const H = ROOM.hall
@@ -357,10 +359,11 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     engraved.position.set(0, -0.058, 0.016)
     lockPlate.add(engraved)
 
+    // On the lower panel, below the lock rail, on the face of the leaf.
     lockPlate.position.set(
       (OPENINGS.exitDoor.x0 + OPENINGS.exitDoor.x1) / 2,
-      1.06,
-      OPENINGS.exitDoor.z - 0.055,
+      0.86,
+      OPENINGS.exitDoor.z - EXTERIOR_THICKNESS / 2 - 0.005,
     )
     lockPlate.rotation.y = Math.PI
     group.add(lockPlate)
@@ -390,35 +393,69 @@ export function buildHall(mats: MaterialLibrary): HallProps {
       coatRack.add(hook)
     }
     // a lower hook added later, at a child's height
+    // A second hook added later, at a child's height, on its own little batten
+    // screwed to the wall. It reads as an afterthought because it was one.
+    const smallPlate = mesh(texturedBox(0.11, 0.07, 0.018, 2.4), mats.woodMid, { cast: false })
+    smallPlate.position.set(0.3, -0.52, 0.006)
+    coatRack.add(smallPlate)
     const small = mesh(
       lathe([[0.006, 0], [0.006, 0.032], [0.012, 0.042], [0, 0.045]], 10),
       mats.brassDull,
     )
     small.rotation.x = Math.PI / 2
-    small.position.set(0.12, -0.5, 0.02)
+    small.position.set(0.3, -0.53, 0.016)
     coatRack.add(small)
-    const smallPlate = mesh(texturedBox(0.05, 0.06, 0.014, 3), mats.woodMid)
-    smallPlate.position.set(0.12, -0.5, 0.008)
-    coatRack.add(smallPlate)
+    for (const sx of [-0.035, 0.035]) {
+      const screw = mesh(new THREE.CylinderGeometry(0.0035, 0.0035, 0.006, 8), mats.brassDull, {
+        cast: false,
+      })
+      screw.rotation.x = Math.PI / 2
+      screw.position.set(0.3 + sx, -0.492, 0.016)
+      coatRack.add(screw)
+    }
 
-    // the one remaining overcoat, as a lathed drape
-    const coat = mesh(
-      lathe(
-        [
-          [0.02, 0],
-          [0.12, -0.12],
-          [0.16, -0.4],
-          [0.19, -0.78],
-          [0.2, -0.86],
-          [0, -0.86],
-        ],
-        18,
-      ),
-      new THREE.MeshStandardMaterial({ color: 0x3a352d, roughness: 0.94 }),
-    )
-    coat.scale.set(1, 1, 0.42)
-    coat.position.set(-0.09, -0.02, 0.08)
-    coatRack.add(coat)
+    // The one remaining overcoat. Built from a shoulder yoke, a tapering body
+    // and a collar rather than a lathe: a solid of revolution reads as a sack,
+    // and a hanging coat is the most human object in the hall.
+    {
+      const cloth = new THREE.MeshStandardMaterial({ color: 0x3a352d, roughness: 0.95 })
+      const coat = new THREE.Group()
+      // shoulders: a shallow wedge, wider than it is deep
+      const shoulder = mesh(roundedBox(0.34, 0.1, 0.14, 0.04, 3, 2.4), cloth)
+      shoulder.position.set(0, -0.09, 0)
+      coat.add(shoulder)
+      // body: three tapering blocks so the drape narrows toward the hem
+      const seg: Array<[number, number, number, number]> = [
+        [0.33, 0.3, 0.13, -0.27],
+        [0.3, 0.3, 0.115, -0.55],
+        [0.26, 0.24, 0.1, -0.82],
+      ]
+      for (const [w, h, dz, y] of seg) {
+        const b = mesh(roundedBox(w, h, dz, 0.03, 2, 2), cloth)
+        b.position.set(0, y, 0)
+        coat.add(b)
+      }
+      // sleeves, hanging slightly away from the body
+      for (const sx of [-1, 1]) {
+        const sleeve = mesh(roundedBox(0.085, 0.46, 0.1, 0.035, 2, 2.4), cloth)
+        sleeve.position.set(sx * 0.185, -0.36, 0.005)
+        sleeve.rotation.z = sx * 0.05
+        coat.add(sleeve)
+      }
+      // collar
+      const collar = mesh(roundedBox(0.2, 0.07, 0.13, 0.03, 2, 3), cloth)
+      collar.position.set(0, -0.03, 0.012)
+      coat.add(collar)
+      // the hanger hook it is on
+      const hookWire = mesh(new THREE.TorusGeometry(0.018, 0.0028, 6, 14, Math.PI), mats.brassDull, {
+        cast: false,
+      })
+      hookWire.position.set(0, 0.005, 0.014)
+      coat.add(hookWire)
+
+      coat.position.set(-0.09, -0.02, 0.075)
+      coatRack.add(coat)
+    }
 
     coatRack.position.set(H.x0 + 0.1, 1.7, 5.55)
     coatRack.rotation.y = Math.PI / 2
@@ -557,7 +594,7 @@ export function buildHall(mats: MaterialLibrary): HallProps {
       post.position.set(0.46, y, z)
       stairs.add(post)
     }
-    stairs.position.set(H.x1 - 0.62, 0, 5.9)
+    stairs.position.set(H.x1 - 0.62, 0, 5.02)
     stairs.rotation.y = -Math.PI / 2
     group.add(stairs)
   }
@@ -605,6 +642,31 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     heightMarks.add(m)
     heightMarks.position.set(OPENINGS.hallArch.x1 + 0.028, 0.86, 2.86)
     group.add(heightMarks)
+  }
+
+  // --------------------------------------------- the way through the arch
+  // A worn threshold board and its two jamb faces. This is what the player
+  // clicks to walk between the hall and the studio, so it has to be a real,
+  // obviously-a-doorway piece of joinery rather than a marker on the floor.
+  const archThreshold = new THREE.Group()
+  {
+    const a = OPENINGS.hallArch
+    const w = a.x1 - a.x0
+    const sill = mesh(texturedBox(w, 0.022, WALL_THICKNESS + 0.06, 2.2), mats.woodTrim, { cast: false })
+    sill.position.set((a.x0 + a.x1) / 2, 0.011, a.z)
+    archThreshold.add(sill)
+    // the reveal faces inside the opening, so the arch has thickness
+    for (const x of [a.x0 + 0.012, a.x1 - 0.012]) {
+      const reveal = mesh(texturedBox(0.02, a.top - 0.04, WALL_THICKNESS, 1.6), mats.plasterWall, {
+        cast: false,
+      })
+      reveal.position.set(x, (a.top - 0.04) / 2, a.z)
+      archThreshold.add(reveal)
+    }
+    const soffit = mesh(texturedBox(w - 0.02, 0.02, WALL_THICKNESS, 1.6), mats.plasterWall, { cast: false })
+    soffit.position.set((a.x0 + a.x1) / 2, a.top - 0.03, a.z)
+    archThreshold.add(soffit)
+    group.add(archThreshold)
   }
 
   // ------------------------------------------------- phosphorescent mark
@@ -681,6 +743,7 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     stairs,
     pendant,
     heightMarks,
+    archThreshold,
   }
 }
 

@@ -141,6 +141,12 @@ export class LightingRig {
     spill.position.set(-1.4, 1.2, 4.95)
     this.add(spill, { blackout: 3.1, tungsten: 1.1, safelight: 0.3, dawn: 2.3 })
 
+    // A low warm bounce off the terrazzo by the entrance. Without it the whole
+    // lower third of the door composition falls to unreadable black.
+    const hallFloor = new THREE.PointLight(0xffc48a, 1, 6.5, 1.15)
+    hallFloor.position.set(-1.35, 0.42, 4.6)
+    this.add(hallFloor, { blackout: 1.5, tungsten: 3.2, safelight: 0.5, dawn: 2.6 })
+
     // --- hall pendant -------------------------------------------------------
     const pendantBulb = this.makeBulb(0xffd9a0, 0.035)
     pendantBulb.position.set(-1.3, H.ceiling - 0.44, 4.5)

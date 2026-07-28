@@ -3,18 +3,24 @@ import type { ViewpointSpec } from '../../systems/CameraRig'
 import { AREA_NAME_JA, EYE_HEIGHT, type AreaId } from '../../world/Layout'
 
 /**
- * Authored viewpoints. The player stands only here, so every frame in the game
- * was composed by hand. Links carry the floor marker the player clicks to move.
+ * Authored viewpoints, point-and-click style.
+ *
+ * Each room is a ring of four fixed compositions. The player never steers a
+ * camera: they turn to the next composition with the edge arrows, and step
+ * through a doorway by clicking the doorway. Every frame in the game was
+ * therefore framed on purpose, which is what separates a commercial escape
+ * game from a free-look walkthrough.
+ *
+ * The four views in a ring sit at slightly different standing points rather
+ * than one pivot. A room six metres wide cannot put its west and east walls in
+ * the same frame from the middle, and shuffling half a metre between views
+ * still reads as one person turning.
  */
 
-export interface NodeLink {
+export interface NodeExit {
   to: string
-  /** World position of the floor marker. */
-  marker: [number, number, number]
   label: string
-  /** Flag that must be set before this way is open. */
   requires?: string
-  /** Message shown when the way is closed. */
   blockedMessage?: string
 }
 
@@ -25,206 +31,113 @@ export interface ViewNode {
   position: [number, number, number]
   yaw: number
   pitch?: number
-  yawSpan?: number
-  pitchRange?: [number, number]
   fov?: number
-  links: NodeLink[]
+  left: string
+  right: string
 }
 
 const S = Math.PI / 2
+const E = EYE_HEIGHT
+
+/**
+ * `dir` fixes the facing; `at` is where the player stands for that view.
+ * Ring order is n -> e -> s -> w, so the right-hand arrow turns clockwise.
+ */
+function ring(
+  area: AreaId,
+  views: Array<{
+    dir: 'n' | 'e' | 's' | 'w'
+    label: string
+    at: [number, number, number]
+    pitch?: number
+    fov?: number
+  }>,
+): ViewNode[] {
+  const YAW = { n: 0, e: -S, s: Math.PI, w: S }
+  const order = views.map((v) => `${area}_${v.dir}`)
+  return views.map((v, i) => ({
+    id: `${area}_${v.dir}`,
+    area,
+    label: v.label,
+    position: v.at,
+    yaw: YAW[v.dir],
+    pitch: v.pitch ?? -0.03,
+    fov: v.fov ?? 58,
+    left: order[(i - 1 + order.length) % order.length],
+    right: order[(i + 1) % order.length],
+  }))
+}
 
 export const NODES: ViewNode[] = [
-  // ------------------------------------------------------------------- hall
-  {
-    id: 'hall_door',
-    area: 'hall',
-    label: '玄関',
-    position: [-1.92, EYE_HEIGHT, 4.72],
-    yaw: Math.PI - 0.26,
-    fov: 60,
-    links: [{ to: 'hall_center', marker: [-1.3, 0.02, 4.1], label: 'ホールの中ほど' }],
-  },
-  {
-    id: 'hall_center',
-    area: 'hall',
-    label: 'ホール',
-    position: [-1.25, EYE_HEIGHT, 4.02],
-    yaw: 0,
-    links: [
-      { to: 'hall_door', marker: [-1.9, 0.02, 4.85], label: '玄関の戸' },
-      { to: 'hall_counter', marker: [-0.35, 0.02, 3.95], label: '受付' },
-      {
-        to: 'studio_main',
-        marker: [-1.8, 0.02, 3.2],
-        label: '撮影室',
-        requires: 'power_on',
-        blockedMessage: '奥は暗い。足元が見えない。',
-      },
-    ],
-  },
-  {
-    id: 'hall_counter',
-    area: 'hall',
-    label: '受付',
-    position: [-0.3, EYE_HEIGHT, 3.98],
-    yaw: 0,
-    pitch: -0.16,
-    links: [{ to: 'hall_center', marker: [-1.2, 0.02, 4.1], label: 'ホール' }],
-  },
+  // ------------------------------------------------------------ 玄関ホール
+  ...ring('hall', [
+    { dir: 'n', label: '受付と通路', at: [-1.0, E, 4.95], pitch: -0.04 },
+    { dir: 'e', label: '階段', at: [-0.95, E, 4.9], pitch: -0.02 },
+    { dir: 's', label: '玄関の引き戸', at: [-1.32, E, 4.2], fov: 60, pitch: -0.06 },
+    { dir: 'w', label: '配電盤の壁', at: [-1.55, E, 4.85] },
+  ]),
 
-  // ----------------------------------------------------------------- studio
-  {
-    id: 'studio_main',
-    area: 'studio',
-    label: '撮影室',
-    position: [0.15, EYE_HEIGHT + 0.02, 1.95],
-    yaw: 0,
-    links: [
-      { to: 'hall_center', marker: [-1.8, 0.02, 2.5], label: '玄関ホール' },
-      { to: 'studio_backdrop', marker: [-0.5, 0.02, -0.5], label: '背景幕の前' },
-      { to: 'studio_camera', marker: [1.5, 0.02, 1.1], label: '大判カメラ' },
-      { to: 'studio_west', marker: [-2.0, 0.02, -0.6], label: '西側の壁' },
-      { to: 'studio_east', marker: [2.0, 0.02, -0.6], label: '東側の壁' },
-    ],
-  },
-  {
-    id: 'studio_backdrop',
-    area: 'studio',
-    label: '背景幕の前',
-    position: [-0.5, EYE_HEIGHT, -0.35],
-    yaw: 0,
-    links: [{ to: 'studio_main', marker: [0.15, 0.02, 1.7], label: '撮影室の中ほど' }],
-  },
-  {
-    id: 'studio_camera',
-    area: 'studio',
-    label: '大判カメラ',
-    position: [1.42, EYE_HEIGHT, 1.18],
-    yaw: -0.42,
-    pitch: -0.06,
-    links: [{ to: 'studio_main', marker: [0.3, 0.02, 1.8], label: '撮影室の中ほど' }],
-  },
-  {
-    id: 'studio_west',
-    area: 'studio',
-    label: '西側の壁',
-    position: [-1.95, EYE_HEIGHT, -0.55],
-    yaw: S,
-    links: [
-      { to: 'studio_main', marker: [-0.4, 0.02, 1.4], label: '撮影室の中ほど' },
-      {
-        to: 'dark_entry',
-        marker: [-3.0, 0.02, -1.4],
-        label: '暗室',
-        requires: 'darkroom_open',
-        blockedMessage: '把手は回るが、錠が落ちたままだ。',
-      },
-    ],
-  },
-  {
-    id: 'studio_east',
-    area: 'studio',
-    label: '東側の壁',
-    position: [1.95, EYE_HEIGHT, -0.55],
-    yaw: -S,
-    links: [
-      { to: 'studio_main', marker: [0.5, 0.02, 1.4], label: '撮影室の中ほど' },
-      {
-        to: 'office_desk',
-        marker: [3.0, 0.02, -0.6],
-        label: '事務室',
-        requires: 'office_open',
-        blockedMessage: 'すりガラスの向こうは暗い。錠がかかっている。',
-      },
-    ],
-  },
+  // -------------------------------------------------------------- 撮影室
+  ...ring('studio', [
+    { dir: 'n', label: '背景幕', at: [0.05, E + 0.02, 1.55], fov: 62, pitch: -0.02 },
+    { dir: 'e', label: '肖像写真の壁', at: [0.7, E, 0.5], fov: 58 },
+    { dir: 's', label: '玄関ホールへ', at: [-0.9, E, 0.9], fov: 60 },
+    { dir: 'w', label: '暗室の扉', at: [-0.9, E, -0.1], fov: 58 },
+  ]),
 
-  // --------------------------------------------------------------- darkroom
-  {
-    id: 'dark_entry',
-    area: 'darkroom',
-    label: '暗室の入口',
-    position: [-3.85, EYE_HEIGHT, -1.3],
-    yaw: S,
-    links: [
-      { to: 'studio_west', marker: [-2.9, 0.02, -1.4], label: '撮影室' },
-      { to: 'dark_bench', marker: [-5.1, 0.02, -1.9], label: '作業台' },
-      { to: 'dark_enlarger', marker: [-4.75, 0.02, -1.15], label: '引き伸ばし機' },
-    ],
-  },
-  {
-    id: 'dark_bench',
-    area: 'darkroom',
-    label: '作業台',
-    position: [-5.15, EYE_HEIGHT, -1.5],
-    yaw: 0,
-    pitch: -0.34,
-    links: [
-      { to: 'dark_entry', marker: [-3.9, 0.02, -1.3], label: '入口' },
-      { to: 'dark_enlarger', marker: [-4.75, 0.02, -1.1], label: '引き伸ばし機' },
-    ],
-  },
-  {
-    id: 'dark_enlarger',
-    area: 'darkroom',
-    label: '引き伸ばし機',
-    position: [-4.72, EYE_HEIGHT, -1.15],
-    yaw: S,
-    pitch: -0.18,
-    links: [
-      { to: 'dark_entry', marker: [-3.9, 0.02, -1.3], label: '入口' },
-      { to: 'dark_bench', marker: [-5.1, 0.02, -1.85], label: '作業台' },
-    ],
-  },
+  // ---------------------------------------------------------------- 暗室
+  ...ring('darkroom', [
+    { dir: 'n', label: '作業台', at: [-5.05, E, -1.42], pitch: -0.28, fov: 58 },
+    { dir: 'e', label: '扉と鍵板', at: [-4.4, E, -1.3], fov: 56 },
+    { dir: 's', label: '薬品棚', at: [-4.5, E, -0.5], pitch: -0.05, fov: 56 },
+    { dir: 'w', label: '引き伸ばし機', at: [-4.5, E, -1.15], pitch: -0.1, fov: 58 },
+  ]),
 
-  // ----------------------------------------------------------------- office
-  {
-    id: 'office_desk',
-    area: 'office',
-    label: '事務机',
-    position: [4.68, EYE_HEIGHT, -1.42],
-    yaw: 0,
-    pitch: -0.2,
-    links: [
-      { to: 'studio_east', marker: [3.35, 0.02, -0.6], label: '撮影室' },
-      { to: 'office_safe', marker: [5.1, 0.02, -1.3], label: '金庫' },
-      { to: 'office_south', marker: [4.7, 0.02, -0.35], label: '南側の壁' },
-    ],
-  },
-  {
-    id: 'office_safe',
-    area: 'office',
-    label: '金庫',
-    position: [5.02, EYE_HEIGHT - 0.1, -1.3],
-    yaw: -S,
-    pitch: -0.22,
-    links: [{ to: 'office_desk', marker: [4.7, 0.02, -1.5], label: '事務机' }],
-  },
-  {
-    id: 'office_south',
-    area: 'office',
-    label: '南側の壁',
-    position: [4.66, EYE_HEIGHT, -0.42],
-    yaw: Math.PI,
-    links: [{ to: 'office_desk', marker: [4.7, 0.02, -1.2], label: '事務机' }],
-  },
+  // -------------------------------------------------------------- 事務室
+  ...ring('office', [
+    { dir: 'n', label: '事務机', at: [4.62, E, -1.35], pitch: -0.2, fov: 58 },
+    { dir: 'e', label: '金庫', at: [5.05, E - 0.06, -1.3], pitch: -0.24, fov: 54 },
+    { dir: 's', label: '壁の貼り紙', at: [4.6, E, -0.55], fov: 56 },
+    { dir: 'w', label: '撮影室へ', at: [4.3, E, -0.5], fov: 56 },
+  ]),
 ]
 
 export const NODE_MAP = new Map(NODES.map((n) => [n.id, n]))
 
+/**
+ * Doorways. Attached to the door geometry itself rather than a floor marker, so
+ * the thing the player clicks to go somewhere is the opening they go through.
+ */
+export const EXITS: Record<string, NodeExit> = {
+  hall_n: {
+    to: 'studio_s',
+    label: '撮影室への通路',
+    requires: 'power_on',
+    blockedMessage: '奥は暗い。足元が見えない。',
+  },
+  studio_s: { to: 'hall_n', label: '玄関ホールへの通路' },
+  studio_w: {
+    to: 'darkroom_e',
+    label: '暗室の扉',
+    requires: 'darkroom_open',
+    blockedMessage: '把手は回るが、錠が落ちたままだ。',
+  },
+  darkroom_e: { to: 'studio_w', label: '撮影室へ戻る扉' },
+  studio_e: {
+    to: 'office_w',
+    label: '事務室の扉',
+    requires: 'office_open',
+    blockedMessage: 'すりガラスの向こうは暗い。錠がかかっている。',
+  },
+  office_w: { to: 'studio_e', label: '撮影室へ戻る扉' },
+}
+
 export function nodeToSpec(node: ViewNode): ViewpointSpec {
-  // A standing person can always turn round. Composition is carried by the
-  // yaw the node arrives at, not by fencing the player in - and fencing them in
-  // is how a way out ends up behind an invisible wall.
-  const span = node.yawSpan ?? Math.PI
   return {
     position: new THREE.Vector3(...node.position),
     yaw: node.yaw,
     pitch: node.pitch ?? -0.03,
-    yawRange: [node.yaw - span, node.yaw + span],
-    // Wide enough down that a floor marker one step away is still in frame.
-    pitchRange: node.pitchRange ?? [-0.95, 0.55],
-    fov: node.fov ?? 57,
+    fov: node.fov ?? 58,
   }
 }
 
@@ -232,4 +145,8 @@ export function areaLabelForNode(nodeId: string): string {
   const n = NODE_MAP.get(nodeId)
   if (!n) return ''
   return `${AREA_NAME_JA[n.area]}　${n.label}`
+}
+
+export function nodesInArea(area: AreaId): ViewNode[] {
+  return NODES.filter((n) => n.area === area)
 }

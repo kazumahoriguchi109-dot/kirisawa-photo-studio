@@ -54,6 +54,8 @@ export interface MaterialLibrary {
   paper: THREE.MeshStandardMaterial
   paperBright: THREE.MeshStandardMaterial
   glassFrosted: THREE.MeshBasicMaterial
+  /** Frosted glass without the wire mesh, for small door lights. */
+  glassDoorLight: THREE.MeshBasicMaterial
   glassClear: THREE.MeshPhysicalMaterial
   enamelTray: THREE.MeshStandardMaterial
   bakelite: THREE.MeshStandardMaterial
@@ -126,6 +128,13 @@ export function buildMaterials(): MaterialLibrary {
     glassFrosted: new THREE.MeshBasicMaterial({
       map: frostedGlass(83, [1, 1], true),
       color: 0x6a5c48,
+      transparent: true,
+      opacity: 0.97,
+      side: THREE.DoubleSide,
+    }),
+    glassDoorLight: new THREE.MeshBasicMaterial({
+      map: frostedGlass(97, [1, 1], false),
+      color: 0x6f6047,
       transparent: true,
       opacity: 0.97,
       side: THREE.DoubleSide,

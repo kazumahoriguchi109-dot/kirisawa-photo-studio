@@ -15,6 +15,8 @@ import { VERB_LABEL, type HoverInfo } from '../systems/Interaction'
  */
 
 export interface UICallbacks {
+  onTurn(direction: 'left' | 'right'): void
+  onCloseupBack(): void
   onNewGame(): void
   onContinue(): void
   onSelectItem(id: string | null): void
@@ -52,6 +54,10 @@ export class GameUI {
   private shutter!: HTMLElement
   private chapterCard!: HTMLElement
   private endingEl!: HTMLElement
+  private turnLeft!: HTMLElement
+  private turnRight!: HTMLElement
+  private closeupBar!: HTMLElement
+  private closeupTitle!: HTMLElement
 
   private openPanel: PanelId = null
   private narrationQueue: string[] = []
@@ -116,6 +122,40 @@ export class GameUI {
     this.toastRail.id = 'toast-rail'
     this.toastRail.setAttribute('aria-live', 'polite')
     this.root.appendChild(this.toastRail)
+
+    // --- edge turn zones
+    for (const side of ['left', 'right'] as const) {
+      const z = this.el('div', `turn-zone ${side}`)
+      z.dataset.live = '0'
+      z.setAttribute('role', 'button')
+      z.setAttribute('aria-label', side === 'left' ? '左を向く' : '右を向く')
+      z.tabIndex = 0
+      z.innerHTML = '<span class="chev"></span><span class="zone-label"></span>'
+      z.addEventListener('click', () => {
+        if (z.dataset.live === '1') this.cb.onTurn(side)
+      })
+      z.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && z.dataset.live === '1') {
+          e.preventDefault()
+          this.cb.onTurn(side)
+        }
+      })
+      this.root.appendChild(z)
+      if (side === 'left') this.turnLeft = z
+      else this.turnRight = z
+    }
+
+    // --- close-up exit, always visible while a close-up is open
+    this.closeupBar = this.el('div')
+    this.closeupBar.id = 'closeup-bar'
+    this.closeupTitle = this.el('span', 'cu-title')
+    const back = this.el('button', 'clickable')
+    back.id = 'closeup-back'
+    back.innerHTML = `<span class="x">\u00d7</span>${UI_TEXT.back}`
+    back.setAttribute('aria-label', `${UI_TEXT.back}（Esc）`)
+    back.addEventListener('click', () => this.cb.onCloseupBack())
+    this.closeupBar.append(this.closeupTitle, back)
+    this.root.appendChild(this.closeupBar)
 
     // --- HUD
     this.hudBar = this.el('div')
@@ -231,6 +271,23 @@ export class GameUI {
     // playthrough, so they are reached from the ending screen instead.
   }
 
+  /** Show or hide the two edge arrows, with the destination named on hover. */
+  setTurnZones(left: string | null, right: string | null): void {
+    const apply = (el: HTMLElement, label: string | null) => {
+      el.dataset.live = label ? '1' : '0'
+      const lab = el.querySelector('.zone-label') as HTMLElement | null
+      if (lab) lab.textContent = label ?? ''
+    }
+    apply(this.turnLeft, left)
+    apply(this.turnRight, right)
+  }
+
+  /** The close-up exit is never conditional: if we are in close, it is up. */
+  setCloseup(active: boolean, title = ''): void {
+    this.closeupBar.dataset.show = active ? '1' : ''
+    this.closeupTitle.textContent = title
+  }
+
   private applyScale(): void {
     const s = this.settings.get()
     this.root.style.setProperty('--ui-scale', String(s.uiScale))
@@ -259,6 +316,10 @@ export class GameUI {
 
   setHudVisible(v: boolean): void {
     this.hudBar.style.display = v ? '' : 'none'
+    if (!v) {
+      this.setTurnZones(null, null)
+      this.setCloseup(false)
+    }
   }
 
   async closeShutter(): Promise<void> {

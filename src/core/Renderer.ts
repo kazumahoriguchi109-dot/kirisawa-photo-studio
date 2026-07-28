@@ -21,7 +21,7 @@ const GradeShader = {
   uniforms: {
     tDiffuse: { value: null as THREE.Texture | null },
     uTime: { value: 0 },
-    uVignette: { value: 1.08 },
+    uVignette: { value: 0.86 },
     uGrain: { value: 0.038 },
     uLift: { value: new THREE.Vector3(0.014, 0.012, 0.019) },
     uGain: { value: new THREE.Vector3(1.02, 1.0, 0.975) },

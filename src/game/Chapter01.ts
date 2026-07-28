@@ -9,7 +9,7 @@ import type { SaveManager } from '../core/Save'
 import { AMBIENT_TEXT, FEEDBACK } from '../content/chapter01/text'
 import { CHRONICLE_PRINT_IDS, ITEMS, findRecipe } from '../content/chapter01/items'
 import { HINTS } from '../content/chapter01/hints'
-import { NODE_MAP, NODES, nodeToSpec } from '../content/chapter01/nodes'
+import { EXITS, NODE_MAP, nodeToSpec } from '../content/chapter01/nodes'
 import type { BuildingRefs } from '../world/Building'
 import type { HallProps } from '../world/props/Hall'
 import type { StudioProps } from '../world/props/Studio'
@@ -47,6 +47,27 @@ export interface ChapterDeps {
   darkroom: DarkroomProps
   office: OfficeProps
   onEnding(id: string): void
+}
+
+/** Shown beside the 戻る button so the player always knows what they are in. */
+const CLOSEUP_TITLES: Record<string, string> = {
+  cu_drawer: '受付の抽斗',
+  cu_fusebox: '配電盤',
+  cu_record: '昭和六十年の写真',
+  cu_lock: '玄関の錠',
+  cu_clock: '時計の跡',
+  cu_chair: '写場の椅子',
+  cu_socket: '巻き上げ軸',
+  cu_chronicle: '年代記の壁',
+  cu_camera: '大判カメラ',
+  cu_glass: 'ピントグラス',
+  cu_lamp: '撮影灯の台座',
+  cu_trays: '作業台のバット',
+  cu_shelf: '薬品棚',
+  cu_enlarger: '引き伸ばし機',
+  cu_line: '乾燥ロープ',
+  cu_keys: '鍵板',
+  cu_safe: '金庫',
 }
 
 /** The correct order of the four process rings, left to right. */
@@ -258,42 +279,81 @@ export class Chapter01 {
     return this.dragHandler
   }
 
+  /** Step to another room through a doorway. */
   async goToNode(id: string, instant = false): Promise<void> {
     const node = NODE_MAP.get(id)
     if (!node) return
     this.closeup = null
     this.dragHandler = null
+    this.d.ui.setCloseup(false)
     const spec = nodeToSpec(node)
     if (instant) this.d.rig.applyViewpoint(spec)
     else {
       this.busy = true
       this.d.audio.play('step')
-      await this.d.rig.moveTo(spec, 0.9)
+      await this.d.rig.moveTo(spec, 1.0)
       this.busy = false
     }
     this.d.state.setNode(id)
     this.d.interaction.setScope(id)
+    this.refreshTurnZones()
     this.d.save.saveThrottled(6000)
+  }
+
+  /** Turn to the next composition in this room's ring. */
+  async turn(direction: 'left' | 'right'): Promise<void> {
+    if (this.busy || this.closeup) return
+    const here = NODE_MAP.get(this.d.state.nodeId)
+    if (!here) return
+    const nextId = direction === 'left' ? here.left : here.right
+    const next = NODE_MAP.get(nextId)
+    if (!next) return
+    this.busy = true
+    this.d.audio.play('step', { gain: 0.5 })
+    await this.d.rig.turnTo(nodeToSpec(next), 0.52)
+    this.busy = false
+    this.d.state.setNode(nextId)
+    this.d.interaction.setScope(nextId)
+    this.refreshTurnZones()
+    this.d.save.saveThrottled(8000)
+  }
+
+  /** Keep the two edge arrows labelled with where they actually lead. */
+  refreshTurnZones(): void {
+    if (this.closeup) {
+      this.d.ui.setTurnZones(null, null)
+      return
+    }
+    const here = NODE_MAP.get(this.d.state.nodeId)
+    if (!here) {
+      this.d.ui.setTurnZones(null, null)
+      return
+    }
+    this.d.ui.setTurnZones(
+      NODE_MAP.get(here.left)?.label ?? null,
+      NODE_MAP.get(here.right)?.label ?? null,
+    )
   }
 
   private async enterCloseup(
     id: string,
     position: [number, number, number],
     target: [number, number, number],
-    opts: { fov?: number; yawSpan?: number; pitchSpan?: number } = {},
+    opts: { fov?: number; label?: string } = {},
   ): Promise<void> {
     if (this.busy) return
+    const label = opts.label ?? CLOSEUP_TITLES[id] ?? ''
     this.busy = true
     this.d.audio.play('closeupIn')
     await this.d.rig.enterCloseup({
       position: new THREE.Vector3(...position),
       target: new THREE.Vector3(...target),
       fov: opts.fov ?? 38,
-      yawSpan: opts.yawSpan ?? 0.14,
-      pitchSpan: opts.pitchSpan ?? 0.11,
     })
     this.closeup = id
     this.d.interaction.setScope(id)
+    this.d.ui.setCloseup(true, label)
+    this.refreshTurnZones()
     this.busy = false
   }
 
@@ -302,10 +362,12 @@ export class Chapter01 {
     this.busy = true
     this.dragHandler = null
     this.stopProjection()
+    this.d.ui.setCloseup(false)
     this.d.audio.play('closeupOut')
     await this.d.rig.exitCloseup()
     this.closeup = null
     this.d.interaction.setScope(this.d.state.nodeId)
+    this.refreshTurnZones()
     this.busy = false
   }
 
@@ -384,65 +446,46 @@ export class Chapter01 {
   }
 
   private registerHotspots(): void {
-    this.registerNavigation()
+    this.registerExits()
     this.registerHall()
     this.registerStudio()
     this.registerDarkroom()
     this.registerOffice()
   }
 
-  // --- navigation markers -------------------------------------------------
+  // --- doorways -----------------------------------------------------------
 
-  private registerNavigation(): void {
-    // A soft brass smudge on the floor rather than a hard ring: present enough
-    // to read as "you can stand there", quiet enough not to look like a HUD.
-    const markerGeo = new THREE.CircleGeometry(0.26, 32)
-    const markerTex = (() => {
-      const c = document.createElement('canvas')
-      c.width = c.height = 128
-      const g = c.getContext('2d')!
-      const grad = g.createRadialGradient(64, 64, 8, 64, 64, 64)
-      grad.addColorStop(0, 'rgba(216,188,124,0.0)')
-      grad.addColorStop(0.62, 'rgba(216,188,124,0.30)')
-      grad.addColorStop(0.86, 'rgba(216,188,124,0.42)')
-      grad.addColorStop(1, 'rgba(216,188,124,0)')
-      g.fillStyle = grad
-      g.fillRect(0, 0, 128, 128)
-      const t = new THREE.CanvasTexture(c)
-      t.colorSpace = THREE.SRGBColorSpace
-      return t
-    })()
-    for (const node of NODES) {
-      node.links.forEach((link, i) => {
-        const m = new THREE.Mesh(
-          markerGeo,
-          new THREE.MeshBasicMaterial({
-            map: markerTex,
-            transparent: true,
-            opacity: 0.5,
-            depthWrite: false,
-            side: THREE.DoubleSide,
-          }),
-        )
-        m.rotation.x = -Math.PI / 2
-        m.position.set(link.marker[0], link.marker[1], link.marker[2])
-        m.name = `nav-${node.id}-${i}`
-        this.d.scene.add(m)
-        this.hs({
-          id: `nav:${node.id}:${i}`,
-          target: m,
-          label: link.label,
-          verb: 'advance',
-          scope: node.id,
-          priority: -1,
-          onActivate: () => {
-            if (link.requires && !this.flag(link.requires)) {
-              this.wrong(link.blockedMessage ?? FEEDBACK.nothingHere)
-              return
-            }
-            void this.goToNode(link.to)
-          },
-        })
+  /**
+   * The way between rooms is the doorway itself. There are no floor markers:
+   * the player clicks the opening they are walking through, which is both
+   * clearer and stops the room being littered with glowing discs.
+   */
+  private registerExits(): void {
+    const doorTarget: Record<string, THREE.Object3D> = {
+      hall_n: this.d.hall.archThreshold,
+      studio_s: this.d.hall.archThreshold,
+      studio_w: this.d.building.darkroomDoorLeaf,
+      darkroom_e: this.d.building.darkroomDoorLeaf,
+      studio_e: this.d.building.officeDoorLeaf,
+      office_w: this.d.building.officeDoorLeaf,
+    }
+    for (const [from, exit] of Object.entries(EXITS)) {
+      const target = doorTarget[from]
+      if (!target) continue
+      this.hs({
+        id: `exit:${from}`,
+        target,
+        label: exit.label,
+        verb: 'advance',
+        scope: from,
+        priority: -2,
+        onActivate: () => {
+          if (exit.requires && !this.flag(exit.requires)) {
+            this.wrong(exit.blockedMessage ?? FEEDBACK.nothingHere)
+            return
+          }
+          void this.goToNode(exit.to)
+        },
       })
     }
   }
@@ -458,7 +501,7 @@ export class Chapter01 {
       target: hall.receptionDrawer,
       label: '受付の抽斗',
       verb: 'open',
-      scope: ['hall_counter', 'hall_center'],
+      scope: ['hall_n'],
       onActivate: () => void this.enterCloseup('cu_drawer', [0.52, 1.24, 4.12], [0.52, 0.42, 3.4], { fov: 42 }),
     })
     this.hs({
@@ -496,7 +539,7 @@ export class Chapter01 {
       target: hall.fuseBoxDoor.parent as THREE.Object3D,
       label: '配電盤',
       verb: 'examine',
-      scope: ['hall_center', 'hall_counter'],
+      scope: ['hall_n'],
       onActivate: () => void this.enterCloseup('cu_fusebox', [-2.62, 1.52, 4.1], [-3.12, 1.5, 4.1], { fov: 40 }),
     })
     this.hs({
@@ -573,7 +616,7 @@ export class Chapter01 {
       target: hall.recordPhoto,
       label: '額入りの写真',
       verb: 'examine',
-      scope: ['hall_counter', 'hall_center'],
+      scope: ['hall_n'],
       onActivate: () => void this.enterCloseup('cu_record', [-0.36, 1.66, 3.32], [-0.36, 1.66, 2.9], { fov: 32 }),
     })
     this.hs({
@@ -622,7 +665,7 @@ export class Chapter01 {
       target: building.exitDoorLeaf,
       label: '玄関の引き戸',
       verb: 'examine',
-      scope: 'hall_door',
+      scope: 'hall_s',
       onActivate: () =>
         void this.enterCloseup(
           'cu_lock',
@@ -665,13 +708,13 @@ export class Chapter01 {
     })
 
     // ambient dressing
-    this.ambient('hall:bell', hall.bell, '呼び鈴', ['hall_counter'], 'mem_bell')
-    this.ambient('hall:telephone', hall.telephone, '黒電話', ['hall_counter'], 'mem_telephone')
-    this.ambient('hall:calendar', hall.calendar, '暦', ['hall_center'], 'mem_calendar')
-    this.ambient('hall:coat', hall.coatRack, 'コート掛け', ['hall_center', 'hall_door'], 'mem_coat_rack')
-    this.ambient('hall:umbrella', hall.umbrella, '傘立て', ['hall_door', 'hall_center'], 'mem_umbrella')
-    this.ambient('hall:stairs', hall.stairs, '階段', ['hall_center', 'hall_door'], 'mem_stairs')
-    this.ambient('hall:heights', hall.heightMarks, '柱の線', ['hall_center', 'hall_counter'], 'mem_height_marks')
+    this.ambient('hall:bell', hall.bell, '呼び鈴', ['hall_n'], 'mem_bell')
+    this.ambient('hall:telephone', hall.telephone, '黒電話', ['hall_n'], 'mem_telephone')
+    this.ambient('hall:calendar', hall.calendar, '暦', ['hall_w'], 'mem_calendar')
+    this.ambient('hall:coat', hall.coatRack, 'コート掛け', ['hall_w', 'hall_s'], 'mem_coat_rack')
+    this.ambient('hall:umbrella', hall.umbrella, '傘立て', ['hall_s', 'hall_e'], 'mem_umbrella')
+    this.ambient('hall:stairs', hall.stairs, '階段', ['hall_w', 'hall_s'], 'mem_stairs')
+    this.ambient('hall:heights', hall.heightMarks, '柱の線', ['hall_n'], 'mem_height_marks')
 
     // phosphorescent mark
     this.hs({
@@ -679,7 +722,7 @@ export class Chapter01 {
       target: hall.phosphor,
       label: '壁に浮かぶ字',
       verb: 'examine',
-      scope: ['hall_center', 'hall_counter'],
+      scope: ['hall_n'],
       visible: () => this.d.state.lighting === 'safelight',
       onActivate: () => this.findMark('hall', '灯'),
     })
@@ -814,7 +857,7 @@ export class Chapter01 {
       target: studio.clockGhost,
       label: '壁の丸い跡',
       verb: 'examine',
-      scope: ['studio_east', 'studio_main'],
+      scope: ['studio_e'],
       onActivate: () => void this.enterCloseup('cu_clock', [2.5, 2.2, -0.6], [3.1, 2.34, -0.6], { fov: 34 }),
     })
     this.hs({
@@ -851,7 +894,7 @@ export class Chapter01 {
       label: '背景幕',
       verb: 'examine',
       priority: 3,
-      scope: ['studio_main', 'studio_backdrop'],
+      scope: ['studio_n'],
       visible: () => studio.backdropCloth.visible,
       onActivate: () => {
         this.markDifference('backdrop', '無地の天鵞絨。写真では、ここに絵が描いてあった。別の幕が、この裏に巻かれたままなのかもしれない。')
@@ -864,7 +907,7 @@ export class Chapter01 {
       target: studio.posingChair,
       label: '写場の椅子',
       verb: 'examine',
-      scope: ['studio_main', 'studio_backdrop'],
+      scope: ['studio_n'],
       onActivate: () => void this.enterCloseup('cu_chair', [-0.62, 1.15, -0.78], [-0.62, 0.5, -1.4], { fov: 40 }),
     })
     this.hs({
@@ -900,7 +943,7 @@ export class Chapter01 {
       target: [studio.crankSocket, studio.backdropRoll],
       label: '巻き上げ軸',
       verb: 'examine',
-      scope: ['studio_main', 'studio_backdrop'],
+      scope: ['studio_n'],
       onActivate: () => void this.enterCloseup('cu_socket', [1.56, 2.35, -1.5], [1.56, 2.62, -2.6], { fov: 38 }),
     })
     this.hs({
@@ -940,9 +983,9 @@ export class Chapter01 {
       target: studio.chronicleWall,
       label: '壁一面の写真',
       verb: 'examine',
-      scope: ['studio_main', 'studio_backdrop'],
+      scope: ['studio_n'],
       visible: () => this.flag('chronicle_open'),
-      onActivate: () => void this.enterCloseup('cu_chronicle', [-0.6, 1.42, -0.95], [-0.6, 1.42, -2.6], { fov: 44, yawSpan: 0.3 }),
+      onActivate: () => void this.enterCloseup('cu_chronicle', [-0.6, 1.42, -0.95], [-0.6, 1.42, -2.6], { fov: 44 }),
     })
     this.hs({
       id: 'cu:chronicle:panel',
@@ -1022,7 +1065,7 @@ export class Chapter01 {
       target: studio.viewCamera,
       label: '大判カメラ',
       verb: 'examine',
-      scope: ['studio_camera', 'studio_main'],
+      scope: ['studio_n'],
       onActivate: () => void this.enterCloseup('cu_camera', [1.18, 1.62, 0.86], [1.18, 1.6, 0.2], { fov: 40 }),
     })
     this.hs({
@@ -1069,7 +1112,7 @@ export class Chapter01 {
       priority: 2,
       label: '撮影灯の台座',
       verb: 'examine',
-      scope: ['studio_main', 'studio_west'],
+      scope: ['studio_w'],
       onActivate: () => void this.enterCloseup('cu_lamp', [-2.2, 0.95, 2.15], [-2.16, 0.06, 1.54], { fov: 44 }),
     })
     this.hs({
@@ -1115,7 +1158,7 @@ export class Chapter01 {
       target: this.d.building.darkroomDoorLeaf,
       label: '暗室の扉',
       verb: 'open',
-      scope: 'studio_west',
+      scope: 'studio_w',
       verbFor: (ctx) => (ctx.selectedItem === 'key_darkroom' ? 'use' : 'open'),
       onActivate: (ctx) => void this.tryUnlock('darkroom', ctx.selectedItem),
     })
@@ -1124,20 +1167,20 @@ export class Chapter01 {
       target: this.d.building.officeDoorLeaf,
       label: '事務室の扉',
       verb: 'open',
-      scope: 'studio_east',
+      scope: 'studio_e',
       verbFor: (ctx) => (ctx.selectedItem === 'key_office' ? 'use' : 'open'),
       onActivate: (ctx) => void this.tryUnlock('office', ctx.selectedItem),
     })
 
-    this.ambient('studio:portraits', studio.portraitWall, '肖像写真の壁', ['studio_east', 'studio_main'], 'mem_portrait_wall')
-    this.ambient('studio:lamps', studio.lampStands.slice(1), '撮影灯', ['studio_main'], 'mem_studio_lamps')
+    this.ambient('studio:portraits', studio.portraitWall, '肖像写真の壁', ['studio_e'], 'mem_portrait_wall')
+    this.ambient('studio:lamps', studio.lampStands.slice(1), '撮影灯', ['studio_s'], 'mem_studio_lamps')
 
     this.hs({
       id: 'studio:phosphor',
       target: studio.phosphor,
       label: '壁に浮かぶ字',
       verb: 'examine',
-      scope: ['studio_west', 'studio_main'],
+      scope: ['studio_w'],
       visible: () => this.d.state.lighting === 'safelight',
       onActivate: () => this.findMark('studio', 'を'),
     })
@@ -1239,7 +1282,7 @@ export class Chapter01 {
     }
     this.applyGroundGlassTexture()
 
-    await this.enterCloseup('cu_glass', [1.18, 1.6, 0.42], [1.18, 1.6, 0.11], { fov: 26, yawSpan: 0.06, pitchSpan: 0.05 })
+    await this.enterCloseup('cu_glass', [1.18, 1.6, 0.42], [1.18, 1.6, 0.11], { fov: 26 })
     if (!this.flag('mirror_read')) {
       this.d.state.setFlag('mirror_read')
       this.d.audio.play('discovery')
@@ -1339,7 +1382,7 @@ export class Chapter01 {
       target: darkroom.safelightSwitch,
       label: '安全灯のレバー',
       verb: 'pull',
-      scope: ['dark_entry'],
+      scope: ['darkroom_e'],
       onActivate: () => void this.toggleSafelight(),
     })
 
@@ -1349,8 +1392,8 @@ export class Chapter01 {
       target: darkroom.trays,
       label: '作業台のバット',
       verb: 'examine',
-      scope: ['dark_bench', 'dark_entry'],
-      onActivate: () => void this.enterCloseup('cu_trays', [-5.22, 1.42, -1.66], [-5.22, 0.96, -2.34], { fov: 46, yawSpan: 0.28 }),
+      scope: ['darkroom_n'],
+      onActivate: () => void this.enterCloseup('cu_trays', [-5.22, 1.42, -1.66], [-5.22, 0.96, -2.34], { fov: 46 }),
     })
     darkroom.trays.forEach((t, i) => {
       this.hs({
@@ -1370,8 +1413,8 @@ export class Chapter01 {
       target: [darkroom.chemShelf, darkroom.powderTin, darkroom.waterBottle],
       label: '薬品棚',
       verb: 'examine',
-      scope: ['dark_entry', 'dark_enlarger'],
-      onActivate: () => void this.enterCloseup('cu_shelf', [-4.4, 1.5, -0.32], [-4.4, 1.5, 0.24], { fov: 42, yawSpan: 0.3 }),
+      scope: ['darkroom_s'],
+      onActivate: () => void this.enterCloseup('cu_shelf', [-4.4, 1.5, -0.32], [-4.4, 1.5, 0.24], { fov: 42 }),
     })
     this.hs({
       id: 'cu:shelf:powder',
@@ -1416,8 +1459,8 @@ export class Chapter01 {
       target: darkroom.enlarger,
       label: '引き伸ばし機',
       verb: 'examine',
-      scope: ['dark_enlarger', 'dark_entry'],
-      onActivate: () => void this.enterCloseup('cu_enlarger', [-5.18, 1.32, -1.15], [-5.62, 0.92, -1.15], { fov: 42, yawSpan: 0.26 }),
+      scope: ['darkroom_w'],
+      onActivate: () => void this.enterCloseup('cu_enlarger', [-5.18, 1.32, -1.15], [-5.62, 0.92, -1.15], { fov: 42 }),
     })
     this.hs({
       id: 'cu:enlarger:carrier',
@@ -1458,7 +1501,7 @@ export class Chapter01 {
       target: darkroom.projectionScreen,
       label: '壁に映った像',
       verb: 'examine',
-      scope: ['dark_enlarger', 'dark_entry', 'cu_enlarger'],
+      scope: ['darkroom_w', 'cu_enlarger'],
       visible: () => this.flag('enlarger_on'),
       onActivate: () => this.readProjection(),
     })
@@ -1469,7 +1512,7 @@ export class Chapter01 {
       target: [darkroom.dryingLine, darkroom.negativeSleeve],
       label: '乾燥ロープ',
       verb: 'examine',
-      scope: ['dark_entry', 'dark_enlarger'],
+      scope: ['darkroom_s'],
       onActivate: () => void this.enterCloseup('cu_line', [-5.7, 1.72, -0.22], [-5.7, 1.84, -0.7], { fov: 40 }),
     })
     this.hs({
@@ -1509,7 +1552,7 @@ export class Chapter01 {
       target: darkroom.underBenchStore,
       label: '作業台の下の棚',
       verb: 'examine',
-      scope: ['dark_bench'],
+      scope: ['darkroom_n'],
       survey: true,
       onActivate: () => {
         if (!this.flag('understore_open')) {
@@ -1533,7 +1576,7 @@ export class Chapter01 {
       target: darkroom.officeKey,
       label: '鍵板',
       verb: 'examine',
-      scope: ['dark_entry'],
+      scope: ['darkroom_e'],
       onActivate: () => void this.enterCloseup('cu_keys', [-3.62, 1.46, -1.5], [-3.14, 1.46, -1.5], { fov: 36 }),
     })
     this.hs({
@@ -1556,7 +1599,7 @@ export class Chapter01 {
       target: darkroom.timer,
       label: '暗室時計',
       verb: 'read',
-      scope: ['dark_bench', 'dark_enlarger'],
+      scope: ['darkroom_n'],
       onActivate: () => {
         if (!this.flag('read_timer')) {
           this.d.state.setFlag('read_timer')
@@ -1571,14 +1614,14 @@ export class Chapter01 {
         this.d.audio.play('select')
       },
     })
-    this.ambient('dark:clock', darkroom.clock, '壁の時計', ['dark_bench'], 'mem_darkroom_clock')
+    this.ambient('dark:clock', darkroom.clock, '壁の時計', ['darkroom_n'], 'mem_darkroom_clock')
 
     this.hs({
       id: 'dark:phosphor',
       target: darkroom.phosphor,
       label: '壁に浮かぶ字',
       verb: 'read',
-      scope: ['dark_bench'],
+      scope: ['darkroom_n'],
       visible: () => this.d.state.lighting === 'safelight',
       onActivate: () => {
         if (!this.flag('mark_dark')) {
@@ -1602,7 +1645,7 @@ export class Chapter01 {
       target: darkroom.developedPrint,
       label: '干した一枚',
       verb: 'examine',
-      scope: ['dark_entry', 'dark_enlarger'],
+      scope: ['darkroom_s'],
       visible: () => darkroom.developedPrint.visible,
       onActivate: () => {
         this.say('四十年遅れて干された一枚。もう光に当てても消えない。')
@@ -1915,8 +1958,8 @@ export class Chapter01 {
       target: office.safe,
       label: '金庫',
       verb: 'examine',
-      scope: ['office_desk', 'office_safe'],
-      onActivate: () => void this.enterCloseup('cu_safe', [5.16, 0.62, -1.3], [5.66, 0.52, -1.3], { fov: 40, yawSpan: 0.2 }),
+      scope: ['office_n', 'office_e'],
+      onActivate: () => void this.enterCloseup('cu_safe', [5.16, 0.62, -1.3], [5.66, 0.52, -1.3], { fov: 40 }),
     })
     this.hs({
       id: 'cu:safe:dial',
@@ -1950,7 +1993,7 @@ export class Chapter01 {
       target: office.manual,
       label: '暗室作業手順',
       verb: 'read',
-      scope: ['office_south'],
+      scope: ['office_s'],
       onActivate: () => {
         this.d.state.markDocumentRead('doc_manual')
         this.d.ui.openDocument('doc_manual')
@@ -1974,7 +2017,7 @@ export class Chapter01 {
       priority: 2,
       label: '予約控',
       verb: 'read',
-      scope: ['office_desk'],
+      scope: ['office_n'],
       onActivate: () => {
         this.d.state.markDocumentRead('doc_ledger')
         this.d.ui.openDocument('doc_ledger')
@@ -1997,7 +2040,7 @@ export class Chapter01 {
       target: office.desk,
       label: '事務机の抽斗',
       verb: 'open',
-      scope: ['office_desk'],
+      scope: ['office_n'],
       onActivate: () => {
         if (!this.flag('desk_open')) {
           this.d.state.setFlag('desk_open')
@@ -2014,14 +2057,14 @@ export class Chapter01 {
       },
     })
 
-    this.ambient('office:shelves', office.deskLamp, '卓上の灯', ['office_desk'], 'mem_kettle')
+    this.ambient('office:shelves', office.deskLamp, '卓上の灯', ['office_n'], 'mem_kettle')
 
     this.hs({
       id: 'office:phosphor',
       target: office.phosphor,
       label: '壁に浮かぶ字',
       verb: 'examine',
-      scope: ['office_desk', 'office_safe'],
+      scope: ['office_n', 'office_e'],
       visible: () => this.d.state.lighting === 'safelight',
       onActivate: () => this.findMark('office', 'かえす'),
     })

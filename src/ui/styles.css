@@ -84,9 +84,6 @@ body,
   cursor: default;
 }
 
-#stage[data-cursor="look"] {
-  cursor: grab;
-}
 #stage[data-cursor="dragging"] {
   cursor: grabbing;
 }
@@ -131,9 +128,9 @@ button {
   z-index: var(--z-vignette);
   pointer-events: none;
   background: radial-gradient(
-    118% 88% at 50% 44%,
-    rgba(0, 0, 0, 0) 40%,
-    rgba(6, 5, 4, 0.5) 100%
+    124% 96% at 50% 46%,
+    rgba(0, 0, 0, 0) 52%,
+    rgba(6, 5, 4, 0.34) 100%
   );
 }
 
@@ -194,6 +191,126 @@ button {
   inset: 6px;
   border-radius: 50%;
   border: 1px solid rgba(214, 180, 110, 0.16);
+}
+
+/* =========================================================================
+   Edge turn zones. Hovering near a live edge darkens it and brings in a thin
+   brass chevron; clicking turns to the next composition. Restrained on
+   purpose - it is a hint that the room continues, not a button bar.
+   ========================================================================= */
+.turn-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(76px, 9vw, 148px);
+  z-index: var(--z-world);
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.turn-zone[data-live="0"] {
+  pointer-events: none;
+}
+.turn-zone.left {
+  left: 0;
+  background: linear-gradient(90deg, rgba(6, 5, 4, 0.62), rgba(6, 5, 4, 0));
+}
+.turn-zone.right {
+  right: 0;
+  background: linear-gradient(270deg, rgba(6, 5, 4, 0.62), rgba(6, 5, 4, 0));
+}
+.turn-zone:hover,
+.turn-zone[data-focus="1"] {
+  opacity: 1;
+}
+.turn-zone .chev {
+  width: 26px;
+  height: 26px;
+  border-top: 1.5px solid rgba(230, 205, 150, 0.92);
+  border-left: 1.5px solid rgba(230, 205, 150, 0.92);
+  filter: drop-shadow(0 1px 5px rgba(0, 0, 0, 0.85));
+  transition: transform 0.24s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.turn-zone.left .chev {
+  transform: rotate(-45deg) translate(2px, 2px);
+}
+.turn-zone.right .chev {
+  transform: rotate(135deg) translate(2px, 2px);
+}
+.turn-zone.left:hover .chev {
+  transform: rotate(-45deg) translate(6px, 6px);
+}
+.turn-zone.right:hover .chev {
+  transform: rotate(135deg) translate(6px, 6px);
+}
+.turn-zone .zone-label {
+  position: absolute;
+  bottom: 16%;
+  font-size: 0.72em;
+  letter-spacing: 0.14em;
+  color: #e8dcc2;
+  white-space: nowrap;
+  text-shadow: var(--text-shadow-dark);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+.turn-zone:hover .zone-label {
+  opacity: 1;
+}
+
+/* =========================================================================
+   Close-up exit. Always visible while a close-up is open, top right, so
+   there is never a moment where the player is in close and cannot see the
+   way out.
+   ========================================================================= */
+#closeup-bar {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  right: 2.2vw;
+  z-index: var(--z-hud);
+  display: none;
+  align-items: center;
+  gap: 0.7em;
+  pointer-events: auto;
+}
+#closeup-bar[data-show="1"] {
+  display: flex;
+}
+#closeup-bar .cu-title {
+  font-size: 0.84em;
+  letter-spacing: 0.14em;
+  color: #e8dcc2;
+  text-shadow: var(--text-shadow-dark);
+}
+#closeup-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.52em 1.05em 0.55em;
+  font-size: 0.86em;
+  letter-spacing: 0.16em;
+  color: #f0e7d3;
+  background: rgba(14, 11, 9, 0.82);
+  border: 1px solid rgba(200, 164, 94, 0.5);
+  border-radius: 2px;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+#closeup-back:hover,
+#closeup-back:focus-visible {
+  color: #17130e;
+  background: var(--brass);
+  border-color: var(--brass-lit);
+}
+#closeup-back .x {
+  font-size: 1.12em;
+  line-height: 1;
+  transform: translateY(-1px);
 }
 
 /* Survey assist: a brief pulse of every hotspot in view, bound to a key. */
