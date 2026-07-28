@@ -57,6 +57,10 @@ export function buildHall(mats: MaterialLibrary): HallProps {
   group.name = 'props-hall'
 
   // ---------------------------------------------------------------- counter
+  // Filled in while the counter is built, and consumed by the drawer unit
+  // below: the drawers belong in the counter's right-hand bay, so they have to
+  // be sized and placed from the joinery rather than guessed at.
+  let drawerBay = { x: 0, y0: 0, y1: 1, w: 0.6, zFront: 3.5 }
   const counter = new THREE.Group()
   {
     const w = 1.5
@@ -101,8 +105,11 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     addFront(stileW * 0.8, openH, 0, plinthH + openH / 2)
     // rails between them
     const railSpan = (w - stileW * 2 - stileW * 0.8) / 2
-    for (const sx of [-1, 1]) {
-      const px = sx * (stileW / 2 + stileW * 0.4 / 2 + railSpan / 2 + 0.0)
+    // Only the left bay is panelled. The right one is the drawer bay, and it is
+    // left open here so the drawers below can fill it: a fielded panel in front
+    // of them would hide the one thing in this room the player has to open.
+    {
+      const px = -(stileW / 2 + stileW * 0.4 / 2 + railSpan / 2)
       addFront(railSpan, railH, px, plinthH + openH - railH / 2)
       addFront(railSpan, railH, px, plinthH + railH / 2)
       // the fielded panel itself, recessed behind the frame
@@ -114,18 +121,31 @@ export function buildHall(mats: MaterialLibrary): HallProps {
       panel.position.set(px, plinthH + openH / 2, zf - 0.014)
       counter.add(panel)
     }
+    drawerBay = {
+      x: cx + (stileW / 2 + stileW * 0.4 / 2 + railSpan / 2),
+      y0: plinthH,
+      y1: frameTop,
+      w: railSpan,
+      // Outer face of the stiles, so the drawer fronts land flush with the
+      // joinery instead of co-planar with the carcase behind it.
+      zFront: cz + zf + 0.012,
+    }
     counter.position.set(cx, 0, cz)
     group.add(counter)
   }
 
-  // drawer set built into the counter's right-hand return
-  const drawers = drawerUnit(mats, 0.44, 0.62, 0.5, 2)
-  // Pulled clear of the east wall. At x = 0.52 the pedestal ran from 0.30 to
-  // 0.74 while the wall's inner face is at 0.52, so half of it was inside the
-  // masonry and from the staircase view a slab of it appeared to hang out of
-  // the wall.
-  drawers.group.position.set(0.28, 0.02, 3.34)
+  // Drawers set into the counter's right-hand bay. Standing on the floor beside
+  // the counter they ended up inside its carcase - a 0.44 x 0.62 pedestal at
+  // x 0.06..0.50, z 3.09..3.59 sat wholly within the counter's own footprint -
+  // so from the reception view there was no drawer front on screen at all, and a
+  // player told by the hints to open the reception drawer had nothing to open.
+  // Sized and placed from the bay so the fronts fill the opening in the joinery.
+  const drawerH = drawerBay.y1 - drawerBay.y0
+  const drawerD = 0.5
+  const drawers = drawerUnit(mats, drawerBay.w - 0.024, drawerH, drawerD, 2)
+  drawers.group.position.set(drawerBay.x, drawerBay.y0, drawerBay.zFront - drawerD / 2 + 0.01)
   group.add(drawers.group)
+  // The upper of the two: a drawer you reach into standing at the counter.
   const receptionDrawer = drawers.drawers[1]
 
   // what is inside the top drawer: a fuse in its paper sleeve, a pencil stub
