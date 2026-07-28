@@ -877,7 +877,10 @@ export class GameUI {
     // so both would be dials that turn and do nothing.
     seg(
       '画質',
-      '重いときは下げる。影と後処理が変わる',
+      // Says what it actually does. Texture resolution is baked when the world
+      // is built, so that part of the profile only takes effect on a reload -
+      // claiming otherwise would be a setting that lies about itself.
+      '重いときは下げる。影・解像度・後処理がすぐ変わる。質感の細かさは次に開いたときから',
       [
         ['low', '軽い'],
         ['medium', 'ふつう'],

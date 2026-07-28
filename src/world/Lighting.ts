@@ -73,6 +73,9 @@ export class LightingRig {
   private state: WorldLighting = 'blackout'
   private fog: THREE.FogExp2
   private ambTarget = new THREE.Color()
+  private scratchA = new THREE.Color()
+  private scratchB = new THREE.Color()
+  private settlingNow = true
   /** Practical fixtures whose emissive follows their light. */
   private materials: MaterialLibrary
 
@@ -310,20 +313,31 @@ export class LightingRig {
     return LIGHT_STATES[this.state]
   }
 
+  /** True while the lights are still crossfading toward the current state. */
+  get settling(): boolean {
+    return this.settlingNow
+  }
+
   update(dt: number): void {
     const s = LIGHT_STATES[this.state]
+    let moving = false
     for (const r of this.rigged) {
       const target = r.targets[this.state]
       if (Math.abs(r.current - target) > 0.001) {
+        moving = true
         r.current = damp(r.current, target, 3.4, dt)
         r.light.intensity = r.current
         this.applyBulb(r)
       }
     }
-    this.fog.color.lerp(new THREE.Color(s.color), 1 - Math.exp(-3 * dt))
+    // Scratch colours, reused. These lerps ran every frame and allocated two
+    // THREE.Color objects each time, which is pure garbage on the hot path.
+    this.fog.color.lerp(this.scratchA.set(s.color), 1 - Math.exp(-3 * dt))
     this.fog.density = damp(this.fog.density, s.density, 3, dt)
-    this.ambient.color.lerp(new THREE.Color(s.ambientColor), 1 - Math.exp(-3 * dt))
+    this.ambient.color.lerp(this.scratchB.set(s.ambientColor), 1 - Math.exp(-3 * dt))
+    if (Math.abs(this.ambient.intensity - s.ambientIntensity) > 0.001) moving = true
     this.ambient.intensity = damp(this.ambient.intensity, s.ambientIntensity, 3, dt)
+    this.settlingNow = moving
   }
 
   /**

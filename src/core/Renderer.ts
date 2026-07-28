@@ -113,6 +113,8 @@ export interface RenderStack {
   renderPass: RenderPass
   setQuality(q: QualityLevel): void
   resize(width: number, height: number): void
+  /** Redraw the shadow maps on the next frame. Cheap to call every frame. */
+  requestShadowUpdate(): void
   render(dt: number): void
   dispose(): void
 }
@@ -180,6 +182,15 @@ export function createRenderStack(
   renderer.toneMappingExposure = 1.0
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
+  // The building does not move. Camera compositions are fixed, and the only
+  // geometry that ever animates is a door swinging or a backdrop rolling up, so
+  // regenerating every shadow map on every frame is re-rasterising an identical
+  // scene sixty times a second. The pendant alone is a point light, i.e. a cube
+  // map, i.e. six full caster passes. Leaving this on cost more than half the
+  // frame; the game now asks for an update only while something is actually
+  // moving (see App.frame).
+  renderer.shadowMap.autoUpdate = false
+  renderer.shadowMap.needsUpdate = true
   renderer.setClearColor(0x05050a, 1)
 
   const composer = new EffectComposer(renderer)
@@ -243,10 +254,18 @@ export function createRenderStack(
     width = Math.max(1, w)
     height = Math.max(1, h)
     renderer.setSize(width, height, false)
+    // EffectComposer samples the renderer's pixel ratio once, in its
+    // constructor - which runs before the quality profile has set one. Without
+    // this the whole scene was rendered at 1x into the composer's targets and
+    // then blitted up to the canvas's 2x buffer, so the "high" preset bought
+    // nothing but a more expensive final blit, and SMAA found its edges at half
+    // resolution only to have them stretched afterwards.
+    composer.setPixelRatio(renderer.getPixelRatio())
     composer.setSize(width, height)
     bloom.setSize(width, height)
     camera.aspect = width / height
     camera.updateProjectionMatrix()
+    renderer.shadowMap.needsUpdate = true
   }
 
   applyQuality(quality)
@@ -259,6 +278,9 @@ export function createRenderStack(
     renderPass,
     setQuality: applyQuality,
     resize,
+    requestShadowUpdate() {
+      renderer.shadowMap.needsUpdate = true
+    },
     render(dt: number) {
       elapsed += dt
       grade.uniforms.uTime.value = elapsed

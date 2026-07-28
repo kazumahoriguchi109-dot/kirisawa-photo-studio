@@ -1183,7 +1183,7 @@ export class Chapter01 {
     })
 
     this.ambient('studio:portraits', studio.portraitWall, '肖像写真の壁', ['studio_e'], 'mem_portrait_wall')
-    this.ambient('studio:lamps', studio.lampStands.slice(1), '撮影灯', ['studio_s'], 'mem_studio_lamps')
+    this.ambient('studio:lamps', studio.lampStands.slice(1), '撮影灯', ['studio_e'], 'mem_studio_lamps')
 
     this.hs({
       id: 'studio:phosphor',
@@ -1704,8 +1704,10 @@ export class Chapter01 {
         )
       }
     } else if (this.flag('enlarger_on')) {
-      this.stopProjection()
+      // Clear first: stopProjection now refuses to run while the flag says the
+      // lamp is lit, which is what stops an unrelated close-up killing it.
       this.d.state.setFlag('enlarger_on', false)
+      this.stopProjection()
     }
     this.d.save.save()
   }
@@ -1716,8 +1718,8 @@ export class Chapter01 {
       return
     }
     if (this.flag('enlarger_on')) {
-      this.stopProjection()
       this.d.state.setFlag('enlarger_on', false)
+      this.stopProjection()
       this.d.audio.play('relay')
       return
     }
@@ -1765,13 +1767,6 @@ export class Chapter01 {
 
     if (withImage) {
       if (!this.projectionMesh) {
-        const tex = photoTexture('projected', () => {
-          const src = document.createElement('canvas')
-          src.width = 420
-          src.height = 300
-          return src
-        })
-        void tex
         const m = mesh(
           new THREE.PlaneGeometry(1.34, 0.96),
           new THREE.MeshBasicMaterial({
@@ -1819,6 +1814,12 @@ export class Chapter01 {
   }
 
   private stopProjection(): void {
+    // Leaving a close-up used to run this unconditionally without clearing
+    // `enlarger_on`. Turn the enlarger on, lean into anything else, come back,
+    // and the projection was silently dead while the flag still said it was
+    // lit - so the switch then needed two presses to bring it back, and a save
+    // written in that state reloaded into the same lie.
+    if (this.flag('enlarger_on')) return
     if (this.projector) {
       const p = this.projector
       this.d.timeline.to(0.35, (t) => {

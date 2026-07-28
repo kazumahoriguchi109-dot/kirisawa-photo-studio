@@ -25,12 +25,13 @@ function fromSet(
   set: TextureSet,
   params: THREE.MeshStandardMaterialParameters,
 ): THREE.MeshStandardMaterial {
-  return new THREE.MeshStandardMaterial({
-    map: set.map,
-    normalMap: set.normalMap,
-    roughnessMap: set.roughnessMap,
-    ...params,
-  })
+  // Only pass the maps this set actually has. Handing three an explicit
+  // `normalMap: undefined` is not the same as omitting it - it warns on every
+  // such material at startup.
+  const p: THREE.MeshStandardMaterialParameters = { map: set.map, ...params }
+  if (set.normalMap) p.normalMap = set.normalMap
+  if (set.roughnessMap) p.roughnessMap = set.roughnessMap
+  return new THREE.MeshStandardMaterial(p)
 }
 
 export interface MaterialLibrary {

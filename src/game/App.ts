@@ -260,6 +260,20 @@ export class App {
        * the back buffer survives long enough to be read; without it the canvas
        * reads back blank.
        */
+      renderer: () => this.stack.renderer,
+      composer: () => this.stack.composer,
+      /** Draw calls and triangles for one freshly rendered frame. */
+      renderCost: () => {
+        const r = this.stack.renderer
+        const prev = r.info.autoReset
+        r.info.autoReset = false
+        r.info.reset()
+        this.scene.updateMatrixWorld(true)
+        this.stack.render(1 / 60)
+        const out = { calls: r.info.render.calls, triangles: r.info.render.triangles }
+        r.info.autoReset = prev
+        return out
+      },
       snapshot: (quality = 0.72): string => {
         this.scene.updateMatrixWorld(true)
         this.stack.render(1 / 60)
@@ -518,6 +532,11 @@ export class App {
 
     this.rig.update(dt)
     this.lighting.update(dt)
+    // Shadow maps are not regenerated automatically. Refresh them while
+    // something is actually moving - a door swinging, the backdrop rolling up,
+    // the lights crossfading - and leave them alone the rest of the time, which
+    // in a game of held compositions is nearly always.
+    if (this.timeline.busy || this.lighting.settling) this.stack.requestShadowUpdate()
     // Faded rather than switched, so leaning in and out of a close-up does not
     // read as someone flicking a light on.
     this.inspectionLight.intensity = damp(

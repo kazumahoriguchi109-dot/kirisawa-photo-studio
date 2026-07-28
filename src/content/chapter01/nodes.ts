@@ -89,9 +89,11 @@ export const NODES: ViewNode[] = [
     // Stands west of the plate camera so the camera reads as the foreground of
     // this composition and the portrait wall as its depth.
     { dir: 'e', label: '大判カメラと肖像の壁', at: [-0.6, E, 0.55], fov: 58 },
-    // Far enough back that both lamp stands flank the archway; from any closer
-    // the west stand falls outside the frame entirely.
-    { dir: 's', label: '撮影灯と通路', at: [-0.43, E, -1.0], fov: 62, pitch: -0.05 },
+    // Lined up on the archway with the west lamp stand beside it. Trying to
+    // hold both lamp stands as well pushed the composition so wide that the
+    // left half of the frame was bare wall, and the west stand still fell off
+    // the edge in a window narrower than 4:3.
+    { dir: 's', label: '撮影灯と通路', at: [-0.9, E, -1.0], fov: 62, pitch: -0.05 },
     { dir: 'w', label: '暗室の扉', at: [-0.6, E, -0.85], fov: 58 },
   ]),
 

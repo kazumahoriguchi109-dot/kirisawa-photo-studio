@@ -38,11 +38,18 @@ export class Inspector {
   private heldItems = new Set<string>()
   private running = false
   private raf = 0
+  /**
+   * The world's shared materials. An item's `build` may reference these as well
+   * as making its own, and disposing a library material would strip the texture
+   * off every wall in the building.
+   */
+  private readonly libraryMaterials: Set<THREE.Material>
 
   constructor(
     private readonly mats: MaterialLibrary,
     private readonly events: InspectorEvents,
   ) {
+    this.libraryMaterials = new Set(Object.values(mats) as THREE.Material[])
     this.canvas = document.createElement('canvas')
     this.scene.add(this.pivot)
 
@@ -81,7 +88,7 @@ export class Inspector {
     this.foundIds = new Set(alreadyFound)
     if (this.model) {
       this.pivot.remove(this.model)
-      disposeTree(this.model)
+      disposeTree(this.model, this.libraryMaterials)
     }
     this.model = item.build(this.mats)
     this.pivot.add(this.model)
@@ -97,7 +104,7 @@ export class Inspector {
     this.stop()
     if (this.model) {
       this.pivot.remove(this.model)
-      disposeTree(this.model)
+      disposeTree(this.model, this.libraryMaterials)
       this.model = null
     }
     this.current = null
@@ -213,9 +220,34 @@ export class Inspector {
   }
 }
 
-function disposeTree(root: THREE.Object3D): void {
+/**
+ * Release everything an inspected item allocated.
+ *
+ * `ItemDef.build` makes fresh materials and fresh canvas textures on every
+ * call, so disposing only the geometry - which is what this used to do - leaked
+ * a material and up to a couple of textures per item the player picked up and
+ * looked at. Materials shared with the world material library must survive, so
+ * only materials this tree owns are disposed; the library's are all created
+ * once in `buildMaterials` and are identified by being reachable from it.
+ */
+function disposeTree(root: THREE.Object3D, keep: Set<THREE.Material>): void {
+  const seenMat = new Set<THREE.Material>()
+  const seenTex = new Set<THREE.Texture>()
   root.traverse((o) => {
     const m = o as THREE.Mesh
     if (m.geometry) m.geometry.dispose()
+    if (!m.material) return
+    for (const mat of Array.isArray(m.material) ? m.material : [m.material]) {
+      if (!mat || keep.has(mat) || seenMat.has(mat)) continue
+      seenMat.add(mat)
+      for (const key of Object.keys(mat) as Array<keyof THREE.Material>) {
+        const v = (mat as unknown as Record<string, unknown>)[key as string]
+        if (v instanceof THREE.Texture && !seenTex.has(v)) {
+          seenTex.add(v)
+          v.dispose()
+        }
+      }
+      mat.dispose()
+    }
   })
 }
