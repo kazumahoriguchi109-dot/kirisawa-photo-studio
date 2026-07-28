@@ -47,7 +47,17 @@ export function framedPhoto(
   const inset = opts.mount ?? 0.03
   const print = mesh(
     new THREE.PlaneGeometry(width - inset * 2, height - inset * 2),
-    new THREE.MeshStandardMaterial({ map: photo, roughness: 0.52, metalness: 0 }),
+    // Matte, and knocked back a little. These prints are read at close range
+    // under a light held right up against them, and at the old semi-gloss
+    // roughness the top half of the observation photograph clipped to flat
+    // white - which is exactly where the differences the player is hunting for
+    // happen to be.
+    new THREE.MeshStandardMaterial({
+      map: photo,
+      color: 0xece6da,
+      roughness: 0.88,
+      metalness: 0,
+    }),
     { cast: false, receive: true },
   )
   print.position.z = depth / 2 - 0.004
@@ -56,14 +66,18 @@ export function framedPhoto(
   if (opts.glass !== false) {
     const glass = mesh(
       new THREE.PlaneGeometry(width, height),
+      // Slightly diffuse rather than mirror-smooth. At roughness 0.03 a single
+      // lamp put a small hard hot spot on the glass, and bloom then grew it
+      // into a blob sitting over the middle of the picture - on the one
+      // photograph the player has to read closely to solve anything.
       new THREE.MeshPhysicalMaterial({
         color: 0xffffff,
-        roughness: 0.03,
+        roughness: 0.34,
         metalness: 0,
         transmission: 0.98,
         thickness: 0.002,
         transparent: true,
-        opacity: 0.16,
+        opacity: 0.1,
         side: THREE.FrontSide,
       }),
       { cast: false, receive: false },

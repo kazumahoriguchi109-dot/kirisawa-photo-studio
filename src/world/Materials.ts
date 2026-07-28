@@ -25,12 +25,13 @@ function fromSet(
   set: TextureSet,
   params: THREE.MeshStandardMaterialParameters,
 ): THREE.MeshStandardMaterial {
-  return new THREE.MeshStandardMaterial({
-    map: set.map,
-    normalMap: set.normalMap,
-    roughnessMap: set.roughnessMap,
-    ...params,
-  })
+  // Only pass the maps this set actually has. Handing three an explicit
+  // `normalMap: undefined` is not the same as omitting it - it warns on every
+  // such material at startup.
+  const p: THREE.MeshStandardMaterialParameters = { map: set.map, ...params }
+  if (set.normalMap) p.normalMap = set.normalMap
+  if (set.roughnessMap) p.roughnessMap = set.roughnessMap
+  return new THREE.MeshStandardMaterial(p)
 }
 
 export interface MaterialLibrary {
@@ -54,6 +55,8 @@ export interface MaterialLibrary {
   paper: THREE.MeshStandardMaterial
   paperBright: THREE.MeshStandardMaterial
   glassFrosted: THREE.MeshBasicMaterial
+  /** Frosted glass without the wire mesh, for small door lights. */
+  glassDoorLight: THREE.MeshBasicMaterial
   glassClear: THREE.MeshPhysicalMaterial
   enamelTray: THREE.MeshStandardMaterial
   bakelite: THREE.MeshStandardMaterial
@@ -126,6 +129,13 @@ export function buildMaterials(): MaterialLibrary {
     glassFrosted: new THREE.MeshBasicMaterial({
       map: frostedGlass(83, [1, 1], true),
       color: 0x6a5c48,
+      transparent: true,
+      opacity: 0.97,
+      side: THREE.DoubleSide,
+    }),
+    glassDoorLight: new THREE.MeshBasicMaterial({
+      map: frostedGlass(97, [1, 1], false),
+      color: 0x6f6047,
       transparent: true,
       opacity: 0.97,
       side: THREE.DoubleSide,

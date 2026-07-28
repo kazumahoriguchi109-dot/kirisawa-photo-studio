@@ -163,7 +163,7 @@ export function buildBuilding(mats: MaterialLibrary): BuildingRefs {
   root.add(officeDoorLeaf)
 
   const exitDoorLeaf = makeExitDoor(mats)
-  exitDoorLeaf.position.set(OPENINGS.exitDoor.x0, 0, OPENINGS.exitDoor.z - 0.02)
+  exitDoorLeaf.position.set(OPENINGS.exitDoor.x0, 0, OPENINGS.exitDoor.z - EXTERIOR_THICKNESS / 2 + 0.03)
   root.add(exitDoorLeaf)
 
   // ------------------------------------------------------- shopfront glazing
@@ -271,15 +271,32 @@ function addArchTrim(root: THREE.Group, mats: MaterialLibrary): void {
     }),
   )
 
+  // Entrance casing. The jambs stop where the head begins and the head is
+  // pulled clear of the wall face, so no two of these ever share a plane.
   const ed = OPENINGS.exitDoor
-  for (const x of [ed.x0 - 0.03, ed.x1 + 0.03]) {
-    root.add(boxAt(mats.woodDark, 0.07, ed.top + 0.08, EXTERIOR_THICKNESS + 0.04, x, (ed.top + 0.08) / 2, ed.z, { cast: false }))
+  for (const x of [ed.x0 - 0.04, ed.x1 + 0.04]) {
+    root.add(boxAt(mats.woodDark, 0.08, ed.top, EXTERIOR_THICKNESS + 0.06, x, ed.top / 2, ed.z, { cast: false }))
   }
   root.add(
-    boxAt(mats.woodDark, ed.x1 - ed.x0 + 0.14, 0.08, EXTERIOR_THICKNESS + 0.04, (ed.x0 + ed.x1) / 2, ed.top + 0.04, ed.z, {
-      cast: false,
-    }),
+    boxAt(
+      mats.woodDark,
+      ed.x1 - ed.x0 + 0.16,
+      0.09,
+      EXTERIOR_THICKNESS + 0.06,
+      (ed.x0 + ed.x1) / 2,
+      ed.top + 0.045,
+      ed.z,
+      { cast: false },
+    ),
   )
+  // a plaster reveal inside the opening so the wall reads as having thickness
+  for (const x of [ed.x0 + 0.012, ed.x1 - 0.012]) {
+    root.add(
+      boxAt(mats.plasterWall, 0.02, ed.top - 0.02, EXTERIOR_THICKNESS - 0.06, x, (ed.top - 0.02) / 2, ed.z, {
+        cast: false,
+      }),
+    )
+  }
 }
 
 /** A panelled interior door. The pivot sits at the hinge edge. */
@@ -351,36 +368,73 @@ function makeDoorLeaf(
   return g
 }
 
-/** The way out: a heavy timber door carrying the four-ring lock plate. */
+/**
+ * The way out. A Showa shopfront 引き戸: a timber sliding leaf with a glazed
+ * upper light divided by muntins, a solid lower panel, and the four-ring lock
+ * plate on the stile.
+ *
+ * It is built as one set of non-overlapping members sitting in a plane rather
+ * than a slab with decoration laid on top of it. Stacking boxes a few
+ * millimetres apart is what caused the z-fighting and the banding across the
+ * entrance, so nothing here shares a face with anything else.
+ */
 function makeExitDoor(mats: MaterialLibrary): THREE.Group {
   const g = new THREE.Group()
   g.name = 'door-exit'
   const width = OPENINGS.exitDoor.x1 - OPENINGS.exitDoor.x0
   const height = OPENINGS.exitDoor.top
-  const t = 0.055
+  const t = 0.05
+  const stile = 0.085
+  const rail = 0.08
+  const railMidY = height * 0.60
 
-  const slab = mesh(texturedBox(width, height, t, 0.7), mats.woodDark)
-  slab.position.set(width / 2, height / 2, 0)
-  g.add(slab)
+  // outer frame plus the lock rail: five members, none overlapping
+  const frame: Array<[number, number, number, number]> = [
+    [stile, height, stile / 2, height / 2],
+    [stile, height, width - stile / 2, height / 2],
+    [width - stile * 2, rail, width / 2, height - rail / 2],
+    [width - stile * 2, rail, width / 2, rail / 2],
+    [width - stile * 2, rail, width / 2, railMidY],
+  ]
+  for (const [w, h, cx, cy] of frame) {
+    const m = mesh(texturedBox(w, h, t, 0.85), mats.woodDark)
+    m.position.set(cx, cy, 0)
+    g.add(m)
+  }
 
-  // a small frosted light at head height, the only thing the street reaches
-  const glass = mesh(new THREE.PlaneGeometry(width * 0.56, 0.34), mats.glassFrosted, { cast: false, receive: false })
-  glass.position.set(width / 2, height - 0.42, -t / 2 - 0.003)
-  g.add(glass)
-  const bead = mesh(texturedBox(width * 0.62, 0.4, 0.016, 1.4), mats.woodTrim, { cast: false })
-  bead.position.set(width / 2, height - 0.42, -t / 2 - 0.008)
-  g.add(bead)
+  // lower panel, recessed inside the frame opening
+  {
+    const pw = width - stile * 2
+    const ph = railMidY - rail - rail / 2
+    const panel = mesh(texturedBox(pw, ph, t * 0.5, 0.9), mats.woodTrim)
+    panel.position.set(width / 2, rail + ph / 2, 0)
+    g.add(panel)
+  }
 
-  // lower panel
-  const panel = mesh(texturedBox(width * 0.72, 0.62, 0.014, 1.0), mats.woodTrim, { cast: false })
-  panel.position.set(width / 2, 0.52, -t / 2 - 0.007)
-  g.add(panel)
+  // glazed upper light with muntins standing proud of the glass
+  {
+    const gw = width - stile * 2
+    const gh = height - rail - railMidY - rail / 2
+    const gy = railMidY + rail / 2 + gh / 2
+    const glass = mesh(new THREE.PlaneGeometry(gw, gh), mats.glassDoorLight, { cast: false, receive: false })
+    glass.position.set(width / 2, gy, 0)
+    g.add(glass)
+    for (let i = 1; i <= 2; i++) {
+      const bar = mesh(texturedBox(0.022, gh, 0.018, 1.6), mats.woodDark, { cast: false })
+      bar.position.set(width / 2 - gw / 2 + (gw * i) / 3, gy, -t * 0.34)
+      g.add(bar)
+    }
+    const cross = mesh(texturedBox(gw, 0.02, 0.018, 1.6), mats.woodDark, { cast: false })
+    cross.position.set(width / 2, gy, -t * 0.34)
+    g.add(cross)
+  }
 
-  // three heavy hinges on the left jamb
-  for (const y of [0.3, height / 2, height - 0.3]) {
-    const hinge = mesh(texturedBox(0.04, 0.13, t + 0.012, 2), mats.brassDull, { cast: false })
-    hinge.position.set(0.025, y, 0)
-    g.add(hinge)
+  // the recessed finger pull a sliding door actually has
+  {
+    const pull = mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.016, 18), mats.brassDull, { cast: false })
+    pull.rotation.x = Math.PI / 2
+    pull.position.set(width - stile / 2, railMidY + 0.24, -t / 2 - 0.006)
+    g.add(pull)
   }
 
   return g

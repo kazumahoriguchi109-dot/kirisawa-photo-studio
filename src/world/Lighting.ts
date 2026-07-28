@@ -73,6 +73,9 @@ export class LightingRig {
   private state: WorldLighting = 'blackout'
   private fog: THREE.FogExp2
   private ambTarget = new THREE.Color()
+  private scratchA = new THREE.Color()
+  private scratchB = new THREE.Color()
+  private settlingNow = true
   /** Practical fixtures whose emissive follows their light. */
   private materials: MaterialLibrary
 
@@ -140,6 +143,12 @@ export class LightingRig {
     const spill = new THREE.PointLight(0xf6c78d, 1, 5.2, 1.35)
     spill.position.set(-1.4, 1.2, 4.95)
     this.add(spill, { blackout: 3.1, tungsten: 1.1, safelight: 0.3, dawn: 2.3 })
+
+    // A low warm bounce off the terrazzo by the entrance. Without it the whole
+    // lower third of the door composition falls to unreadable black.
+    const hallFloor = new THREE.PointLight(0xffc48a, 1, 6.5, 1.15)
+    hallFloor.position.set(-1.35, 0.42, 4.6)
+    this.add(hallFloor, { blackout: 1.5, tungsten: 3.2, safelight: 0.5, dawn: 2.6 })
 
     // --- hall pendant -------------------------------------------------------
     const pendantBulb = this.makeBulb(0xffd9a0, 0.035)
@@ -304,20 +313,49 @@ export class LightingRig {
     return LIGHT_STATES[this.state]
   }
 
+  /** True while the lights are still crossfading toward the current state. */
+  get settling(): boolean {
+    return this.settlingNow
+  }
+
   update(dt: number): void {
     const s = LIGHT_STATES[this.state]
+    let moving = false
     for (const r of this.rigged) {
       const target = r.targets[this.state]
       if (Math.abs(r.current - target) > 0.001) {
+        moving = true
         r.current = damp(r.current, target, 3.4, dt)
         r.light.intensity = r.current
         this.applyBulb(r)
       }
     }
-    this.fog.color.lerp(new THREE.Color(s.color), 1 - Math.exp(-3 * dt))
+    // Scratch colours, reused. These lerps ran every frame and allocated two
+    // THREE.Color objects each time, which is pure garbage on the hot path.
+    this.fog.color.lerp(this.scratchA.set(s.color), 1 - Math.exp(-3 * dt))
     this.fog.density = damp(this.fog.density, s.density, 3, dt)
-    this.ambient.color.lerp(new THREE.Color(s.ambientColor), 1 - Math.exp(-3 * dt))
+    this.ambient.color.lerp(this.scratchB.set(s.ambientColor), 1 - Math.exp(-3 * dt))
+    if (Math.abs(this.ambient.intensity - s.ambientIntensity) > 0.001) moving = true
     this.ambient.intensity = damp(this.ambient.intensity, s.ambientIntensity, 3, dt)
+    this.settlingNow = moving
+  }
+
+  /**
+   * A small pool of light that rides with the camera while a close-up is open.
+   *
+   * The building is lit for atmosphere: a drawer under a counter, or the base of
+   * a lamp stand, is legitimately almost black from across the room. That is the
+   * right look for a wide shot and completely wrong for a close-up, where the
+   * player has leaned in specifically to read something. This is the equivalent
+   * of the torch they would obviously be holding - close range, sharp falloff,
+   * no shadow casting, so it lifts the thing being examined without flattening
+   * the room behind it.
+   */
+  makeInspectionLight(camera: THREE.Object3D): THREE.PointLight {
+    const l = new THREE.PointLight(0xffe9cc, 0, 1.9, 2.4)
+    l.position.set(0.08, 0.12, 0.06)
+    camera.add(l)
+    return l
   }
 
   /** Used by the enlarger: a temporary projector light in the darkroom. */

@@ -30,8 +30,21 @@ import { QUALITY_PROFILES } from '../core/Renderer'
  * UI. Chapter logic lives in Chapter01; nothing game-specific belongs here.
  */
 
-const START_NODE = 'hall_door'
+const START_NODE = 'hall_s'
 const TOTAL_ENDINGS = 3
+
+/**
+ * How much the close-up light lifts things, per lighting state. It is brightest
+ * with the house in blackout, where the room itself contributes almost nothing;
+ * under the safelight it stays low, because washing a darkroom in white light
+ * would undo the one rule the darkroom scenes are built on.
+ */
+const INSPECTION_LIGHT: Record<string, number> = {
+  blackout: 3.4,
+  tungsten: 1.6,
+  safelight: 0.8,
+  dawn: 1.2,
+}
 
 /**
  * The title screen looks back at the shopfront from inside the dark hall: the
@@ -42,8 +55,6 @@ const TITLE_VIEW = {
   position: new THREE.Vector3(-1.15, 1.52, 3.95),
   yaw: Math.PI - 0.14,
   pitch: -0.02,
-  yawRange: [Math.PI - 0.28, Math.PI] as [number, number],
-  pitchRange: [-0.12, 0.06] as [number, number],
   fov: 44,
 }
 
@@ -110,6 +121,22 @@ export class App {
     })
 
     this.ui = new GameUI(this.state, this.settings, this.inspector, {
+      onTurn: (dir) => void this.chapter.turn(dir),
+      onEdgeClick: (clientX, clientY) => {
+        if (!this.inGame || this.ui.isPanelOpen || this.chapter.isBusy) return false
+        const r = this.canvas.getBoundingClientRect()
+        const ndc = {
+          x: ((clientX - r.left) / r.width) * 2 - 1,
+          y: -((clientY - r.top) / r.height) * 2 + 1,
+        }
+        this.interaction.setScope(this.chapter.currentScope)
+        const hit = this.interaction.pick(ndc.x, ndc.y, { selectedItem: this.state.selectedItemId })
+        if (!hit) return false
+        this.pointerNdc = ndc
+        void this.onClick()
+        return true
+      },
+      onCloseupBack: () => void this.chapter.exitCloseup(),
       onNewGame: () => void this.startNewGame(),
       onContinue: () => void this.continueGame(),
       onSelectItem: (id) => this.state.selectItem(id),
@@ -151,6 +178,10 @@ export class App {
       onEnding: (id) => void this.playEnding(id),
     })
     this.lighting = lighting
+    // Rides on the camera, so it has to be in the graph: a PerspectiveCamera is
+    // only traversed for lighting if it is itself part of the scene.
+    this.scene.add(this.rig.camera)
+    this.inspectionLight = lighting.makeInspectionLight(this.rig.camera)
 
     this.stack = createRenderStack(this.canvas, this.scene, this.rig.camera, this.settings.get().quality)
     this.resize()
@@ -172,6 +203,7 @@ export class App {
   }
 
   private lighting: LightingRig
+  private inspectionLight!: THREE.PointLight
 
   /**
    * Development-only handle used by the automated playthrough check. It drives
@@ -186,15 +218,39 @@ export class App {
       save: this.save,
       begin: () => this.startNewGame(),
       go: (nodeId: string) => this.chapter.goToNode(nodeId, true),
-      /** Fire a hotspot by id, exactly as a click would. */
+      /**
+       * Fire a hotspot by id, exactly as a click would - including refusing the
+       * ones a click could not reach. Without the guards below it is possible
+       * to "discover" that the player can walk out of the building without
+       * solving the lock, when in fact the hotspot that does it is hidden until
+       * the lock is open and no click could ever land on it.
+       */
       act: (id: string, selected?: string | null) => {
         const hs = this.interaction.get(id)
         if (!hs) throw new Error(`no hotspot ${id}`)
+        const scope = this.chapter.currentScope
+        const scopes = Array.isArray(hs.scope) ? hs.scope : [hs.scope]
+        if (!scopes.includes(scope)) {
+          throw new Error(`hotspot ${id} is out of scope (standing at ${scope})`)
+        }
         if (selected !== undefined) this.state.selectItem(selected)
+        if (hs.visible && !hs.visible({ selectedItem: this.state.selectedItemId })) {
+          throw new Error(`hotspot ${id} is not visible right now`)
+        }
         return hs.onActivate({ selectedItem: this.state.selectedItemId })
       },
-      /** Hotspot ids currently pickable from where the player stands. */
+      /**
+       * Hotspot ids currently pickable from where the player stands.
+       *
+       * Refreshes the transforms first. Survey points are projected through the
+       * camera, and world matrices are normally only updated by the renderer -
+       * so in a throttled tab this used to test against transforms several
+       * seconds stale and return an empty list at viewpoints with plenty on
+       * screen, which is a very convincing way to fake a bug.
+       */
       visible: () => {
+        this.rig.camera.updateMatrixWorld(true)
+        this.scene.updateMatrixWorld(true)
         this.interaction.setScope(this.chapter.currentScope)
         return this.interaction
           .surveyPoints({ selectedItem: this.state.selectedItemId })
@@ -203,6 +259,8 @@ export class App {
       chapterHotspot: (id: string) => this.interaction.get(id),
       scope: () => this.chapter.currentScope,
       three: THREE,
+      camera: this.rig.camera,
+      scene: this.scene,
       nodeIds: () => NODES.map((n) => n.id),
       allHotspotIds: () => this.interaction.allIds(),
       setLook: (yaw: number, pitch: number) => this.rig.setLookForTest(yaw, pitch),
@@ -217,6 +275,48 @@ export class App {
       clues: () => this.state.clues.map((c) => c.id),
       hints: () => this.chapter.activeHints().map((h) => h.id),
       lighting: () => this.state.lighting,
+      /**
+       * Advance the simulation without waiting for requestAnimationFrame.
+       *
+       * A headless or backgrounded tab throttles rAF to about one frame a
+       * second, and `frame()` clamps dt to 50 ms, so a half-second camera move
+       * would take ten real seconds to finish and every scripted wait would
+       * expire long before the game had actually done anything. Pumping fixed
+       * steps here makes a scripted run depend only on game time.
+       */
+      pump: (seconds: number, step = 1 / 60) => {
+        for (let t = 0; t < seconds; t += step) {
+          this.elapsed += step
+          this.timeline.update(step)
+          this.rig.update(step)
+          this.lighting.update(step)
+          this.chapter?.update(step)
+        }
+      },
+      /**
+       * Render one frame now and hand back the pixels. Needs `?capture=1` so
+       * the back buffer survives long enough to be read; without it the canvas
+       * reads back blank.
+       */
+      renderer: () => this.stack.renderer,
+      composer: () => this.stack.composer,
+      /** Draw calls and triangles for one freshly rendered frame. */
+      renderCost: () => {
+        const r = this.stack.renderer
+        const prev = r.info.autoReset
+        r.info.autoReset = false
+        r.info.reset()
+        this.scene.updateMatrixWorld(true)
+        this.stack.render(1 / 60)
+        const out = { calls: r.info.render.calls, triangles: r.info.render.triangles }
+        r.info.autoReset = prev
+        return out
+      },
+      snapshot: (quality = 0.72): string => {
+        this.scene.updateMatrixWorld(true)
+        this.stack.render(1 / 60)
+        return this.canvas.toDataURL('image/jpeg', quality)
+      },
     }
   }
 
@@ -226,16 +326,15 @@ export class App {
     this.input.events.on('hover', (s) => {
       this.pointerNdc = { x: s.ndcX, y: s.ndcY }
     })
+    // Dragging never steers the camera. The only thing that consumes a drag is
+    // a puzzle that has explicitly captured it, such as the safe dial.
     this.input.events.on('drag', ({ dx, dy, sample }) => {
       this.pointerNdc = { x: sample.ndcX, y: sample.ndcY }
       const captured = this.chapter?.activeDragHandler
       if (captured) {
         captured(dx, dy)
         this.canvas.dataset.cursor = 'dragging'
-        return
       }
-      this.rig.look(dx, dy)
-      this.canvas.dataset.cursor = 'dragging'
     })
     this.input.events.on('dragEnd', () => {
       this.canvas.dataset.cursor = ''
@@ -244,8 +343,8 @@ export class App {
       this.pointerNdc = { x: s.ndcX, y: s.ndcY }
       void this.onClick()
     })
-    this.input.events.on('wheel', ({ delta }) => {
-      this.rig.zoom(delta)
+    this.input.events.on('wheel', () => {
+      /* the fixed compositions do not zoom; the inspector handles its own wheel */
     })
     this.input.events.on('keydown', ({ code, event }) => {
       if (!this.inGame) return
@@ -259,6 +358,16 @@ export class App {
       if (code === 'Backspace') {
         event.preventDefault()
         void this.chapter.exitCloseup()
+      }
+      if (!this.ui.isPanelOpen) {
+        if (code === 'ArrowLeft' || code === 'KeyA') {
+          event.preventDefault()
+          void this.chapter.turn('left')
+        }
+        if (code === 'ArrowRight' || code === 'KeyD') {
+          event.preventDefault()
+          void this.chapter.turn('right')
+        }
       }
     })
     // right click / two-finger back out of a close-up
@@ -328,8 +437,13 @@ export class App {
     this.ui.hideTitle()
     await this.ui.closeShutter()
     const node = NODE_MAP.get(this.state.nodeId) ?? NODE_MAP.get(START_NODE)!
+    // Go through the chapter rather than moving the rig directly. Endings are
+    // reached from inside a close-up, and the chapter's own close-up state is
+    // not part of the save - so continuing afterwards used to drop the player
+    // back inside the entrance-lock close-up with the back control gone and no
+    // way out at all, which made every ending after the first unreachable.
+    await this.chapter.goToNode(node.id, true)
     this.rig.applyViewpoint(nodeToSpec(node))
-    this.interaction.setScope(node.id)
     this.lighting.snapTo(this.state.lighting)
     this.audio.setLighting(this.state.lighting, true)
     this.exposure = this.lighting.targetGrade().exposure
@@ -337,6 +451,7 @@ export class App {
     this.inGame = true
     this.interaction.setEnabled(true)
     this.ui.setHudVisible(true)
+    this.chapter.refreshTurnZones()
     this.audio.play('select')
     await this.ui.openShutter()
     if (fresh) {
@@ -417,7 +532,6 @@ export class App {
       this.stack.setQuality(s.quality)
     }
     if (key === 'reducedMotion') this.applyMotionScale()
-    this.rig.setSensitivity(s.lookSensitivity, s.invertLook)
     this.audio.applyVolumes()
   }
 
@@ -444,10 +558,13 @@ export class App {
     this.running = true
     this.lastFrame = performance.now()
     const loop = (now: number) => {
+      // Book the next frame before doing any work. Scheduling afterwards means
+      // a single thrown error ends the loop for the rest of the session, and
+      // the game stops dead with no clue as to why.
+      requestAnimationFrame(loop)
       const dt = Math.min(0.05, (now - this.lastFrame) / 1000)
       this.lastFrame = now
       this.frame(dt)
-      requestAnimationFrame(loop)
     }
     requestAnimationFrame(loop)
   }
@@ -455,27 +572,22 @@ export class App {
   private frame(dt: number): void {
     this.elapsed += dt
     this.timeline.update(dt)
-    this.rig.setSensitivity(this.settings.get().lookSensitivity, this.settings.get().invertLook)
-
-    // keyboard look
-    if (this.inGame && !this.ui.isPanelOpen) {
-      const speed = 1.4 * dt
-      let dy = 0
-      let dp = 0
-      if (this.input.isKeyDown('ArrowLeft') || this.input.isKeyDown('KeyA')) dy += speed
-      if (this.input.isKeyDown('ArrowRight') || this.input.isKeyDown('KeyD')) dy -= speed
-      if (this.input.isKeyDown('ArrowUp') || this.input.isKeyDown('KeyW')) dp += speed * 0.6
-      if (this.input.isKeyDown('ArrowDown') || this.input.isKeyDown('KeyS')) dp -= speed * 0.6
-      if (dy || dp) this.rig.lookBy(dy, dp)
-    }
-
-    if (!this.inGame && this.ui.titleVisible && !this.settings.get().reducedMotion) {
-      // a 24-second breath, so the title image is never quite still
-      this.rig.lookBy(Math.sin(this.elapsed * 0.26) * dt * 0.012, Math.cos(this.elapsed * 0.19) * dt * 0.006)
-    }
 
     this.rig.update(dt)
     this.lighting.update(dt)
+    // Shadow maps are not regenerated automatically. Refresh them while
+    // something is actually moving - a door swinging, the backdrop rolling up,
+    // the lights crossfading - and leave them alone the rest of the time, which
+    // in a game of held compositions is nearly always.
+    if (this.timeline.busy || this.lighting.settling) this.stack.requestShadowUpdate()
+    // Faded rather than switched, so leaning in and out of a close-up does not
+    // read as someone flicking a light on.
+    this.inspectionLight.intensity = damp(
+      this.inspectionLight.intensity,
+      this.rig.currentMode === 'closeup' ? INSPECTION_LIGHT[this.state.lighting] : 0,
+      7,
+      dt,
+    )
     this.chapter?.update(dt)
     if (this.rain) updateRain(this.rain, dt)
     if (this.dust) updateDust(this.dust, this.elapsed)
@@ -494,7 +606,7 @@ export class App {
             hover.hotspot.verb === 'advance' ? 'walk' : this.state.selectedItemId ? 'use' : 'examine'
         } else {
           this.ui.setHover(null, null)
-          this.canvas.dataset.cursor = 'look'
+          this.canvas.dataset.cursor = ''
         }
       } else {
         this.ui.setHover(null, null)

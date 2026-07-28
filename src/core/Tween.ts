@@ -103,10 +103,23 @@ export class Timeline {
     for (const e of this.entries) if (e.tag === tag) e.killed = true
   }
 
+  /** True while anything is animating. Used to keep shadow maps up to date. */
+  get busy(): boolean {
+    return this.entries.length > 0
+  }
+
   update(dt: number): void {
     if (this.entries.length === 0) return
+    // Hand the current batch off and start a fresh list, so a tween started
+    // from inside an onUpdate or onComplete callback lands somewhere that
+    // survives this pass. Assigning `this.entries = next` at the end used to
+    // throw such a tween away silently: its promise never resolved, whatever
+    // was awaiting it hung forever, and anything guarding on a `busy` flag
+    // stayed busy for the rest of the session.
+    const batch = this.entries
+    this.entries = []
     const next: TweenEntry[] = []
-    for (const e of this.entries) {
+    for (const e of batch) {
       if (e.killed) {
         e.resolve()
         continue
@@ -126,7 +139,7 @@ export class Timeline {
         next.push(e)
       }
     }
-    this.entries = next
+    this.entries = next.concat(this.entries)
   }
 
   clear(): void {

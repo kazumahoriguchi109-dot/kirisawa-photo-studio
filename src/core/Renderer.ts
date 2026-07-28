@@ -21,7 +21,7 @@ const GradeShader = {
   uniforms: {
     tDiffuse: { value: null as THREE.Texture | null },
     uTime: { value: 0 },
-    uVignette: { value: 1.08 },
+    uVignette: { value: 0.86 },
     uGrain: { value: 0.038 },
     uLift: { value: new THREE.Vector3(0.014, 0.012, 0.019) },
     uGain: { value: new THREE.Vector3(1.02, 1.0, 0.975) },
@@ -113,6 +113,8 @@ export interface RenderStack {
   renderPass: RenderPass
   setQuality(q: QualityLevel): void
   resize(width: number, height: number): void
+  /** Redraw the shadow maps on the next frame. Cheap to call every frame. */
+  requestShadowUpdate(): void
   render(dt: number): void
   dispose(): void
 }
@@ -169,12 +171,26 @@ export function createRenderStack(
     antialias: false,
     powerPreference: 'high-performance',
     stencil: false,
+    // Off by default - keeping the back buffer around costs bandwidth on every
+    // frame. `?capture=1` turns it on so the QA tooling can read finished
+    // frames out of the canvas for review.
+    preserveDrawingBuffer:
+      typeof location !== 'undefined' && new URLSearchParams(location.search).has('capture'),
   })
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.toneMapping = THREE.ACESFilmicToneMapping
   renderer.toneMappingExposure = 1.0
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
+  // The building does not move. Camera compositions are fixed, and the only
+  // geometry that ever animates is a door swinging or a backdrop rolling up, so
+  // regenerating every shadow map on every frame is re-rasterising an identical
+  // scene sixty times a second. The pendant alone is a point light, i.e. a cube
+  // map, i.e. six full caster passes. Leaving this on cost more than half the
+  // frame; the game now asks for an update only while something is actually
+  // moving (see App.frame).
+  renderer.shadowMap.autoUpdate = false
+  renderer.shadowMap.needsUpdate = true
   renderer.setClearColor(0x05050a, 1)
 
   const composer = new EffectComposer(renderer)
@@ -238,10 +254,18 @@ export function createRenderStack(
     width = Math.max(1, w)
     height = Math.max(1, h)
     renderer.setSize(width, height, false)
+    // EffectComposer samples the renderer's pixel ratio once, in its
+    // constructor - which runs before the quality profile has set one. Without
+    // this the whole scene was rendered at 1x into the composer's targets and
+    // then blitted up to the canvas's 2x buffer, so the "high" preset bought
+    // nothing but a more expensive final blit, and SMAA found its edges at half
+    // resolution only to have them stretched afterwards.
+    composer.setPixelRatio(renderer.getPixelRatio())
     composer.setSize(width, height)
     bloom.setSize(width, height)
     camera.aspect = width / height
     camera.updateProjectionMatrix()
+    renderer.shadowMap.needsUpdate = true
   }
 
   applyQuality(quality)
@@ -254,6 +278,9 @@ export function createRenderStack(
     renderPass,
     setQuality: applyQuality,
     resize,
+    requestShadowUpdate() {
+      renderer.shadowMap.needsUpdate = true
+    },
     render(dt: number) {
       elapsed += dt
       grade.uniforms.uTime.value = elapsed

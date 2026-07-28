@@ -230,6 +230,36 @@ function withBorder(
 // ---------------------------------------------------------------------------
 
 /** A studio portrait. `variant` shifts pose/hair so the wall reads as many sitters. */
+/**
+ * A sheet of printing paper that was cut, mounted and dated for a sitting that
+ * never happened. Deliberately empty: the fourth gap in the chronicle wall is
+ * the point of the story, and a portrait printed there would mean the
+ * photograph had been taken after all.
+ */
+export function unexposedPrintCanvas(opts: PhotoOptions = {}): HTMLCanvasElement {
+  const w = opts.width ?? 256
+  const h = opts.height ?? 340
+  const border = opts.border ?? 14
+  const rnd = mulberry32(opts.seed ?? 4231)
+  return withBorder(w, h, border, (g, iw, ih) => {
+    // unexposed paper, developed anyway: an even, slightly warm base fog
+    g.fillStyle = '#e6dcc4'
+    g.fillRect(0, 0, iw, ih)
+    for (let i = 0; i < 900; i++) {
+      const x = rnd() * iw
+      const y = rnd() * ih
+      g.fillStyle = `rgba(150,132,100,${0.02 + rnd() * 0.05})`
+      g.fillRect(x, y, 1 + rnd() * 2, 1 + rnd() * 2)
+    }
+    // the faint darker band along one edge where it lay against the others
+    const grad = g.createLinearGradient(0, 0, iw * 0.35, 0)
+    grad.addColorStop(0, 'rgba(120,102,74,0.22)')
+    grad.addColorStop(1, 'rgba(120,102,74,0)')
+    g.fillStyle = grad
+    g.fillRect(0, 0, iw * 0.35, ih)
+  })
+}
+
 export function portraitCanvas(variant: number, opts: PhotoOptions = {}): HTMLCanvasElement {
   const w = opts.width ?? 256
   const h = opts.height ?? 340

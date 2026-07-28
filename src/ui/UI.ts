@@ -15,6 +15,13 @@ import { VERB_LABEL, type HoverInfo } from '../systems/Interaction'
  */
 
 export interface UICallbacks {
+  onTurn(direction: 'left' | 'right'): void
+  /**
+   * A click landed on an edge turn zone. Returns true if there was a world
+   * hotspot under that point and it was activated instead of turning.
+   */
+  onEdgeClick(clientX: number, clientY: number): boolean
+  onCloseupBack(): void
   onNewGame(): void
   onContinue(): void
   onSelectItem(id: string | null): void
@@ -52,6 +59,10 @@ export class GameUI {
   private shutter!: HTMLElement
   private chapterCard!: HTMLElement
   private endingEl!: HTMLElement
+  private turnLeft!: HTMLElement
+  private turnRight!: HTMLElement
+  private closeupBar!: HTMLElement
+  private closeupTitle!: HTMLElement
 
   private openPanel: PanelId = null
   private narrationQueue: string[] = []
@@ -117,6 +128,46 @@ export class GameUI {
     this.toastRail.setAttribute('aria-live', 'polite')
     this.root.appendChild(this.toastRail)
 
+    // --- edge turn zones
+    for (const side of ['left', 'right'] as const) {
+      const z = this.el('div', `turn-zone ${side}`)
+      z.dataset.live = '0'
+      z.setAttribute('role', 'button')
+      z.setAttribute('aria-label', side === 'left' ? '左を向く' : '右を向く')
+      z.tabIndex = 0
+      z.innerHTML = '<span class="chev"></span><span class="zone-label"></span>'
+      z.addEventListener('click', (e) => {
+        if (z.dataset.live !== '1') return
+        // The zone sits on top of the canvas, so anything the composition puts
+        // near an edge would otherwise have its clicks swallowed and the player
+        // would just turn away from the thing they were trying to examine. Ask
+        // the world first; only turn if there is nothing there.
+        if (this.cb.onEdgeClick(e.clientX, e.clientY)) return
+        this.cb.onTurn(side)
+      })
+      z.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && z.dataset.live === '1') {
+          e.preventDefault()
+          this.cb.onTurn(side)
+        }
+      })
+      this.root.appendChild(z)
+      if (side === 'left') this.turnLeft = z
+      else this.turnRight = z
+    }
+
+    // --- close-up exit, always visible while a close-up is open
+    this.closeupBar = this.el('div')
+    this.closeupBar.id = 'closeup-bar'
+    this.closeupTitle = this.el('span', 'cu-title')
+    const back = this.el('button', 'clickable')
+    back.id = 'closeup-back'
+    back.innerHTML = `<span class="x">\u00d7</span>${UI_TEXT.back}`
+    back.setAttribute('aria-label', `${UI_TEXT.back}（Esc）`)
+    back.addEventListener('click', () => this.cb.onCloseupBack())
+    this.closeupBar.append(this.closeupTitle, back)
+    this.root.appendChild(this.closeupBar)
+
     // --- HUD
     this.hudBar = this.el('div')
     this.hudBar.id = 'hud-bar'
@@ -151,7 +202,14 @@ export class GameUI {
     this.panelTitle = this.el('h2', 'panel-title')
     this.panelTitle.id = 'panel-title'
     this.panelSub = this.el('span', 'panel-sub')
-    head.append(this.panelTitle, this.panelSub)
+    // Every close-up gets a prominent × 戻る; the modal panels had nothing at
+    // all. The only way out was clicking the scrim, which is invisible, or Esc,
+    // which the HUD advertises but which a player has no reason to trust after
+    // finding no button.
+    const panelClose = this.el('button', 'panel-close clickable', `×　${UI_TEXT.back}`)
+    panelClose.setAttribute('aria-label', UI_TEXT.back)
+    panelClose.addEventListener('click', () => this.closeTop())
+    head.append(this.panelTitle, this.panelSub, panelClose)
     this.panelBody = this.el('div', 'panel-body')
     this.panelFoot = this.el('div', 'panel-foot')
     this.panel.append(head, this.panelBody, this.panelFoot)
@@ -231,6 +289,23 @@ export class GameUI {
     // playthrough, so they are reached from the ending screen instead.
   }
 
+  /** Show or hide the two edge arrows, with the destination named on hover. */
+  setTurnZones(left: string | null, right: string | null): void {
+    const apply = (el: HTMLElement, label: string | null) => {
+      el.dataset.live = label ? '1' : '0'
+      const lab = el.querySelector('.zone-label') as HTMLElement | null
+      if (lab) lab.textContent = label ?? ''
+    }
+    apply(this.turnLeft, left)
+    apply(this.turnRight, right)
+  }
+
+  /** The close-up exit is never conditional: if we are in close, it is up. */
+  setCloseup(active: boolean, title = ''): void {
+    this.closeupBar.dataset.show = active ? '1' : ''
+    this.closeupTitle.textContent = title
+  }
+
   private applyScale(): void {
     const s = this.settings.get()
     this.root.style.setProperty('--ui-scale', String(s.uiScale))
@@ -259,6 +334,10 @@ export class GameUI {
 
   setHudVisible(v: boolean): void {
     this.hudBar.style.display = v ? '' : 'none'
+    if (!v) {
+      this.setTurnZones(null, null)
+      this.setCloseup(false)
+    }
   }
 
   async closeShutter(): Promise<void> {
@@ -517,7 +596,7 @@ export class GameUI {
   // ------------------------------------------------------------- inventory
 
   private renderInventory(): void {
-    this.showPanel(UI_TEXT.inventory, `${this.state.inventory.length} 点`)
+    this.showPanel(UI_TEXT.inventory, `${kanjiNum(this.state.inventory.length)} 点`)
     const layout = this.el('div')
     layout.id = 'inv-layout'
     const grid = this.el('div')
@@ -670,7 +749,7 @@ export class GameUI {
   // ----------------------------------------------------------------- clues
 
   private renderClues(): void {
-    this.showPanel(UI_TEXT.clues, `${this.state.clues.length} 件`)
+    this.showPanel(UI_TEXT.clues, `${kanjiNum(this.state.clues.length)} 件`)
     if (this.state.clues.length === 0) {
       this.panelBody.innerHTML = `<div class="inv-empty">${UI_TEXT.cluesEmpty}</div>`
     } else {
@@ -812,18 +891,14 @@ export class GameUI {
       s.textSpeed,
       (v) => this.cb.onSettingChanged('textSpeed', v),
     )
-    slider('視点の感度', 'ドラッグで首を振る速さ', s.lookSensitivity, 0.4, 2, 0.05, (v) => `${v.toFixed(2)}倍`, (v) =>
-      this.cb.onSettingChanged('lookSensitivity', v),
-    )
-    seg('視点の上下', '上下の向きを入れ替える', [
-      ['off', 'そのまま'],
-      ['on', '反転'],
-    ] as Array<['off' | 'on', string]>, s.invertLook ? 'on' : 'off', (v) =>
-      this.cb.onSettingChanged('invertLook', v === 'on'),
-    )
+    // No look sensitivity or invert-look here on purpose: the camera is fixed,
+    // so both would be dials that turn and do nothing.
     seg(
       '画質',
-      '重いときは下げる。影と後処理が変わる',
+      // Says what it actually does. Texture resolution is baked when the world
+      // is built, so that part of the profile only takes effect on a reload -
+      // claiming otherwise would be a setting that lies about itself.
+      '重いときは下げる。影・解像度・後処理がすぐ変わる。質感の細かさは次に開いたときから',
       [
         ['low', '軽い'],
         ['medium', 'ふつう'],
@@ -838,15 +913,17 @@ export class GameUI {
     ] as Array<['off' | 'on', string]>, s.reducedMotion ? 'on' : 'off', (v) =>
       this.cb.onSettingChanged('reducedMotion', v === 'on'),
     )
+    // Two states, not three. There are no standing markers to show "always"
+    // versus "when near" - the only thing this setting still governs is whether
+    // the 見渡す key lights the room's hotspots for a moment.
     seg(
-      '調べられる場所の印',
-      '常に出す／近づいたときだけ／出さない',
+      '見渡す（Ｑ）',
+      '調べられる場所を一度だけ光らせる',
       [
-        ['always', '常に'],
-        ['proximity', '近くで'],
-        ['off', '出さない'],
+        ['proximity', '使う'],
+        ['off', '使わない'],
       ] as Array<[GameSettings['markerMode'], string]>,
-      s.markerMode,
+      s.markerMode === 'off' ? 'off' : 'proximity',
       (v) => this.cb.onSettingChanged('markerMode', v),
     )
     slider('画面の文字の大きさ', '持ち物や地の文の大きさ', s.uiScale, 0.85, 1.3, 0.05, (v) => `${Math.round(v * 100)}％`, (v) =>
@@ -929,7 +1006,7 @@ export class GameUI {
     const credits = this.el('button', 'btn ghost clickable', '制作について')
     credits.addEventListener('click', () => this.open('credits'))
     foot.append(again, credits)
-    const tally = this.el('div', 'panel-sub e-line', `見届けた結末　${seenCount} ／ ${total}`)
+    const tally = this.el('div', 'panel-sub e-line', `見届けた結末　${kanjiNum(seenCount)} ／ ${kanjiNum(total)}`)
     tally.style.animationDelay = '3.0s'
     this.endingEl.append(title, body, card, tally, foot)
     this.endingEl.dataset.open = '1'
@@ -982,6 +1059,16 @@ export class GameUI {
         break
     }
   }
+}
+
+/** Kanji numerals, so counts built in code match the prose everywhere else. */
+function kanjiNum(n: number): string {
+  const d = ['〇', '一', '二', '三', '四', '五', '六', '七', '八', '九']
+  if (n < 0) return String(n)
+  if (n < 10) return d[n]
+  if (n < 20) return n === 10 ? '十' : `十${d[n % 10]}`
+  if (n < 100) return `${d[Math.floor(n / 10)]}十${n % 10 ? d[n % 10] : ''}`
+  return String(n)
 }
 
 function wait(ms: number): Promise<void> {
