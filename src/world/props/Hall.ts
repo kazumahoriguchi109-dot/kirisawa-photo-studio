@@ -784,6 +784,19 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     const soffit = mesh(texturedBox(w - 0.02, 0.02, WALL_THICKNESS, 1.6), mats.plasterWall, { cast: false })
     soffit.position.set((a.x0 + a.x1) / 2, a.top - 0.03, a.z)
     archThreshold.add(soffit)
+
+    // An invisible pad filling the opening itself, so the doorway is clickable
+    // where a player actually aims: at the gap they intend to walk through.
+    // Until this existed the exit hotspot was the sill, the reveals and the
+    // soffit - the frame - and clicking anywhere in the opening hit nothing and
+    // answered "there is nothing here", on the one route out of the first room.
+    const pad = new THREE.Mesh(
+      new THREE.PlaneGeometry(w - 0.04, a.top - 0.04),
+      new THREE.MeshBasicMaterial({ visible: false }),
+    )
+    pad.position.set((a.x0 + a.x1) / 2, (a.top - 0.04) / 2, a.z)
+    pad.name = 'arch-opening'
+    archThreshold.add(pad)
     group.add(archThreshold)
   }
 

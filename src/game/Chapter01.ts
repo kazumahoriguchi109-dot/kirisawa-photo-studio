@@ -1229,9 +1229,15 @@ export class Chapter01 {
       // Stands east of centre, so it is 48 degrees off the axis of the backdrop
       // view - never on screen there. The east frame is composed around it.
       scope: ['studio_e'],
-      onActivate: () => void this.closeupOn('cu_camera', studio.viewCamera, [0.2, 0.28, 1], {
+      onActivate: () => void this.closeupOn('cu_camera', studio.viewCamera, [-0.5, 0.3, 0.75], {
           fov: 40,
-          margin: 1.25,
+          // The body and the ground glass are the subject; the tripod legs may
+          // crop. Fitting all 1.8 m of it drove the distance to the cap, which
+          // put the lens at z = 3.4 - outside the room, inside the hall wall,
+          // looking at its back face. The player got a blank stretch of plaster
+          // titled 大判カメラ.
+          margin: 1.0,
+          maxDist: 2.5,
         }),
     })
     this.hs({
