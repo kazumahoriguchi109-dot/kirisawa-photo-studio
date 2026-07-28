@@ -169,6 +169,11 @@ export function createRenderStack(
     antialias: false,
     powerPreference: 'high-performance',
     stencil: false,
+    // Off by default - keeping the back buffer around costs bandwidth on every
+    // frame. `?capture=1` turns it on so the QA tooling can read finished
+    // frames out of the canvas for review.
+    preserveDrawingBuffer:
+      typeof location !== 'undefined' && new URLSearchParams(location.search).has('capture'),
   })
   renderer.outputColorSpace = THREE.SRGBColorSpace
   renderer.toneMapping = THREE.ACESFilmicToneMapping

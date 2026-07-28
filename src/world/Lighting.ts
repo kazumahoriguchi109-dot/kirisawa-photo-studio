@@ -326,6 +326,24 @@ export class LightingRig {
     this.ambient.intensity = damp(this.ambient.intensity, s.ambientIntensity, 3, dt)
   }
 
+  /**
+   * A small pool of light that rides with the camera while a close-up is open.
+   *
+   * The building is lit for atmosphere: a drawer under a counter, or the base of
+   * a lamp stand, is legitimately almost black from across the room. That is the
+   * right look for a wide shot and completely wrong for a close-up, where the
+   * player has leaned in specifically to read something. This is the equivalent
+   * of the torch they would obviously be holding - close range, sharp falloff,
+   * no shadow casting, so it lifts the thing being examined without flattening
+   * the room behind it.
+   */
+  makeInspectionLight(camera: THREE.Object3D): THREE.PointLight {
+    const l = new THREE.PointLight(0xffe9cc, 0, 1.9, 2.4)
+    l.position.set(0.08, 0.12, 0.06)
+    camera.add(l)
+    return l
+  }
+
   /** Used by the enlarger: a temporary projector light in the darkroom. */
   makeProjector(): THREE.SpotLight {
     const p = new THREE.SpotLight(0xfff3e0, 0, 5, Math.PI * 0.11, 0.35, 1.4)

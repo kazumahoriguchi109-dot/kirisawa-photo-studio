@@ -62,16 +62,56 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     const h = 1.02
     const cx = -0.24
     const cz = 3.28
-    // plinth + body
-    counter.add(boxAt(mats.woodDark, w, h - 0.06, d, 0, (h - 0.06) / 2, 0))
+    // Carcase, set back so the joinery in front of it reads as applied work.
+    counter.add(boxAt(mats.woodDark, w, h - 0.06, d - 0.04, 0, (h - 0.06) / 2, 0))
     // moulded top with a slight overhang
     const top = mesh(roundedBox(w + 0.06, 0.045, d + 0.05, 0.008, 2, 1.6), mats.woodMid)
     top.position.y = h - 0.02
     counter.add(top)
-    // beaded front panel
-    const bead = mesh(texturedBox(w - 0.14, h - 0.28, 0.014, 1.6), mats.woodTrim, { cast: false })
-    bead.position.set(0, (h - 0.06) / 2, d / 2 + 0.006)
-    counter.add(bead)
+
+    // Frame-and-panel front. A counter this size is not one flat board: two
+    // stiles at the ends, a muntin down the middle, rails top and bottom, and
+    // the panels recessed behind them. Modelled rather than painted on, because
+    // the whole point of this frame is that a raking lamp finds the reveals.
+    const zf = d / 2 - 0.02
+    const stileW = 0.09
+    const railH = 0.085
+    const plinthH = 0.11
+    const frameTop = h - 0.06
+    const openH = frameTop - plinthH
+    const addFront = (
+      mw: number,
+      mh: number,
+      x: number,
+      y: number,
+      z = zf,
+      m = mats.woodMid,
+    ): void => {
+      const p = mesh(texturedBox(mw, mh, 0.022, 1.6), m, { cast: false })
+      p.position.set(x, y, z)
+      counter.add(p)
+    }
+    // plinth, kicked back under the frame
+    addFront(w, plinthH, 0, plinthH / 2, zf - 0.018, mats.woodTrim)
+    // stiles and centre muntin
+    addFront(stileW, openH, -(w / 2 - stileW / 2), plinthH + openH / 2)
+    addFront(stileW, openH, w / 2 - stileW / 2, plinthH + openH / 2)
+    addFront(stileW * 0.8, openH, 0, plinthH + openH / 2)
+    // rails between them
+    const railSpan = (w - stileW * 2 - stileW * 0.8) / 2
+    for (const sx of [-1, 1]) {
+      const px = sx * (stileW / 2 + stileW * 0.4 / 2 + railSpan / 2 + 0.0)
+      addFront(railSpan, railH, px, plinthH + openH - railH / 2)
+      addFront(railSpan, railH, px, plinthH + railH / 2)
+      // the fielded panel itself, recessed behind the frame
+      const panel = mesh(
+        texturedBox(railSpan, openH - railH * 2, 0.012, 1.4),
+        mats.woodTrim,
+        { cast: false },
+      )
+      panel.position.set(px, plinthH + openH / 2, zf - 0.014)
+      counter.add(panel)
+    }
     counter.position.set(cx, 0, cz)
     group.add(counter)
   }
@@ -575,26 +615,54 @@ export function buildHall(mats: MaterialLibrary): HallProps {
       riser.position.set(0, 0.095 + i * 0.19, -i * 0.27 + 0.135)
       stairs.add(riser)
     }
-    // the boarding-over
+    // The boarding-over. It starts level with the top tread: any gap and the
+    // player can see that there is nothing behind it.
     const boards = new THREE.Group()
-    for (let i = 0; i < 4; i++) {
-      const b = mesh(texturedBox(1.05, 0.2, 0.024, 1.4), mats.woodMid)
-      b.position.set(0, 1.36 + i * 0.21, -1.2)
+    for (let i = 0; i < 5; i++) {
+      // Dark stock, and stood off the plaster far enough to throw a shadow
+      // line. In mid wood against a lit wall the boarding rendered at almost
+      // exactly the wall's value and simply vanished.
+      const b = mesh(texturedBox(1.05, 0.2, 0.032, 1.4), mats.woodDark)
+      b.position.set(0, 1.06 + i * 0.21, -1.12)
       b.rotation.z = (i % 2 ? 1 : -1) * 0.006
       boards.add(b)
     }
     stairs.add(boards)
-    // handrail, worn
-    const rail = mesh(new THREE.CylinderGeometry(0.022, 0.022, 1.5, 10), mats.woodDark)
-    rail.position.set(0.46, 0.86, -0.6)
-    rail.rotation.set(0.62, 0, 0)
+
+    // Handrail and balusters.
+    //
+    // The flight rises 0.19 per 0.27 of going, i.e. 35.1 degrees, climbing as z
+    // decreases. A cylinder points along its own +Y, so to lay it on that slope
+    // it has to be tipped by the angle from vertical, negative so the high end
+    // is the one over the top tread. Getting either the size or the sign of
+    // that wrong is what had the rail running downhill against the steps.
+    const RISE = 0.19
+    const GOING = 0.27
+    const slope = RISE / GOING
+    const railAt = (z: number) => 0.2125 + slope * -z + 0.85
+    const treadAt = (z: number) => (z > 0 ? 0 : 0.2125 + slope * -z)
+    const railLen = 1.4 / Math.cos(Math.atan(slope))
+    const rail = mesh(new THREE.CylinderGeometry(0.024, 0.024, railLen, 10), mats.woodDark)
+    rail.position.set(0.46, railAt(-0.55), -0.55)
+    rail.rotation.set(-(Math.PI / 2 - Math.atan(slope)), 0, 0)
     stairs.add(rail)
-    for (const [y, z] of [[0.42, 0.02], [0.86, -0.62], [1.24, -1.16]]) {
-      const post = mesh(new THREE.CylinderGeometry(0.019, 0.021, y * 2, 8), mats.woodDark)
-      post.position.set(0.46, y, z)
+    // The newel carries the bottom of the rail; the balusters each run from the
+    // tread they stand on up to the underside of the rail, not through it.
+    const newel = mesh(texturedBox(0.075, 1.06, 0.075, 3), mats.woodDark)
+    newel.position.set(0.46, 0.53, 0.16)
+    stairs.add(newel)
+    for (const z of [-0.19, -0.62, -1.05]) {
+      const y0 = treadAt(z)
+      const y1 = railAt(z) - 0.024
+      const post = mesh(new THREE.CylinderGeometry(0.019, 0.021, y1 - y0, 8), mats.woodDark)
+      post.position.set(0.46, (y0 + y1) / 2, z)
       stairs.add(post)
     }
-    stairs.position.set(H.x1 - 0.62, 0, 5.02)
+    // Local -z is uphill, and the group is turned a quarter turn, so the flight
+    // climbs toward +x. Started from H.x1 - 0.62 it ran a clear half metre out
+    // through the exterior wall; this puts the top tread and the boarding just
+    // inside it.
+    stairs.position.set(H.x1 - 1.22, 0, 5.02)
     stairs.rotation.y = -Math.PI / 2
     group.add(stairs)
   }

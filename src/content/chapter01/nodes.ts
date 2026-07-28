@@ -75,9 +75,10 @@ export const NODES: ViewNode[] = [
     // phosphor mark by the arch to the counter drawer. Standing between them
     // with a wide lens is the only way all of it survives a 4:3 window.
     { dir: 'n', label: '受付と通路', at: [-0.7, E, 5.05], pitch: -0.04, fov: 64 },
-    // Backed off from the newel post so the whole flight, not its middle third,
-    // is the subject of the frame.
-    { dir: 'e', label: '階段', at: [-1.6, E, 4.9], pitch: -0.05, fov: 60 },
+    // Backed across the hall and pitched down, so the frame is the flight and
+    // the boards nailed over the top of it rather than two metres of bare
+    // plaster above them.
+    { dir: 'e', label: '階段', at: [-2.2, E, 4.95], pitch: -0.2, fov: 62 },
     { dir: 's', label: '玄関の引き戸', at: [-1.9, E, 4.3], fov: 62, pitch: -0.06 },
     { dir: 'w', label: '配電盤の壁', at: [-1.55, E, 4.85] },
   ]),

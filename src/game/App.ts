@@ -34,6 +34,19 @@ const START_NODE = 'hall_s'
 const TOTAL_ENDINGS = 3
 
 /**
+ * How much the close-up light lifts things, per lighting state. It is brightest
+ * with the house in blackout, where the room itself contributes almost nothing;
+ * under the safelight it stays low, because washing a darkroom in white light
+ * would undo the one rule the darkroom scenes are built on.
+ */
+const INSPECTION_LIGHT: Record<string, number> = {
+  blackout: 3.4,
+  tungsten: 1.6,
+  safelight: 0.8,
+  dawn: 1.2,
+}
+
+/**
  * The title screen looks back at the shopfront from inside the dark hall: the
  * only light in the frame is the street coming through frosted glass, which is
  * exactly the image the game opens on.
@@ -151,6 +164,10 @@ export class App {
       onEnding: (id) => void this.playEnding(id),
     })
     this.lighting = lighting
+    // Rides on the camera, so it has to be in the graph: a PerspectiveCamera is
+    // only traversed for lighting if it is itself part of the scene.
+    this.scene.add(this.rig.camera)
+    this.inspectionLight = lighting.makeInspectionLight(this.rig.camera)
 
     this.stack = createRenderStack(this.canvas, this.scene, this.rig.camera, this.settings.get().quality)
     this.resize()
@@ -172,6 +189,7 @@ export class App {
   }
 
   private lighting: LightingRig
+  private inspectionLight!: THREE.PointLight
 
   /**
    * Development-only handle used by the automated playthrough check. It drives
@@ -236,6 +254,16 @@ export class App {
           this.lighting.update(step)
           this.chapter?.update(step)
         }
+      },
+      /**
+       * Render one frame now and hand back the pixels. Needs `?capture=1` so
+       * the back buffer survives long enough to be read; without it the canvas
+       * reads back blank.
+       */
+      snapshot: (quality = 0.72): string => {
+        this.scene.updateMatrixWorld(true)
+        this.stack.render(1 / 60)
+        return this.canvas.toDataURL('image/jpeg', quality)
       },
     }
   }
@@ -473,10 +501,13 @@ export class App {
     this.running = true
     this.lastFrame = performance.now()
     const loop = (now: number) => {
+      // Book the next frame before doing any work. Scheduling afterwards means
+      // a single thrown error ends the loop for the rest of the session, and
+      // the game stops dead with no clue as to why.
+      requestAnimationFrame(loop)
       const dt = Math.min(0.05, (now - this.lastFrame) / 1000)
       this.lastFrame = now
       this.frame(dt)
-      requestAnimationFrame(loop)
     }
     requestAnimationFrame(loop)
   }
@@ -487,6 +518,14 @@ export class App {
 
     this.rig.update(dt)
     this.lighting.update(dt)
+    // Faded rather than switched, so leaning in and out of a close-up does not
+    // read as someone flicking a light on.
+    this.inspectionLight.intensity = damp(
+      this.inspectionLight.intensity,
+      this.rig.currentMode === 'closeup' ? INSPECTION_LIGHT[this.state.lighting] : 0,
+      7,
+      dt,
+    )
     this.chapter?.update(dt)
     if (this.rain) updateRain(this.rain, dt)
     if (this.dust) updateDust(this.dust, this.elapsed)
