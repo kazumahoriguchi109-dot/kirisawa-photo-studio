@@ -41,9 +41,12 @@ const TOTAL_ENDINGS = 3
  */
 const INSPECTION_LIGHT: Record<string, number> = {
   blackout: 3.4,
-  tungsten: 1.6,
+  // Low once the house lights are on. The room already carries the exposure,
+  // and the extra was enough to blow the highlights off the 1985 photograph -
+  // which is the one image the observation puzzle asks the player to read.
+  tungsten: 0.75,
   safelight: 0.8,
-  dawn: 1.2,
+  dawn: 0.7,
 }
 
 /**

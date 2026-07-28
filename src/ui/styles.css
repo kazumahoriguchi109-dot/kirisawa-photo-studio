@@ -607,6 +607,12 @@ button {
 }
 .panel-body {
   padding: 1.2em 1.4em 1.4em;
+  /* In a flex column an item will not shrink below its content unless told to,
+     so the body grew past the panel and pushed the footer - and the inventory's
+     選ぶ / 合わせる buttons - off the bottom edge, where they were cut in half
+     and partly behind the HUD. */
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(200, 164, 94, 0.3) transparent;
@@ -619,6 +625,7 @@ button {
   border-radius: 4px;
 }
 .panel-foot {
+  flex: 0 0 auto;
   padding: 0.9em 1.4em 1.1em;
   border-top: 1px solid rgba(200, 164, 94, 0.14);
   display: flex;

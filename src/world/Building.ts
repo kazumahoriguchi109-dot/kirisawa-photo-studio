@@ -147,18 +147,21 @@ export function buildBuilding(mats: MaterialLibrary): BuildingRefs {
   // ------------------------------------------------------------- door frames
   addArchTrim(root, mats)
 
+  // A leaf is hinged at its own origin and the slab grows away from it, so the
+  // origin belongs on a jamb, not in the middle of the opening. Placed at the
+  // centre - as both of these were - a shut door covers half its doorway and
+  // overhangs the other half into the wall: the office door announced
+  // 「錠がかかっている」 beside a permanent 45 cm gap with the lit office
+  // visible through it, which reads as the refusal being a lie.
   const darkroomDoorLeaf = makeDoorLeaf(mats, 0.9, 2.0, 'darkroom')
-  darkroomDoorLeaf.position.set(
-    OPENINGS.darkroomDoor.x,
-    0,
-    (OPENINGS.darkroomDoor.z0 + OPENINGS.darkroomDoor.z1) / 2,
-  )
-  // hinge on the north edge, opens into the darkroom
+  // hinge on the north jamb; at +90 degrees the slab grows toward -z
+  darkroomDoorLeaf.position.set(OPENINGS.darkroomDoor.x, 0, OPENINGS.darkroomDoor.z1)
   darkroomDoorLeaf.rotation.y = Math.PI / 2
   root.add(darkroomDoorLeaf)
 
   const officeDoorLeaf = makeDoorLeaf(mats, 0.9, 2.0, 'office', true)
-  officeDoorLeaf.position.set(OPENINGS.officeDoor.x, 0, (OPENINGS.officeDoor.z0 + OPENINGS.officeDoor.z1) / 2)
+  // hinge on the south jamb; at -90 degrees the slab grows toward +z
+  officeDoorLeaf.position.set(OPENINGS.officeDoor.x, 0, OPENINGS.officeDoor.z0)
   officeDoorLeaf.rotation.y = -Math.PI / 2
   root.add(officeDoorLeaf)
 
