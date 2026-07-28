@@ -1016,7 +1016,14 @@ export class Chapter01 {
       label: '壁の丸い跡',
       verb: 'examine',
       scope: ['studio_e'],
-      onActivate: () => void this.enterCloseup('cu_clock', [2.5, 2.2, -0.6], [3.1, 2.34, -0.6], { fov: 34 }),
+      // Framed on the mark AND the crank hanging beside it. The crank is the
+      // only way to raise the backdrop, it lives on a nail inside this close-up,
+      // and a player who cannot see it here has nowhere else to look.
+      onActivate: () =>
+        void this.closeupOn('cu_clock', [studio.clockGhost, studio.crankOnNail], [-1, 0.1, 0.12], {
+          fov: 36,
+          margin: 1.35,
+        }),
     })
     this.hs({
       id: 'cu:clock:disc',
@@ -1102,10 +1109,20 @@ export class Chapter01 {
       label: '巻き上げ軸',
       verb: 'examine',
       scope: ['studio_n'],
-      onActivate: () => void this.closeupOn('cu_socket', [studio.crankSocket, studio.crankFitted], [0.4, 0.22, 1], {
+      onActivate: () => {
+        // Say what the close-up is showing. Without this it opened on an
+        // unlabelled brass stub in silence, and the only way to learn it takes
+        // a crank was to buy a hint - at the single most signposted step in the
+        // room.
+        if (!this.flag('saw_socket')) {
+          this.d.state.setFlag('saw_socket')
+          this.say('幕を吊る軸の端に、真鍮の座金が出ている。中心は六角に彫ってある。')
+        }
+        void this.closeupOn('cu_socket', [studio.crankSocket, studio.crankFitted], [0.4, 0.22, 1], {
           fov: 38,
           margin: 1.9,
-        }),
+        })
+      },
     })
     this.hs({
       id: 'cu:socket:hole',
