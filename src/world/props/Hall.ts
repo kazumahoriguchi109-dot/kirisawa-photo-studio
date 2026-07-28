@@ -298,6 +298,18 @@ export function buildHall(mats: MaterialLibrary): HallProps {
       s.add(base)
       const contact = mesh(new THREE.TorusGeometry(0.024, 0.004, 6, 16), mats.brass)
       s.add(contact)
+      // An invisible disc across the mouth of the holder. Empty, a holder is a
+      // ring with a hole in the middle - and the middle is exactly where a
+      // player aims. The ray went through the gap, found the back board, and
+      // the game answered "a wall", three times running, to someone holding the
+      // right fuse and pointing at the right socket.
+      const catcher = new THREE.Mesh(
+        new THREE.CircleGeometry(0.032, 16),
+        new THREE.MeshBasicMaterial({ visible: false }),
+      )
+      catcher.position.z = 0.012
+      catcher.name = 'socket-catcher'
+      s.add(catcher)
       s.position.set(-0.09 + i * 0.09, 0.06, -bd + 0.045)
       s.name = `fuse-socket-${i}`
       fuseBox.add(s)

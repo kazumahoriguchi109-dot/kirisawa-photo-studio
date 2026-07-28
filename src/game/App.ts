@@ -371,6 +371,14 @@ export class App {
 
   private bindInput(): void {
     this.input.events.on('hover', (s) => {
+      // Drop the label the moment the pointer moves any real distance, and let
+      // the next frame put back whatever is actually under it. The frame is the
+      // only thing that ever set it, so on a slow frame - or a frame that never
+      // comes because the tab is not compositing - the old name stayed on
+      // screen across rooms and into close-ups, naming something the cursor was
+      // nowhere near. A label that outlives its object is worse than none.
+      const moved = Math.abs(s.ndcX - this.pointerNdc.x) + Math.abs(s.ndcY - this.pointerNdc.y)
+      if (moved > 0.004) this.ui.setHover(null, null)
       this.pointerNdc = { x: s.ndcX, y: s.ndcY }
     })
     // Dragging never steers the camera. The only thing that consumes a drag is

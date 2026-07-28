@@ -786,11 +786,18 @@ button {
   display: flex;
   flex-direction: column;
   gap: 0.9em;
-  min-height: 260px;
+  min-height: 0;
 }
 #inspect-stage {
   position: relative;
   aspect-ratio: 4 / 3;
+  /* Capped, and allowed to shrink. A 4:3 stage in a wide panel grew tall enough
+     to push 選ぶ and 合わせる past the bottom of the pane, where they were
+     sliced in half and a click on the visible sliver did nothing. The buttons
+     are the point of the panel; the turntable can give up the space. */
+  max-height: min(46vh, 340px);
+  flex: 0 1 auto;
+  min-height: 0;
   background: radial-gradient(
     80% 80% at 50% 42%,
     rgba(58, 48, 34, 0.5),
@@ -849,6 +856,7 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
+  flex: 0 0 auto;
 }
 
 /* --- documents (letters, ledgers, manuals) ----------------------------- */
