@@ -118,7 +118,11 @@ export function buildHall(mats: MaterialLibrary): HallProps {
 
   // drawer set built into the counter's right-hand return
   const drawers = drawerUnit(mats, 0.44, 0.62, 0.5, 2)
-  drawers.group.position.set(0.52, 0.02, 3.34)
+  // Pulled clear of the east wall. At x = 0.52 the pedestal ran from 0.30 to
+  // 0.74 while the wall's inner face is at 0.52, so half of it was inside the
+  // masonry and from the staircase view a slab of it appeared to hang out of
+  // the wall.
+  drawers.group.position.set(0.28, 0.02, 3.34)
   group.add(drawers.group)
   const receptionDrawer = drawers.drawers[1]
 
@@ -640,14 +644,34 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     // The boarding-over. It starts level with the top tread: any gap and the
     // player can see that there is nothing behind it.
     const boards = new THREE.Group()
+    // Behind the boards, a void. Without it the gaps between the planks show
+    // lit plaster, the whole thing reads as a panelled wall, and the player is
+    // left thinking the stairs merely stop rather than that someone closed them
+    // off - which is the difference between "this game is unfinished" and "this
+    // way is shut".
+    const voidPanel = mesh(
+      texturedBox(1.02, 1.16, 0.02, 1),
+      new THREE.MeshBasicMaterial({ color: 0x0a0806 }),
+      { cast: false, receive: false },
+    )
+    voidPanel.position.set(0, 1.58, -1.2)
+    boards.add(voidPanel)
     for (let i = 0; i < 5; i++) {
-      // Dark stock, and stood off the plaster far enough to throw a shadow
-      // line. In mid wood against a lit wall the boarding rendered at almost
-      // exactly the wall's value and simply vanished.
-      const b = mesh(texturedBox(1.05, 0.2, 0.032, 1.4), mats.woodDark)
-      b.position.set(0, 1.06 + i * 0.21, -1.12)
-      b.rotation.z = (i % 2 ? 1 : -1) * 0.006
+      // Dark stock, stood off the plaster far enough to throw a shadow line,
+      // and narrower than their spacing so the dark shows between them.
+      const b = mesh(texturedBox(1.08, 0.155, 0.034, 1.4), mats.woodDark)
+      b.position.set(0, 1.06 + i * 0.225, -1.12)
+      b.rotation.z = (i % 2 ? 1 : -1) * 0.008
       boards.add(b)
+      // hand-driven nails, two a side, not quite in line
+      for (const nx of [-0.44, 0.44]) {
+        const nail = mesh(new THREE.CylinderGeometry(0.007, 0.007, 0.008, 8), mats.steelDark, {
+          cast: false,
+        })
+        nail.rotation.x = Math.PI / 2
+        nail.position.set(nx + (i % 2 ? 0.015 : -0.01), 1.06 + i * 0.225 + (i % 3 ? 0.012 : -0.02), -1.1)
+        boards.add(nail)
+      }
     }
     stairs.add(boards)
 
