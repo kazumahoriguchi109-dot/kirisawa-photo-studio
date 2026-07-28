@@ -5,23 +5,44 @@
  * falls inside the one frame its viewpoint is locked to. This casts a dense ray
  * grid across each node's actual frame and records what a player could hit.
  * Anything registered but never hit is unfindable - a softlock, not difficulty.
+ *
+ * Both checks pump game time rather than sleeping: a backgrounded tab throttles
+ * requestAnimationFrame to about a frame a second, so a wall-clock wait would
+ * expire before the camera had finished moving.
  */
 window.__reachability = async function reachability() {
   const app = window.__kirisawa
   const d = app.debug
-  const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
   const reached = new Set()
   const perNode = {}
 
+  // Sweep at the narrowest aspect the game supports. The vertical field of view
+  // is fixed, so a 4:3 window is the tightest horizontal frame a player can
+  // have; anything that only fits on a widescreen monitor is not reliably
+  // reachable and must be recomposed rather than left to luck.
+  const restoreAspect = d.camera.aspect
+  d.camera.aspect = 4 / 3
+  d.camera.updateProjectionMatrix()
+
   for (const nodeId of d.nodeIds()) {
+    // No pumping between the jump and the pick. `go` snaps the viewpoint
+    // synchronously, and advancing game time here would let any sequence still
+    // in flight (the opening move, a narration beat) take the camera back.
     await d.go(nodeId)
-    await sleep(40)
+    d.syncCamera()
+    // World matrices are normally refreshed by the renderer. A throttled tab
+    // renders about once a second, so without this the raycaster tests against
+    // whatever transforms were current several seconds ago.
+    d.scene.updateMatrixWorld(true)
     const hits = new Set()
-    // 41 x 41 rays across the whole frame, i.e. everything on screen
-    for (let gx = -20; gx <= 20; gx++) {
-      for (let gy = -20; gy <= 20; gy++) {
-        const info = d.pick(gx / 20.5, gy / 20.5)
+    // 121 x 121 rays across the whole frame. The counter bell is 9 cm across,
+    // which a coarser grid steps straight over - a sampling miss then reads as
+    // an unreachable hotspot and sends you chasing a bug that is not there.
+    const N = 60
+    for (let gx = -N; gx <= N; gx++) {
+      for (let gy = -N; gy <= N; gy++) {
+        const info = d.pick(gx / (N + 0.5), gy / (N + 0.5))
         if (info) {
           hits.add(info.hotspot.id)
           reached.add(info.hotspot.id)
@@ -30,6 +51,9 @@ window.__reachability = async function reachability() {
     }
     perNode[nodeId] = Array.from(hits).sort()
   }
+
+  d.camera.aspect = restoreAspect
+  d.camera.updateProjectionMatrix()
 
   const all = d.allHotspotIds()
   const nodeScoped = all.filter((id) => !id.startsWith('cu:'))
@@ -44,11 +68,14 @@ window.__ringCheck = async function ringCheck() {
   const out = []
   for (const start of ['hall_n', 'studio_n', 'darkroom_n', 'office_n']) {
     await d.go(start)
-    await sleep(60)
+    d.pump(0.2)
     const seen = [d.scope()]
     for (let i = 0; i < 4; i++) {
-      await d.chapter.turn('right')
-      for (let w = 0; w < 60 && d.chapter.isBusy; w++) await sleep(50)
+      d.chapter.turn('right')
+      for (let w = 0; w < 200 && d.chapter.isBusy; w++) {
+        d.pump(0.05)
+        await sleep(0)
+      }
       seen.push(d.scope())
     }
     out.push({ start, seen, closes: seen[0] === seen[4], unique: new Set(seen).size })

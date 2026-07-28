@@ -219,6 +219,24 @@ export class App {
       clues: () => this.state.clues.map((c) => c.id),
       hints: () => this.chapter.activeHints().map((h) => h.id),
       lighting: () => this.state.lighting,
+      /**
+       * Advance the simulation without waiting for requestAnimationFrame.
+       *
+       * A headless or backgrounded tab throttles rAF to about one frame a
+       * second, and `frame()` clamps dt to 50 ms, so a half-second camera move
+       * would take ten real seconds to finish and every scripted wait would
+       * expire long before the game had actually done anything. Pumping fixed
+       * steps here makes a scripted run depend only on game time.
+       */
+      pump: (seconds: number, step = 1 / 60) => {
+        for (let t = 0; t < seconds; t += step) {
+          this.elapsed += step
+          this.timeline.update(step)
+          this.rig.update(step)
+          this.lighting.update(step)
+          this.chapter?.update(step)
+        }
+      },
     }
   }
 

@@ -71,26 +71,39 @@ function ring(
 export const NODES: ViewNode[] = [
   // ------------------------------------------------------------ 玄関ホール
   ...ring('hall', [
-    { dir: 'n', label: '受付と通路', at: [-1.0, E, 4.95], pitch: -0.04 },
-    { dir: 'e', label: '階段', at: [-0.95, E, 4.9], pitch: -0.02 },
-    { dir: 's', label: '玄関の引き戸', at: [-1.32, E, 4.2], fov: 60, pitch: -0.06 },
+    // The north wall carries two and a half metres of clickable detail, from the
+    // phosphor mark by the arch to the counter drawer. Standing between them
+    // with a wide lens is the only way all of it survives a 4:3 window.
+    { dir: 'n', label: '受付と通路', at: [-0.7, E, 5.05], pitch: -0.04, fov: 64 },
+    // Backed off from the newel post so the whole flight, not its middle third,
+    // is the subject of the frame.
+    { dir: 'e', label: '階段', at: [-1.6, E, 4.9], pitch: -0.05, fov: 60 },
+    { dir: 's', label: '玄関の引き戸', at: [-1.9, E, 4.3], fov: 62, pitch: -0.06 },
     { dir: 'w', label: '配電盤の壁', at: [-1.55, E, 4.85] },
   ]),
 
   // -------------------------------------------------------------- 撮影室
   ...ring('studio', [
-    { dir: 'n', label: '背景幕', at: [0.05, E + 0.02, 1.55], fov: 62, pitch: -0.02 },
-    { dir: 'e', label: '肖像写真の壁', at: [0.7, E, 0.5], fov: 58 },
-    { dir: 's', label: '玄関ホールへ', at: [-0.9, E, 0.9], fov: 60 },
-    { dir: 'w', label: '暗室の扉', at: [-0.9, E, -0.1], fov: 58 },
+    { dir: 'n', label: '背景幕', at: [-0.35, E + 0.02, 1.55], fov: 62, pitch: -0.02 },
+    // Stands west of the plate camera so the camera reads as the foreground of
+    // this composition and the portrait wall as its depth.
+    { dir: 'e', label: '大判カメラと肖像の壁', at: [-0.6, E, 0.55], fov: 58 },
+    // Far enough back that both lamp stands flank the archway; from any closer
+    // the west stand falls outside the frame entirely.
+    { dir: 's', label: '撮影灯と通路', at: [-0.43, E, -1.0], fov: 62, pitch: -0.05 },
+    { dir: 'w', label: '暗室の扉', at: [-0.6, E, -0.85], fov: 58 },
   ]),
 
   // ---------------------------------------------------------------- 暗室
   ...ring('darkroom', [
-    { dir: 'n', label: '作業台', at: [-5.05, E, -1.42], pitch: -0.28, fov: 58 },
-    { dir: 'e', label: '扉と鍵板', at: [-4.4, E, -1.3], fov: 56 },
-    { dir: 's', label: '薬品棚', at: [-4.5, E, -0.5], pitch: -0.05, fov: 56 },
-    { dir: 'w', label: '引き伸ばし機', at: [-4.5, E, -1.15], pitch: -0.1, fov: 58 },
+    // Pitched at the bench but not so steeply that the wall clock leaves frame.
+    { dir: 'n', label: '作業台', at: [-5.05, E, -1.42], pitch: -0.18, fov: 60 },
+    { dir: 'e', label: '扉と鍵板', at: [-4.65, E, -1.55], fov: 60 },
+    // Backed off so the shelf is a whole object rather than a wall of tins, and
+    // so the east end of the drying line - where the last print gets hung - is
+    // in shot.
+    { dir: 's', label: '薬品棚', at: [-4.5, E, -1.55], pitch: 0.06, fov: 60 },
+    { dir: 'w', label: '引き伸ばし機と物干し線', at: [-4.5, E, -1.15], pitch: -0.1, fov: 58 },
   ]),
 
   // -------------------------------------------------------------- 事務室

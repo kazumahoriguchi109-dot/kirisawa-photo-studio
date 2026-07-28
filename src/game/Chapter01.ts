@@ -539,7 +539,9 @@ export class Chapter01 {
       target: hall.fuseBoxDoor.parent as THREE.Object3D,
       label: '配電盤',
       verb: 'examine',
-      scope: ['hall_n'],
+      // The board is on the west wall: from the reception view it sits a full
+      // 68 degrees off axis, i.e. off screen. It belongs to the west frame.
+      scope: ['hall_w'],
       onActivate: () => void this.enterCloseup('cu_fusebox', [-2.62, 1.52, 4.1], [-3.12, 1.5, 4.1], { fov: 40 }),
     })
     this.hs({
@@ -712,8 +714,10 @@ export class Chapter01 {
     this.ambient('hall:telephone', hall.telephone, '黒電話', ['hall_n'], 'mem_telephone')
     this.ambient('hall:calendar', hall.calendar, '暦', ['hall_w'], 'mem_calendar')
     this.ambient('hall:coat', hall.coatRack, 'コート掛け', ['hall_w', 'hall_s'], 'mem_coat_rack')
-    this.ambient('hall:umbrella', hall.umbrella, '傘立て', ['hall_s', 'hall_e'], 'mem_umbrella')
-    this.ambient('hall:stairs', hall.stairs, '階段', ['hall_w', 'hall_s'], 'mem_stairs')
+    this.ambient('hall:umbrella', hall.umbrella, '傘立て', ['hall_s'], 'mem_umbrella')
+    // The staircase is the whole subject of the east frame; it was never in
+    // shot from either of the views it used to be scoped to.
+    this.ambient('hall:stairs', hall.stairs, '階段', ['hall_e'], 'mem_stairs')
     this.ambient('hall:heights', hall.heightMarks, '柱の線', ['hall_n'], 'mem_height_marks')
 
     // phosphorescent mark
@@ -1065,7 +1069,9 @@ export class Chapter01 {
       target: studio.viewCamera,
       label: '大判カメラ',
       verb: 'examine',
-      scope: ['studio_n'],
+      // Stands east of centre, so it is 48 degrees off the axis of the backdrop
+      // view - never on screen there. The east frame is composed around it.
+      scope: ['studio_e'],
       onActivate: () => void this.enterCloseup('cu_camera', [1.18, 1.62, 0.86], [1.18, 1.6, 0.2], { fov: 40 }),
     })
     this.hs({
@@ -1112,7 +1118,9 @@ export class Chapter01 {
       priority: 2,
       label: '撮影灯の台座',
       verb: 'examine',
-      scope: ['studio_w'],
+      // The west stand is at the south end of the room, so it is framed by the
+      // south view, not the one that faces the darkroom door.
+      scope: ['studio_s'],
       onActivate: () => void this.enterCloseup('cu_lamp', [-2.2, 0.95, 2.15], [-2.16, 0.06, 1.54], { fov: 44 }),
     })
     this.hs({
@@ -1159,7 +1167,8 @@ export class Chapter01 {
       label: '暗室の扉',
       verb: 'open',
       scope: 'studio_w',
-      verbFor: (ctx) => (ctx.selectedItem === 'key_darkroom' ? 'use' : 'open'),
+      verbFor: (ctx) =>
+        this.flag('darkroom_open') ? 'advance' : ctx.selectedItem === 'key_darkroom' ? 'use' : 'open',
       onActivate: (ctx) => void this.tryUnlock('darkroom', ctx.selectedItem),
     })
     this.hs({
@@ -1168,7 +1177,8 @@ export class Chapter01 {
       label: '事務室の扉',
       verb: 'open',
       scope: 'studio_e',
-      verbFor: (ctx) => (ctx.selectedItem === 'key_office' ? 'use' : 'open'),
+      verbFor: (ctx) =>
+        this.flag('office_open') ? 'advance' : ctx.selectedItem === 'key_office' ? 'use' : 'open',
       onActivate: (ctx) => void this.tryUnlock('office', ctx.selectedItem),
     })
 
@@ -1347,7 +1357,11 @@ export class Chapter01 {
   private async tryUnlock(which: 'darkroom' | 'office', selected: string | null): Promise<void> {
     const openFlag = `${which}_open`
     if (this.flag(openFlag)) {
-      this.say('もう開いている。')
+      // The door leaf carries both this hotspot and the doorway exit, and this
+      // one wins the pick. If it only announced that the door was open the
+      // player would be locked out of the room it leads to, so once it is
+      // unlocked clicking the door is how you walk through it.
+      await this.goToNode(EXITS[which === 'darkroom' ? 'studio_w' : 'studio_e'].to)
       return
     }
     const need = which === 'darkroom' ? 'key_darkroom' : 'key_office'
@@ -1512,7 +1526,9 @@ export class Chapter01 {
       target: [darkroom.dryingLine, darkroom.negativeSleeve],
       label: '乾燥ロープ',
       verb: 'examine',
-      scope: ['darkroom_s'],
+      // The sleeve is pegged at the west end of the line, beside the enlarger -
+      // from the shelf view it hangs a metre off the left edge of the frame.
+      scope: ['darkroom_w'],
       onActivate: () => void this.enterCloseup('cu_line', [-5.7, 1.72, -0.22], [-5.7, 1.84, -0.7], { fov: 40 }),
     })
     this.hs({
