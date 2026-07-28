@@ -2,7 +2,14 @@ import * as THREE from 'three'
 import { lathe, mesh, roundedBox, texturedBox } from '../../world/Geo'
 import type { MaterialLibrary } from '../../world/Materials'
 import { ctx2d, makeCanvas } from '../../world/Textures'
-import { lastFrameCanvas, negativeCanvas, photoTexture, portraitCanvas, studioRecordCanvas } from '../../world/Photographs'
+import {
+  lastFrameCanvas,
+  negativeCanvas,
+  photoTexture,
+  portraitCanvas,
+  studioRecordCanvas,
+  unexposedPrintCanvas,
+} from '../../world/Photographs'
 import { makeFuse } from '../../world/props/Hall'
 
 /**
@@ -637,19 +644,42 @@ export const ITEMS: Record<string, ItemDef> = {
   print_1: makeChroniclePrint('print_1', '写真　一歳', '一歳の誕生日。抱かれているので、顔は半分だけ写っている。裏に「五四・七・一」。', 3, '五四・七・一'),
   print_4: makeChroniclePrint('print_4', '写真　四歳', '椅子には座らず、椅子の脚につかまって立っている。裏に「五七・七・三」。', 8, '五七・七・三'),
   print_7: makeChroniclePrint('print_7', '写真　七歳', '正面。背景幕は絵のほう。笑うのが早すぎて、目がすこし閉じかけている。裏に「六〇・七・二」。', 13, '六〇・七・二'),
-  print_last_slot: makeChroniclePrint(
-    'print_last_slot',
-    '写真　四枚目',
-    '金庫の底に、他の三枚と揃えて置いてあった。七歳の隣に貼るはずだった一枚。貼られないまま四十年、束の中にいた。',
-    2,
-    '六〇・一一・二三',
-  ),
+  // The fourth print is blank on purpose. The sitting it was cut for never
+  // happened, so there is no portrait to print: what the father left in the
+  // safe is a mount he had already trimmed, dated and set aside for a boy who
+  // did not come. A portrait here would quietly undo the whole ending.
+  print_last_slot: {
+    id: 'print_last_slot',
+    name: '写真　四枚目',
+    desc: '金庫の底に、包んで仕舞ってあった。台紙は切って日付まで入っているのに、像が出ていない。焼かれないまま四十年、ここにいた。',
+    category: 'record',
+    viewRadius: 0.19,
+    keepAfterUse: true,
+    build: () => {
+      const front = photoTexture('item-print_last_slot', () =>
+        unexposedPrintCanvas({ width: 230, height: 300 }),
+      )
+      const back = photoTexture('item-print_last_slot-back', () =>
+        makeBackCanvas('六〇・一一・二三', ''),
+      )
+      return card(front, back, 0.17, 0.22)
+    },
+    details: [
+      {
+        id: 'print_last_slot_back',
+        facing: [0, 0, -1],
+        tolerance: 0.9,
+        title: '写真の裏',
+        text: '裏に鉛筆で日付だけ。「六〇・一一・二三」。名前は書いていない。撮る前に、書いてあったのだ。',
+      },
+    ],
+  },
 
   // --------------------------------------------------------------- documents
   note_kyoichi: {
     id: 'note_kyoichi',
     name: '手記',
-    desc: '金庫の中にあった。日付は昭和六十年十一月二十三日、夜。折り目が、一度も開かれた形跡がない。',
+    desc: '金庫の中にあった。日付は昭和六十年十一月二十三日、夜。折り目に、一度も開かれた形跡がない。',
     category: 'document',
     viewRadius: 0.2,
     document: 'doc_note',
@@ -673,7 +703,7 @@ export const ITEMS: Record<string, ItemDef> = {
   letter_akari: {
     id: 'letter_akari',
     name: '出されなかった手紙',
-    desc: '表に「灯　へ」とだけ。宛先も切手もない。封をされないまま、四十年、金庫の底にあった。',
+    desc: '表に「灯へ」とだけ。宛先も切手もない。封をされないまま、四十年、金庫の底にあった。',
     category: 'document',
     viewRadius: 0.2,
     document: 'doc_letter',

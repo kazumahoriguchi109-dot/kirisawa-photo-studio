@@ -106,7 +106,7 @@ export const NODES: ViewNode[] = [
     // so the east end of the drying line - where the last print gets hung - is
     // in shot.
     { dir: 's', label: '薬品棚', at: [-4.5, E, -1.55], pitch: 0.06, fov: 60 },
-    { dir: 'w', label: '引き伸ばし機と物干し線', at: [-4.5, E, -1.15], pitch: -0.1, fov: 58 },
+    { dir: 'w', label: '引き伸ばし機と乾燥ロープ', at: [-4.5, E, -1.15], pitch: -0.1, fov: 58 },
   ]),
 
   // -------------------------------------------------------------- 事務室

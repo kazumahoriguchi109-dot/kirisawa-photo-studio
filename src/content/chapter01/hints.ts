@@ -60,7 +60,7 @@ export const HINTS: Record<string, HintEntry> = {
   },
   p7_marks: {
     id: 'p7_marks',
-    title: '赤の下の三字',
+    title: '赤の下の三つの書き付け',
     steps: [
       '赤い明かりのまま、暗室を出て歩いてみる。',
       '壁の同じ高さに、赤の下でだけ読める字がある。暗室以外の三部屋に、一つずつ。',

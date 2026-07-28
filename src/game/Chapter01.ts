@@ -49,6 +49,13 @@ export interface ChapterDeps {
   onEnding(id: string): void
 }
 
+/**
+ * The game writes its numbers in kanji everywhere else, so anything built from
+ * a loop index has to as well - otherwise the trays read 「一つめのバット」
+ * upstairs and the entrance lock reads 「1つめの環」 downstairs.
+ */
+const KANJI_ORDINAL = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十']
+
 /** Shown beside the 戻る button so the player always knows what they are in. */
 const CLOSEUP_TITLES: Record<string, string> = {
   cu_drawer: '受付の抽斗',
@@ -286,6 +293,10 @@ export class Chapter01 {
     this.closeup = null
     this.dragHandler = null
     this.d.ui.setCloseup(false)
+    // Flavour text belongs to the thing it describes. Left standing, a line
+    // about a darkroom tray sits under a hall composition several rooms later
+    // and reads as a stuck panel.
+    this.d.ui.clearNarration()
     const spec = nodeToSpec(node)
     if (instant) this.d.rig.applyViewpoint(spec)
     else {
@@ -314,6 +325,7 @@ export class Chapter01 {
     this.busy = false
     this.d.state.setNode(nextId)
     this.d.interaction.setScope(nextId)
+    this.d.ui.clearNarration()
     this.refreshTurnZones()
     this.d.save.saveThrottled(8000)
   }
@@ -690,7 +702,7 @@ export class Chapter01 {
       this.hs({
         id: `cu:lock:ring${i}`,
         target: ring,
-        label: `${i + 1}つめの環`,
+        label: `${KANJI_ORDINAL[i]}つめの環`,
         verb: 'turn',
         scope: 'cu_lock',
         onActivate: () => this.turnRing(i),
@@ -705,6 +717,15 @@ export class Chapter01 {
       priority: -1,
       onActivate: () => {
         this.say('環が四つ。それぞれに印が打ってある。絞り、浮かぶ像、横一文字、四角。写真の工程だ。')
+        // Written down, not just spoken. This is the reading the whole ending
+        // turns on, and as transient narration a player who clicked past it had
+        // no way to get it back.
+        this.clue(
+          'clue_lockplate',
+          '玄関の錠前',
+          '玄関の錠には環が四つ。左から、絞り、浮かぶ像、横一文字、四角の印。いずれも写真の工程を表す印だ。順番は、工程の順に合わせるものらしい。',
+          '玄関ホール　引き戸の錠',
+        )
         this.d.audio.play('select')
       },
     })
@@ -713,7 +734,7 @@ export class Chapter01 {
     this.ambient('hall:bell', hall.bell, '呼び鈴', ['hall_n'], 'mem_bell')
     this.ambient('hall:telephone', hall.telephone, '黒電話', ['hall_n'], 'mem_telephone')
     this.ambient('hall:calendar', hall.calendar, '暦', ['hall_w'], 'mem_calendar')
-    this.ambient('hall:coat', hall.coatRack, 'コート掛け', ['hall_w', 'hall_s'], 'mem_coat_rack')
+    this.ambient('hall:coat', hall.coatRack, '外套掛け', ['hall_w', 'hall_s'], 'mem_coat_rack')
     this.ambient('hall:umbrella', hall.umbrella, '傘立て', ['hall_s'], 'mem_umbrella')
     // The staircase is the whole subject of the east frame; it was never in
     // shot from either of the views it used to be scoped to.
@@ -829,7 +850,7 @@ export class Chapter01 {
     }
     this.d.state.setFlag(`mark_${key}`)
     this.d.audio.play('shimmer')
-    this.say(`塗料で書かれた一字が、赤い明かりの下だけで浮かび上がる。「${glyph}」。`)
+    this.say(`塗料で書かれた字が、赤い明かりの下だけで浮かび上がる。「${glyph}」。`)
     const found = ['hall', 'studio', 'office'].filter((k) => this.flag(`mark_${k}`)).length
     this.clue(
       `clue_mark_${key}`,
@@ -841,7 +862,7 @@ export class Chapter01 {
       this.solve('p7_marks')
       this.clue(
         'clue_marks_all',
-        '三つの字',
+        '三つの書き付け',
         '玄関ホールに「灯」、撮影室に「を」、事務室に「かえす」。三つ揃えて、ひと続きの言葉になる。',
         '安全灯の下',
       )
@@ -927,7 +948,7 @@ export class Chapter01 {
     this.hs({
       id: 'cu:chair:slit',
       target: studio.chairCushion,
-      label: '座布の裂け目',
+      label: '座面の裂け目',
       verb: 'pull',
       scope: 'cu_chair',
       priority: 2,
@@ -1029,7 +1050,7 @@ export class Chapter01 {
       this.hs({
         id: `cu:chronicle:slot${i}`,
         target: slot,
-        label: ['一歳の枠', '四歳の枠', '七歳の枠', '空欄の枠'][i],
+        label: ['一歳の枠', '四歳の枠', '七歳の枠', '四枚目の枠'][i],
         verb: 'examine',
         scope: 'cu_chronicle',
         verbFor: (ctx) => (ctx.selectedItem ? 'use' : 'examine'),
@@ -1211,7 +1232,7 @@ export class Chapter01 {
       this.d.audio.play('discovery')
       if (text) this.say(text)
       const n = (['clock', 'backdrop', 'chair'] as const).filter((k) => this.flag(`diff_${k}`)).length
-      this.d.ui.toast(`${n}／三`, '写真との違い')
+      this.d.ui.toast(`${KANJI_ORDINAL[n - 1]}／三`, '写真との違い')
       this.clue(
         `clue_diff_${key}`,
         `写真との違い（${['一', '二', '三'][n - 1]}／三）`,
@@ -1646,12 +1667,12 @@ export class Chapter01 {
           this.clue(
             'clue_tray_warning',
             '順は台に非ず',
-            '暗室の壁に、赤の下でだけ読める字。「順は台に非ず　書に在り」。台のバットの並びは当てにならない、という意味だ。三つ集める一字とは別の書き付けらしい。',
+            '暗室の壁に、赤の下でだけ読める字。「順は台に非ず　書に在り」。台のバットの並びは当てにならない、という意味だ。赤の下に浮かぶ三つの書き付けとは、別のものらしい。',
             '安全灯の下　暗室',
           )
           this.d.save.save()
         }
-        this.say('赤の下に、館主の字が浮く。——順は台に非ず、書に在り。三つの一字とは、別の書き付けだ。')
+        this.say('赤の下に、館主の字が浮く。——順は台に非ず、書に在り。三つの書き付けとは、別のものだ。')
       },
     })
 
@@ -1868,7 +1889,7 @@ export class Chapter01 {
     if (!this.flag('safe_number_known')) {
       this.d.audio.play('discovery')
       this.learnSafeNumber('projection')
-      this.say('ルーペを当てる。像の右下、事務室の金庫が写り込んでいる。環の目盛は——二十七。')
+      this.say('ルーペを当てる。像の左下、事務室の金庫が写り込んでいる。環の目盛は——二十七。')
       return
     }
     this.say('環は二十七を指したままだ。')
@@ -1958,7 +1979,7 @@ export class Chapter01 {
     this.clue(
       'clue_truth',
       '最後の一枚',
-      '最後のネガを現像した。写っていたのは倒れた薬品の瓶と、床に広がっていく液。人は写っていない。火は、この家の主人自身の手落ちから出ている。',
+      '最後のネガを現像した。写っていたのは倒れた薬品の瓶と、床に広がっていく液。人は写っていない。火は、この家の主人の手から出ている。',
       '暗室',
     )
     this.busy = false
@@ -2020,7 +2041,7 @@ export class Chapter01 {
           this.clue(
             'clue_order',
             '工程の順',
-            '暗室作業手順。一、撮影。二、現像。三、停止。四、定着。末尾に「バットは左からこの順に並べておくこと」「ラベルだけを信じないこと」。',
+            '暗室作業手順。一、撮影。二、現像。三、停止。四、定着。末尾に「バットは作業台の左から、現像、停止、定着、水洗の順」「撮影は暗室の外の仕事だから、台には載らない」「ラベルだけを信じないこと」。',
             '事務室　壁の貼り紙',
           )
           this.d.save.save()
@@ -2074,7 +2095,7 @@ export class Chapter01 {
       },
     })
 
-    this.ambient('office:shelves', office.deskLamp, '卓上の灯', ['office_n'], 'mem_kettle')
+    this.ambient('office:desklamp', office.deskLamp, '卓上の灯', ['office_n'], 'mem_desk_lamp')
 
     this.hs({
       id: 'office:phosphor',

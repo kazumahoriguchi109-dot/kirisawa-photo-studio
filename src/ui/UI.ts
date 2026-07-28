@@ -16,6 +16,11 @@ import { VERB_LABEL, type HoverInfo } from '../systems/Interaction'
 
 export interface UICallbacks {
   onTurn(direction: 'left' | 'right'): void
+  /**
+   * A click landed on an edge turn zone. Returns true if there was a world
+   * hotspot under that point and it was activated instead of turning.
+   */
+  onEdgeClick(clientX: number, clientY: number): boolean
   onCloseupBack(): void
   onNewGame(): void
   onContinue(): void
@@ -131,8 +136,14 @@ export class GameUI {
       z.setAttribute('aria-label', side === 'left' ? '左を向く' : '右を向く')
       z.tabIndex = 0
       z.innerHTML = '<span class="chev"></span><span class="zone-label"></span>'
-      z.addEventListener('click', () => {
-        if (z.dataset.live === '1') this.cb.onTurn(side)
+      z.addEventListener('click', (e) => {
+        if (z.dataset.live !== '1') return
+        // The zone sits on top of the canvas, so anything the composition puts
+        // near an edge would otherwise have its clicks swallowed and the player
+        // would just turn away from the thing they were trying to examine. Ask
+        // the world first; only turn if there is nothing there.
+        if (this.cb.onEdgeClick(e.clientX, e.clientY)) return
+        this.cb.onTurn(side)
       })
       z.addEventListener('keydown', (e) => {
         if ((e.key === 'Enter' || e.key === ' ') && z.dataset.live === '1') {
@@ -191,7 +202,14 @@ export class GameUI {
     this.panelTitle = this.el('h2', 'panel-title')
     this.panelTitle.id = 'panel-title'
     this.panelSub = this.el('span', 'panel-sub')
-    head.append(this.panelTitle, this.panelSub)
+    // Every close-up gets a prominent × 戻る; the modal panels had nothing at
+    // all. The only way out was clicking the scrim, which is invisible, or Esc,
+    // which the HUD advertises but which a player has no reason to trust after
+    // finding no button.
+    const panelClose = this.el('button', 'panel-close clickable', `×　${UI_TEXT.back}`)
+    panelClose.setAttribute('aria-label', UI_TEXT.back)
+    panelClose.addEventListener('click', () => this.closeTop())
+    head.append(this.panelTitle, this.panelSub, panelClose)
     this.panelBody = this.el('div', 'panel-body')
     this.panelFoot = this.el('div', 'panel-foot')
     this.panel.append(head, this.panelBody, this.panelFoot)
@@ -578,7 +596,7 @@ export class GameUI {
   // ------------------------------------------------------------- inventory
 
   private renderInventory(): void {
-    this.showPanel(UI_TEXT.inventory, `${this.state.inventory.length} 点`)
+    this.showPanel(UI_TEXT.inventory, `${kanjiNum(this.state.inventory.length)} 点`)
     const layout = this.el('div')
     layout.id = 'inv-layout'
     const grid = this.el('div')
@@ -731,7 +749,7 @@ export class GameUI {
   // ----------------------------------------------------------------- clues
 
   private renderClues(): void {
-    this.showPanel(UI_TEXT.clues, `${this.state.clues.length} 件`)
+    this.showPanel(UI_TEXT.clues, `${kanjiNum(this.state.clues.length)} 件`)
     if (this.state.clues.length === 0) {
       this.panelBody.innerHTML = `<div class="inv-empty">${UI_TEXT.cluesEmpty}</div>`
     } else {
@@ -988,7 +1006,7 @@ export class GameUI {
     const credits = this.el('button', 'btn ghost clickable', '制作について')
     credits.addEventListener('click', () => this.open('credits'))
     foot.append(again, credits)
-    const tally = this.el('div', 'panel-sub e-line', `見届けた結末　${seenCount} ／ ${total}`)
+    const tally = this.el('div', 'panel-sub e-line', `見届けた結末　${kanjiNum(seenCount)} ／ ${kanjiNum(total)}`)
     tally.style.animationDelay = '3.0s'
     this.endingEl.append(title, body, card, tally, foot)
     this.endingEl.dataset.open = '1'
@@ -1041,6 +1059,16 @@ export class GameUI {
         break
     }
   }
+}
+
+/** Kanji numerals, so counts built in code match the prose everywhere else. */
+function kanjiNum(n: number): string {
+  const d = ['〇', '一', '二', '三', '四', '五', '六', '七', '八', '九']
+  if (n < 0) return String(n)
+  if (n < 10) return d[n]
+  if (n < 20) return n === 10 ? '十' : `十${d[n % 10]}`
+  if (n < 100) return `${d[Math.floor(n / 10)]}十${n % 10 ? d[n % 10] : ''}`
+  return String(n)
 }
 
 function wait(ms: number): Promise<void> {

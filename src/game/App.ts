@@ -122,6 +122,20 @@ export class App {
 
     this.ui = new GameUI(this.state, this.settings, this.inspector, {
       onTurn: (dir) => void this.chapter.turn(dir),
+      onEdgeClick: (clientX, clientY) => {
+        if (!this.inGame || this.ui.isPanelOpen || this.chapter.isBusy) return false
+        const r = this.canvas.getBoundingClientRect()
+        const ndc = {
+          x: ((clientX - r.left) / r.width) * 2 - 1,
+          y: -((clientY - r.top) / r.height) * 2 + 1,
+        }
+        this.interaction.setScope(this.chapter.currentScope)
+        const hit = this.interaction.pick(ndc.x, ndc.y, { selectedItem: this.state.selectedItemId })
+        if (!hit) return false
+        this.pointerNdc = ndc
+        void this.onClick()
+        return true
+      },
       onCloseupBack: () => void this.chapter.exitCloseup(),
       onNewGame: () => void this.startNewGame(),
       onContinue: () => void this.continueGame(),
@@ -204,15 +218,39 @@ export class App {
       save: this.save,
       begin: () => this.startNewGame(),
       go: (nodeId: string) => this.chapter.goToNode(nodeId, true),
-      /** Fire a hotspot by id, exactly as a click would. */
+      /**
+       * Fire a hotspot by id, exactly as a click would - including refusing the
+       * ones a click could not reach. Without the guards below it is possible
+       * to "discover" that the player can walk out of the building without
+       * solving the lock, when in fact the hotspot that does it is hidden until
+       * the lock is open and no click could ever land on it.
+       */
       act: (id: string, selected?: string | null) => {
         const hs = this.interaction.get(id)
         if (!hs) throw new Error(`no hotspot ${id}`)
+        const scope = this.chapter.currentScope
+        const scopes = Array.isArray(hs.scope) ? hs.scope : [hs.scope]
+        if (!scopes.includes(scope)) {
+          throw new Error(`hotspot ${id} is out of scope (standing at ${scope})`)
+        }
         if (selected !== undefined) this.state.selectItem(selected)
+        if (hs.visible && !hs.visible({ selectedItem: this.state.selectedItemId })) {
+          throw new Error(`hotspot ${id} is not visible right now`)
+        }
         return hs.onActivate({ selectedItem: this.state.selectedItemId })
       },
-      /** Hotspot ids currently pickable from where the player stands. */
+      /**
+       * Hotspot ids currently pickable from where the player stands.
+       *
+       * Refreshes the transforms first. Survey points are projected through the
+       * camera, and world matrices are normally only updated by the renderer -
+       * so in a throttled tab this used to test against transforms several
+       * seconds stale and return an empty list at viewpoints with plenty on
+       * screen, which is a very convincing way to fake a bug.
+       */
       visible: () => {
+        this.rig.camera.updateMatrixWorld(true)
+        this.scene.updateMatrixWorld(true)
         this.interaction.setScope(this.chapter.currentScope)
         return this.interaction
           .surveyPoints({ selectedItem: this.state.selectedItemId })
@@ -399,8 +437,13 @@ export class App {
     this.ui.hideTitle()
     await this.ui.closeShutter()
     const node = NODE_MAP.get(this.state.nodeId) ?? NODE_MAP.get(START_NODE)!
+    // Go through the chapter rather than moving the rig directly. Endings are
+    // reached from inside a close-up, and the chapter's own close-up state is
+    // not part of the save - so continuing afterwards used to drop the player
+    // back inside the entrance-lock close-up with the back control gone and no
+    // way out at all, which made every ending after the first unreachable.
+    await this.chapter.goToNode(node.id, true)
     this.rig.applyViewpoint(nodeToSpec(node))
-    this.interaction.setScope(node.id)
     this.lighting.snapTo(this.state.lighting)
     this.audio.setLighting(this.state.lighting, true)
     this.exposure = this.lighting.targetGrade().exposure

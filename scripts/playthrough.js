@@ -156,7 +156,10 @@ window.__playthrough = async function playthrough(route) {
   expect(d.flags().chronicle_open, '背景幕が巻き上がった')
 
   // -------------------------------------------------------- P4 ground glass
-  d.go('studio_n')
+  // The plate camera stands east of centre and is framed by the east view, not
+  // the backdrop view. Walking to the wrong node here used to pass anyway,
+  // because the debug hook did not enforce scope.
+  d.go('studio_e')
   await act('studio:camera')
   await act('cu:camera:drawer')
   await act('cu:camera:drawer')
@@ -170,7 +173,7 @@ window.__playthrough = async function playthrough(route) {
   expect(d.items().some((i) => i.startsWith('loupe')), 'ルーペを組み上げた')
 
   // ------------------------------------------------------- key and darkroom
-  d.go('studio_w')
+  d.go('studio_s')
   await act('studio:lampbase')
   await act('cu:lamp:floor')
   expect(d.flags().key_revealed, '灯の下に鍵を見つけた')
@@ -191,7 +194,7 @@ window.__playthrough = async function playthrough(route) {
   expect(d.state.nodeId === 'studio_w', '同じ扉から撮影室に戻れた')
 
   // ------------------------------------------------------------- P5 developer
-  d.go('darkroom_e')
+  d.go('darkroom_s')
   await act('dark:shelf')
   await act('cu:shelf:powder')
   await act('cu:shelf:water')
@@ -209,10 +212,11 @@ window.__playthrough = async function playthrough(route) {
   expect(d.flags().developer_poured, '現像液をバットに移した')
 
   // ---------------------------------------------------------- negative + key
-  d.go('darkroom_e')
+  d.go('darkroom_w')
   await act('dark:line')
   await act('cu:line:neg')
   expect(d.items().some((i) => i.startsWith('negative_old')), '古いネガを手に入れた')
+  d.go('darkroom_e')
   await act('dark:keyboard')
   await act('cu:keys:take')
   expect(d.items().some((i) => i.startsWith('key_office')), '事務室の鍵を手に入れた')
@@ -282,7 +286,7 @@ window.__playthrough = async function playthrough(route) {
   expect(d.items().some((i) => i.startsWith('print_last_slot')), '写真（空欄の分）を手に入れた')
 
   // -------------------------------------------------------- phosphor marks
-  d.go('hall_w')
+  d.go('hall_n')
   await act('hall:phosphor')
   d.go('studio_w')
   await act('studio:phosphor')
