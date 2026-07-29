@@ -103,6 +103,8 @@ window.__badorder = async function badorder() {
   // --- and the photograph the hidden ending needs is obtainable
   d.go('hall_n')
   await act('hall:record')
+  // Two clicks now: lift the backing board, then take what is under it.
+  await act('cu:record:back')
   await act('cu:record:back')
   expect(d.items().some((i) => i.startsWith('print_1')), '写真（一歳）を手に入れた')
 

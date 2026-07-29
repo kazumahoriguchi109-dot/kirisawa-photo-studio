@@ -1129,6 +1129,22 @@ button {
   line-height: 1.7;
 }
 
+/* A finished note is still worth keeping - it is where the player goes to
+   re-read what they worked out - but it should not compete with the open ones. */
+.clue[data-done="1"] {
+  opacity: 0.58;
+}
+.clue-done {
+  margin-left: 0.9em;
+  padding: 0.12em 0.6em;
+  font-size: 0.62em;
+  letter-spacing: 0.12em;
+  vertical-align: 0.15em;
+  color: #17130e;
+  background: var(--brass-2);
+  border-radius: 2px;
+}
+
 /* --- settings ---------------------------------------------------------- */
 .set-row {
   display: grid;

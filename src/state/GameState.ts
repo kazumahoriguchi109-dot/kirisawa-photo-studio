@@ -44,6 +44,14 @@ export interface ClueEntry {
   body: string
   source: string
   at: number
+  /**
+   * When this puzzle is solved, or this flag is set, the note is shown as
+   * 解決済み and sorted below the open ones. A notebook that never distinguishes
+   * what is still outstanding from what is finished grows into a wall of text
+   * the player has to re-read from the top every time they get stuck.
+   */
+  solvedBy?: string
+  solvedFlag?: string
 }
 
 export interface SaveData {
@@ -311,6 +319,22 @@ export class GameState {
     this.data.clues.push(entry)
     this.events.emit('clue:added', { clue: entry })
     return true
+  }
+
+  /**
+   * Add, or rewrite in place if it is already there.
+   *
+   * A running tally - 「年代記の写真を集める　二／四」 - has to be one note that
+   * changes, not four notes that accumulate.
+   */
+  upsertClue(clue: Omit<ClueEntry, 'at'>): void {
+    const i = this.data.clues.findIndex((c) => c.id === clue.id)
+    if (i < 0) {
+      this.addClue(clue)
+      return
+    }
+    this.data.clues[i] = { ...this.data.clues[i], ...clue }
+    this.events.emit('clue:added', { clue: this.data.clues[i] })
   }
 
   hasClue(id: string): boolean {

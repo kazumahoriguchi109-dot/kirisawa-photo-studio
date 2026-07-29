@@ -155,6 +155,7 @@ export class Chapter01 {
     // The two mid-game photographs are visible in their containers from the
     // moment the container is opened until they are taken, so the second click
     // is a click on a photograph and a reload still shows one waiting.
+    hall.mountPrint.visible = s.flag('mount_lifted') && !s.hasItem('print_1')
     darkroom.understorePrint.visible = s.flag('understore_open') && !s.hasItem('print_4')
     office.deskPrint.visible = s.flag('desk_open') && !s.hasItem('print_7')
     ;(hall.fuseSpare as unknown as THREE.Object3D).visible =
@@ -283,8 +284,14 @@ export class Chapter01 {
     }
   }
 
-  private clue(id: string, title: string, body: string, source: string): void {
-    if (this.d.state.addClue({ id, title, body, source })) {
+  private clue(
+    id: string,
+    title: string,
+    body: string,
+    source: string,
+    solved?: { solvedBy?: string; solvedFlag?: string },
+  ): void {
+    if (this.d.state.addClue({ id, title, body, source, ...solved })) {
       this.d.audio.play('discovery')
       this.d.ui.toast(title, '覚え書き')
     }
@@ -852,10 +859,25 @@ export class Chapter01 {
       verb: 'pull',
       scope: 'cu_record',
       priority: 2,
+      labelFor: () => (this.flag('mount_lifted') ? '台紙の裏の写真' : '額の台紙'),
+      verbFor: () => (this.flag('mount_lifted') ? 'take' : 'pull'),
       visible: () => this.d.state.isSolved('p2_observe') && !this.d.state.hasItem('print_1'),
       onActivate: () => {
+        // Lift the board first, take what is under it second. Every other
+        // photograph is a thing you can see before you pick it up; this one
+        // went straight from a flat frame into the inventory.
+        if (!this.flag('mount_lifted')) {
+          this.d.state.setFlag('mount_lifted')
+          this.d.audio.play('paper')
+          hall.mountPrint.visible = true
+          this.say('台紙が一度剥がされている。裏板を起こすと、あいだに写真がもう一枚挟まっていた。')
+          this.d.save.save()
+          return
+        }
         this.d.audio.play('paper')
-        this.grant('print_1', '台紙と裏板のあいだに、写真がもう一枚挟んであった。子供が一人。抱かれていて、顔は半分だけ写っている。')
+        hall.mountPrint.visible = false
+        this.grant('print_1', '挟まっていた一枚を抜き取る。子供が一人。抱かれていて、顔は半分だけ写っている。')
+        this.refreshPhotoTally()
         this.d.save.save()
       },
     })
@@ -1287,6 +1309,7 @@ export class Chapter01 {
           this.d.state.selectItem(null)
           this.d.audio.play('paper')
           this.syncWorldToState()
+          this.refreshPhotoTally()
           const n = CHRONICLE_PRINT_IDS.filter((x) => this.flag(`restored_${x}`)).length
           this.say(`枠に収まる。四つのうち、${['一つ', '二つ', '三つ', '四つ'][n - 1]}が埋まった。`)
           if (n === 4) {
@@ -1513,6 +1536,7 @@ export class Chapter01 {
     ).promise
     this.d.audio.play('motorStop')
     this.d.state.setFlag('chronicle_open')
+    this.refreshPhotoTally()
     this.solve('p3_backdrop')
     this.d.rig.nudgeShake(0.35)
     this.clue(
@@ -1884,6 +1908,7 @@ export class Chapter01 {
         if (!this.d.state.hasItem('print_4')) {
           darkroom.understorePrint.visible = false
           this.grant('print_4', '伏せてあった一枚を抜き取る。四歳。椅子には座らず、脚につかまって立っている。')
+        this.refreshPhotoTally()
           return
         }
         this.say(FEEDBACK.emptyDrawer)
@@ -2005,9 +2030,10 @@ export class Chapter01 {
         void this.d.ui.narrate(
           [
             '白い明かりが落ちて、館じゅうが赤くなる。廊下の先にも、同じ赤が点いている。',
-            '赤の下でなら、出かかった像は焼けない。暗室の仕事は、この明かりでする。',
+            'ネガも印画紙も、白い光に当てれば像が焼けて駄目になる。赤い光だけは、その像を壊さない。',
+            'だからネガを扱う仕事は、この赤の下でする。引き伸ばし機も、現像も。',
           ],
-          { hold: 2000 },
+          { hold: 2200 },
         )
         this.clue(
           'clue_safelight',
@@ -2018,8 +2044,12 @@ export class Chapter01 {
           // viewpoints, with nothing anywhere telling the player which walls to
           // go and stand in front of. 「見えないものがあるかもしれない」 is not
           // a direction; it is a mood.
-          '安全灯は暗室だけのものではなかった。館じゅうに赤い灯が引いてある。赤の下でしか読めない字が、玄関ホール、撮影室、事務室の壁に一つずつあるらしい。',
+          'ネガも印画紙も白い光で像が焼けてしまう。赤い光だけは像を壊さないから、ネガを扱う仕事は赤の下でする。引き伸ばし機を点けるときも、ネガを現像液に浸すときも、この明かりが要る。' +
+            'そのうえ安全灯は暗室だけのものではなかった。館じゅうに赤い灯が引いてあり、赤の下でしか読めない字が玄関ホール、撮影室、事務室の壁に一つずつあるらしい。',
           '暗室　安全灯',
+          // Finished once all three marks are in hand. Turning the room red is
+          // not itself the answer to anything.
+          { solvedBy: 'p7_marks' },
         )
       }
     } else if (this.flag('enlarger_on')) {
@@ -2226,6 +2256,16 @@ export class Chapter01 {
       this.wrong(FEEDBACK.devNoWater)
       return
     }
+    if (selected === 'distilled_water') {
+      this.wrong('水だけ張っても像は出ない。粉と合わせて現像液にするのが先だ。')
+      return
+    }
+    // The two negatives are the one thing in this room a player genuinely
+    // mixes up, so say which is which rather than 「それはここに使うものではない」.
+    if (selected === 'negative_old') {
+      this.wrong('こちらのネガはもう像が出ている。現像しても何も変わらない。液に浸すのは、まだ像の出ていないほうだ。')
+      return
+    }
     if (selected === 'developer' && index === 0) {
       if (this.flag('developer_poured')) {
         this.say(FEEDBACK.alreadyDone)
@@ -2242,7 +2282,24 @@ export class Chapter01 {
         mat.opacity = 0.9 * t
       })
       this.solve('p5_developer')
-      this.say('琥珀色がバットの底に広がる。液面が落ち着くまで、少し待つ。')
+      this.clue(
+        'clue_developer',
+        '現像液',
+        '粉末現像剤を蒸留水に溶いて現像液を作り、作業台のいちばん左、縁に「現像」と書いてあるバットに張った。像を出すのはこの液で、この一枚だけだ。',
+        '暗室　作業台',
+        { solvedBy: 'p5_developer' },
+      )
+      void this.d.ui.narrate(
+        [
+          '琥珀色がバットの底に広がる。液面が落ち着くまで、少し待つ。',
+          '現像液の準備ができた。現像するネガを探そう。',
+        ],
+        { hold: 2200 },
+      )
+      // The running state of the bench, written down. Poured developer is a
+      // preparation, not an answer: without this the player was left with a wet
+      // tray and no statement of what it was now waiting for.
+      this.refreshDarkroomState()
       this.d.save.save()
       return
     }
@@ -2255,6 +2312,56 @@ export class Chapter01 {
       return
     }
     this.wrong(FEEDBACK.wrongItem)
+  }
+
+  /**
+   * One note that tracks the bench: prepared, waiting for a negative, or ready.
+   *
+   * Rewritten in place rather than added to, so the notebook carries a single
+   * line of current state instead of a pile of historical ones.
+   */
+  /**
+   * 「年代記の写真を集める　N／四」 - one note, rewritten as photographs arrive.
+   *
+   * It does not list where the missing ones are. That is what the hint ladder
+   * is for, and naming all four locations the moment the wall appears removes
+   * the search the wall exists to create.
+   */
+  private refreshPhotoTally(): void {
+    const s = this.d.state
+    if (!s.flag('chronicle_open')) return
+    const have = CHRONICLE_PRINT_IDS.filter((id) => s.hasItem(id)).length
+    const placed = CHRONICLE_PRINT_IDS.filter((id) => s.flag(`restored_${id}`)).length
+    const body =
+      placed === 4
+        ? '四枚とも枠に戻した。壁は揃っている。'
+        : `抜き取られた四枚のうち、${kansuji(have)}枚が手元にある。枠に戻したのは${kansuji(placed)}枚。` +
+          '館のどこかに、まだ残りがある。'
+    s.upsertClue({
+      id: 'clue_photo_tally',
+      title: `年代記の写真を集める　${kansuji(have)}／四`,
+      body,
+      source: '撮影室　年代記の壁',
+      solvedBy: 'hidden_restore',
+    })
+  }
+
+  private refreshDarkroomState(): void {
+    const s = this.d.state
+    if (!s.flag('developer_poured')) return
+    const hasFinal = s.hasItem('negative_last') && !s.flag('last_developed')
+    const body = s.flag('last_developed')
+      ? '現像液はいちばん左のバットに張ってある。最後のネガはもう現像した。'
+      : hasFinal
+        ? '現像液はいちばん左のバットに張ってある。まだ像の出ていない最後のネガも手元にある。あとは安全灯を点けて、そのネガをいちばん左のバットに浸すだけだ。'
+        : '現像液はいちばん左のバットに張ってある。あとは、まだ像の出ていないネガが要る。乾燥ロープの古いネガはもう像が出ているから、これではない。'
+    s.upsertClue({
+      id: 'clue_darkroom_state',
+      title: '作業台のようす',
+      body,
+      source: '暗室　作業台',
+      solvedFlag: 'last_developed',
+    })
   }
 
   private async developLastNegative(index: number): Promise<void> {
@@ -2311,6 +2418,7 @@ export class Chapter01 {
     // 「最後の一枚／手に取った」 and nothing else.
     this.grant('print_last', '水を切って、洗濯挟みに吊る。乾いたところで外す。四十年遅れて、一枚できた。')
     this.solve('true_develop')
+    this.refreshDarkroomState()
     this.clue(
       'clue_truth',
       '最後の一枚',
@@ -2437,6 +2545,7 @@ export class Chapter01 {
         if (!this.d.state.hasItem('print_7')) {
           office.deskPrint.visible = false
           this.grant('print_7', '底の一枚を抜き取る。七歳。背景幕は絵のほうだ。')
+        this.refreshPhotoTally()
           return
         }
         this.say(FEEDBACK.emptyDrawer)
@@ -2544,6 +2653,8 @@ export class Chapter01 {
         '事務室　金庫',
       )
       void this.d.ui.narrate(lines, { hold: 2000 })
+      this.refreshDarkroomState()
+      this.refreshPhotoTally()
     } else {
       this.say('あとは、鉄の底が見えているだけだ。埃も入っていない。')
     }

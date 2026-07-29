@@ -832,9 +832,18 @@ export class GameUI {
     if (this.state.clues.length === 0) {
       this.panelBody.innerHTML = `<div class="inv-empty">${UI_TEXT.cluesEmpty}</div>`
     } else {
-      for (const c of this.state.clues) {
+      // Open notes first, finished ones after, so the top of the panel is
+      // always what is still outstanding.
+      const done = (c: (typeof this.state.clues)[number]): boolean =>
+        (c.solvedBy !== undefined && this.state.isSolved(c.solvedBy)) ||
+        (c.solvedFlag !== undefined && this.state.flag(c.solvedFlag))
+      const ordered = [...this.state.clues].sort((a, b) => Number(done(a)) - Number(done(b)))
+      for (const c of ordered) {
         const box = this.el('div', 'clue')
-        box.innerHTML = `<h4>${c.title}</h4><p class="jp">${c.body}</p><span class="src">${c.source}</span>`
+        if (done(c)) box.dataset.done = '1'
+        box.innerHTML =
+          `<h4>${c.title}${done(c) ? '<span class="clue-done">解決済み</span>' : ''}</h4>` +
+          `<p class="jp">${c.body}</p><span class="src">${c.source}</span>`
         this.panelBody.appendChild(box)
       }
     }

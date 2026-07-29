@@ -45,6 +45,9 @@ export interface ItemDef {
   category: ItemCategory
   /** Radius the inspector frames the object at. */
   viewRadius: number
+  /** Optional opening angles for the inspector, when the default reads badly. */
+  viewYaw?: number
+  viewPitch?: number
   build(mats: MaterialLibrary): THREE.Object3D
   details?: HiddenDetail[]
   /** Documents this item opens when read. */
@@ -93,6 +96,120 @@ function card(front: THREE.Texture, back: THREE.Texture, w: number, h: number, t
     { cast: false },
   )
   g.add(edge)
+  return g
+}
+
+/**
+ * The hand loupe, built once for both the broken frame and the finished tool.
+ *
+ * The two used to be assembled separately and neither hung together. The rim
+ * was a lathe turned about Y - so its axis pointed up - while the glass was
+ * rotated a quarter turn onto Z, which left the lens standing across the mouth
+ * of its own rim at ninety degrees. The neck sat at x = 0, directly under the
+ * hole rather than under the metal, and stopped 24 mm short of the rim with
+ * clear air in between; the handle was pushed 6 mm out of the rim's plane. And
+ * the whole thing hung below its own origin, so the inspector's turntable swung
+ * it in an orbit instead of turning it on the spot.
+ *
+ * Everything shares one axis now: the rim faces the viewer along Z, the glass
+ * sits in it, the neck bridges the bottom of the rim to the top of the handle,
+ * and the assembly is centred on its own bounds.
+ */
+function buildLoupe(mats: MaterialLibrary, opts: { lens: boolean }): THREE.Group {
+  const g = new THREE.Group()
+  // Centre of the rim, chosen so the whole tool is centred on the origin:
+  // the rim reaches +0.032 above it and the handle -0.064 below.
+  const RY = 0.032
+  const RIM_INNER = 0.026
+  const RIM_OUTER = 0.032
+  const RIM_DEPTH = 0.012
+
+  const ring = mesh(
+    lathe(
+      [
+        [RIM_INNER, 0],
+        [RIM_OUTER, 0],
+        [RIM_OUTER, RIM_DEPTH],
+        [RIM_INNER, RIM_DEPTH],
+      ],
+      26,
+    ),
+    mats.brassDull,
+  )
+  ring.rotation.x = Math.PI / 2
+  ring.position.set(0, RY, -RIM_DEPTH / 2)
+  g.add(ring)
+
+  if (opts.lens) {
+    // Radius 0.027 against a 0.026 rim: the glass is captured by the metal,
+    // which is what holds a loupe together.
+    const el = mesh(
+      lathe(
+        [
+          [0, 0.007],
+          [0.014, 0.0064],
+          [0.024, 0.0042],
+          [0.027, 0],
+          [0.024, -0.0042],
+          [0.014, -0.0064],
+          [0, -0.007],
+        ],
+        26,
+      ),
+      new THREE.MeshPhysicalMaterial({
+        color: 0xe8f2ec,
+        roughness: 0.015,
+        transmission: 0.97,
+        thickness: 0.012,
+        ior: 1.62,
+        transparent: true,
+        opacity: 0.6,
+      }),
+    )
+    el.rotation.x = Math.PI / 2
+    el.position.set(0, RY, 0)
+    g.add(el)
+  }
+
+  // Bridges the underside of the rim to the top of the handle: it overlaps
+  // both, so there is no gap to see through.
+  const neck = mesh(texturedBox(0.009, 0.02, 0.01, 3), mats.brassDull)
+  neck.position.set(0, RY - 0.035, 0)
+  g.add(neck)
+
+  const handle = mesh(
+    lathe([[0.006, 0], [0.008, 0.01], [0.007, 0.045], [0.01, 0.055], [0, 0.056]], 12),
+    mats.woodDark,
+  )
+  handle.rotation.z = Math.PI
+  handle.position.set(0, RY - 0.04, 0)
+  g.add(handle)
+
+  if (opts.lens) {
+    // 「×3」 on the back of the rim, at the bottom, on the metal - not floating
+    // in the middle of the glass, which is where a 30 mm label on a 26 mm hole
+    // used to sit.
+    const engrave = mesh(
+      new THREE.PlaneGeometry(0.016, 0.006),
+      new THREE.MeshStandardMaterial({
+        map: paperTexture((x, w, h) => {
+          x.clearRect(0, 0, w, h)
+          x.fillStyle = 'rgba(60,48,20,0.9)'
+          x.font = '600 84px "Hiragino Sans", sans-serif'
+          x.textAlign = 'center'
+          x.textBaseline = 'middle'
+          x.fillText('×3', w / 2, h / 2)
+        }, 256, 96),
+        transparent: true,
+        roughness: 0.4,
+        metalness: 0.5,
+      }),
+      { cast: false },
+    )
+    engrave.position.set(0, RY - 0.029, -RIM_DEPTH / 2 - 0.0004)
+    engrave.rotation.y = Math.PI
+    g.add(engrave)
+  }
   return g
 }
 
@@ -253,19 +370,9 @@ export const ITEMS: Record<string, ItemDef> = {
     desc: '真鍮の枠だけが残っている。玉の入っていた溝に、埃がきれいに一周ぶん積もっている。椅子の座面の裂け目から出てきた。',
     category: 'material',
     viewRadius: 0.08,
-    build: (mats) => {
-      const g = new THREE.Group()
-      const ring = mesh(lathe([[0.026, 0], [0.032, 0], [0.032, 0.012], [0.026, 0.012]], 26), mats.brassDull)
-      g.add(ring)
-      const handle = mesh(lathe([[0.006, 0], [0.008, 0.01], [0.007, 0.045], [0.01, 0.055], [0, 0.056]], 12), mats.woodDark)
-      handle.rotation.z = Math.PI
-      handle.position.set(0, -0.04, 0.006)
-      g.add(handle)
-      const neck = mesh(texturedBox(0.008, 0.016, 0.008, 3), mats.brassDull)
-      neck.position.set(0, -0.032, 0.006)
-      g.add(neck)
-      return g
-    },
+    viewYaw: 0.34,
+    viewPitch: 0.1,
+    build: (mats) => buildLoupe(mats, { lens: false }),
   },
 
   lens: {
@@ -311,67 +418,11 @@ export const ITEMS: Record<string, ItemDef> = {
     name: 'ルーペ',
     desc: '枠に玉を落とし込んで、締め輪で留めた。覗くと、細かい字が三倍になる。ネガを見るには、これがいる。',
     category: 'tool',
-    viewRadius: 0.085,
+    viewRadius: 0.08,
+    viewYaw: 0.34,
+    viewPitch: 0.1,
     keepAfterUse: true,
-    build: (mats) => {
-      const g = new THREE.Group()
-      const ring = mesh(lathe([[0.026, 0], [0.032, 0], [0.032, 0.012], [0.026, 0.012]], 26), mats.brassDull)
-      g.add(ring)
-      const el = mesh(
-        lathe(
-          [
-            [0, 0.007],
-            [0.014, 0.0064],
-            [0.024, 0.0042],
-            [0.027, 0],
-            [0.024, -0.0042],
-            [0.014, -0.0064],
-            [0, -0.007],
-          ],
-          26,
-        ),
-        new THREE.MeshPhysicalMaterial({
-          color: 0xe8f2ec,
-          roughness: 0.015,
-          transmission: 0.97,
-          thickness: 0.012,
-          ior: 1.62,
-          transparent: true,
-          opacity: 0.6,
-        }),
-      )
-      el.rotation.x = Math.PI / 2
-      el.position.z = 0.006
-      g.add(el)
-      const handle = mesh(lathe([[0.006, 0], [0.008, 0.01], [0.007, 0.045], [0.01, 0.055], [0, 0.056]], 12), mats.woodDark)
-      handle.rotation.z = Math.PI
-      handle.position.set(0, -0.04, 0.006)
-      g.add(handle)
-      const neck = mesh(texturedBox(0.008, 0.016, 0.008, 3), mats.brassDull)
-      neck.position.set(0, -0.032, 0.006)
-      g.add(neck)
-      const engrave = mesh(
-        new THREE.PlaneGeometry(0.03, 0.01),
-        new THREE.MeshStandardMaterial({
-          map: paperTexture((x, w, h) => {
-            x.clearRect(0, 0, w, h)
-            x.fillStyle = 'rgba(60,48,20,0.85)'
-            x.font = '600 92px "Hiragino Sans", sans-serif'
-            x.textAlign = 'center'
-            x.textBaseline = 'middle'
-            x.fillText('×3', w / 2, h / 2)
-          }, 256, 96),
-          transparent: true,
-          roughness: 0.4,
-          metalness: 0.5,
-        }),
-        { cast: false },
-      )
-      engrave.position.set(0, 0.0, -0.007)
-      engrave.rotation.y = Math.PI
-      g.add(engrave)
-      return g
-    },
+    build: (mats) => buildLoupe(mats, { lens: true }),
     details: [
       {
         id: 'loupe_mag',
@@ -567,8 +618,8 @@ export const ITEMS: Record<string, ItemDef> = {
   // -------------------------------------------------------------- negatives
   negative_old: {
     id: 'negative_old',
-    name: '古いネガ',
-    desc: '乾燥ロープに挟まれたまま残っていた一枚。透かすと、撮影室らしい部屋が明暗の逆で写っている。細かいところは肉眼では読めない。',
+    name: '古いネガ（像あり）',
+    desc: '乾燥ロープに挟まれたまま残っていた一枚。すでに像が出ている。透かすと、撮影室らしい部屋が明暗の逆で写っている。細かいところは肉眼では読めないので、引き伸ばし機で壁に映すか、ルーペを当てる。現像液に浸すものではない。',
     category: 'record',
     viewRadius: 0.14,
     build: () => {
@@ -595,8 +646,8 @@ export const ITEMS: Record<string, ItemDef> = {
 
   negative_last: {
     id: 'negative_last',
-    name: '最後のネガ',
-    desc: '金庫の底に、包んだまま入っていた。まだ現像されていない。光に透かしても、何も見えない。四十年ぶん、何も起きていない一枚。',
+    name: '最後のネガ（未現像）',
+    desc: '金庫の底に、包んだまま入っていた。まだ像が出ていない。光に透かしても何も見えない。像を出すには、現像液を張ったバットに浸すしかない。引き伸ばし機に入れても壁には何も映らない。',
     category: 'record',
     viewRadius: 0.13,
     details: [

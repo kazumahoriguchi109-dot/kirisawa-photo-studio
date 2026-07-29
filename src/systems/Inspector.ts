@@ -93,8 +93,11 @@ export class Inspector {
     this.model = item.build(this.mats)
     this.pivot.add(this.model)
     this.baseRadius = item.viewRadius
-    this.yaw = this.targetYaw = 0.55
-    this.pitch = this.targetPitch = 0.22
+    // Most items read well at the house angle. A few do not: a loupe is a flat
+    // disc on a stick, and at 0.55 / 0.22 it opened edge-on with the handle
+    // foreshortened into the rim. Items may name their own opening angles.
+    this.yaw = this.targetYaw = item.viewYaw ?? 0.55
+    this.pitch = this.targetPitch = item.viewPitch ?? 0.22
     this.zoom = this.targetZoom = 0
     this.spin = 0
     this.start()

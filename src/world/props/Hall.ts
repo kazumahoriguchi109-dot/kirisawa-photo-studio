@@ -7,11 +7,17 @@ import {
   drawerUnit,
   framedPhoto,
   labelPlate,
+  loosePrint,
   pendantShade,
   phosphorMark,
   shelfUnit,
 } from './Common'
-import { photoTexture, portraitCanvas, studioRecordCanvas } from '../Photographs'
+import {
+  photoTexture,
+  portraitCanvas,
+  studioRecordCanvas,
+  unexposedPrintCanvas,
+} from '../Photographs'
 import { ctx2d, makeCanvas } from '../Textures'
 
 /**
@@ -34,6 +40,8 @@ export interface HallProps {
   drawerContents: THREE.Group
   /** The 1985 record photograph in its frame. */
   recordPhoto: THREE.Group
+  /** The print behind its mount, visible once the board is lifted. */
+  mountPrint: THREE.Mesh
   /** Four rotating rings on the exit door. */
   lockRings: THREE.Group[]
   lockPlate: THREE.Group
@@ -267,6 +275,20 @@ export function buildHall(mats: MaterialLibrary): HallProps {
   recordPhoto.position.set(-0.36, 1.66, 2.885)
   recordPhoto.name = 'record-photo'
   group.add(recordPhoto)
+
+  // The print that was hidden behind the mount, shown once the backing board
+  // has been lifted and before it is taken. Every other photograph in the game
+  // is a thing you can see before you pick it up; this one used to appear in
+  // the inventory straight out of a flat frame.
+  const mountPrint = loosePrint(
+    photoTexture('mount-print-back', () => unexposedPrintCanvas({ width: 200, height: 260 })),
+    0.12,
+    0.155,
+  )
+  mountPrint.position.set(-0.36, 1.6, 2.9)
+  mountPrint.rotation.z = -0.06
+  mountPrint.visible = false
+  group.add(mountPrint)
 
   // a small engraved plate under it
   const plate = labelPlate('撮影室　昭和六十年', 0.2, 0.038, {
@@ -944,6 +966,7 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     drawerUnit: drawers.group,
     drawerContents,
     recordPhoto,
+    mountPrint,
     lockRings,
     lockPlate,
     phosphor,
