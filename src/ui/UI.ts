@@ -35,7 +35,7 @@ export interface UICallbacks {
   onPanelClose(): void
   onEndingDismiss(): void
   onFullscreen(): void
-  activeHints(): Array<{ id: string; title: string; steps: string[]; taken: number }>
+  activeHints(): Array<{ id: string; no: number; place: string; title: string; steps: string[]; taken: number }>
 }
 
 /**
@@ -231,15 +231,15 @@ export class GameUI {
     // all. The only way out was clicking the scrim, which is invisible, or Esc,
     // which the HUD advertises but which a player has no reason to trust after
     // finding no button.
-    // Bare ×, not 「× 戻る」. Every panel already ends in 閉じる, and two
-    // controls on one panel that do the same thing under two different words
-    // read as two different things - a player looking at 戻る and 閉じる has to
-    // stop and work out which one leaves and which one goes back a step.
-    const panelClose = this.el('button', 'panel-close clickable', '×')
-    panelClose.setAttribute('aria-label', UI_TEXT.close)
-    panelClose.title = UI_TEXT.close
-    panelClose.addEventListener('click', () => this.closeTop())
-    head.append(this.panelTitle, this.panelSub, panelClose)
+    // One way out of a panel, and it is the labelled one.
+    //
+    // The header used to carry 「× 戻る」 while the footer carried 「閉じる」:
+    // two controls, one job, two different words, and a player had to stop and
+    // work out whether 戻る meant "leave" or "go back a step". Reducing the
+    // header to a bare × left two controls that merely looked different. Every
+    // panel ends in 閉じる, Escape closes the topmost layer, and the how-to
+    // screen says so - so the header now carries only the title.
+    head.append(this.panelTitle, this.panelSub)
     this.panelBody = this.el('div', 'panel-body')
     this.panelFoot = this.el('div', 'panel-foot')
     this.panel.append(head, this.panelBody, this.panelFoot)
@@ -877,15 +877,16 @@ export class GameUI {
 
       const head = this.el('button', 'hint-head clickable')
       head.setAttribute('aria-expanded', open ? 'true' : 'false')
-      head.append(
+      // Number, name, room - then the counter and the control, hard right.
+      const label = this.el('span', 'hint-label')
+      label.append(
+        this.el('span', 'hint-no', `${UI_TEXT.puzzleNo}${kanjiNum(h.no)}`),
         this.el('span', 'hint-title jp', h.title),
-        this.el(
-          'span',
-          'hint-meta',
-          h.taken >= h.steps.length
-            ? UI_TEXT.hintAllTaken
-            : `${kanjiNum(h.taken)}／${kanjiNum(h.steps.length)}`,
-        ),
+        this.el('span', 'hint-place jp', h.place),
+      )
+      head.append(
+        label,
+        this.el('span', 'hint-meta', `${kanjiNum(h.taken)}／${kanjiNum(h.steps.length)}`),
         this.el('span', 'hint-chev'),
       )
       head.addEventListener('click', () => {
@@ -895,7 +896,18 @@ export class GameUI {
       item.appendChild(head)
 
       const body = this.el('div', 'hint-body')
-      for (let i = 0; i < h.taken; i++) body.appendChild(this.el('p', 'hint-step jp', h.steps[i]))
+      for (let i = 0; i < h.taken; i++) {
+        const step = this.el('p', 'hint-step jp')
+        step.append(
+          this.el('span', 'hint-step-no', UI_TEXT.hintTierLabels[i]),
+          this.el('span', 'hint-step-text', h.steps[i]),
+        )
+        body.appendChild(step)
+      }
+      // Nothing is appended once all three are out. A row reading
+      // 「これ以上に言えることはない」 under every exhausted puzzle is a line of
+      // furniture that says nothing and repeats down the whole panel; the
+      // counter in the header already reads 三／三.
       if (h.taken < h.steps.length) {
         const row = this.el('div', 'hint-locked')
         row.appendChild(
@@ -914,8 +926,6 @@ export class GameUI {
         })
         row.appendChild(b)
         body.appendChild(row)
-      } else {
-        body.appendChild(this.el('p', 'hint-step jp', UI_TEXT.hintAllTaken))
       }
       item.appendChild(body)
       this.panelBody.appendChild(item)

@@ -52,10 +52,13 @@ export const UI_TEXT = {
   saved: '記録した',
   autoSaved: '自動で記録した',
 
-  hintTierLabels: ['そっと示す', 'つながりを示す', '手順を示す'],
+  // Numbered, because a player asking for help wants to know how much help is
+  // left, not to decode 「そっと示す」 against 「つながりを示す」.
+  hintTierLabels: ['ヒント1', 'ヒント2', 'ヒント3'],
   hintLockedNote: 'これを開くまえに、もう少し部屋を歩いてもいい',
   hintReveal: 'ヒントを見る',
-  hintAllTaken: 'これ以上に言えることはない',
+  /** Prefix for the fixed puzzle number: 謎一, 謎二 ... */
+  puzzleNo: '謎',
   hintNothingActive: 'いま行き詰まっているものはない',
 
   survey: '見渡す',

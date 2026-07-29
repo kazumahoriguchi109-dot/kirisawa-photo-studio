@@ -2415,13 +2415,13 @@ export class Chapter01 {
 
   // -------------------------------------------------------------- hint feed
 
-  activeHints(): Array<{ id: string; title: string; steps: string[]; taken: number }> {
+  activeHints(): Array<{ id: string; no: number; place: string; title: string; steps: string[]; taken: number }> {
     const s = this.d.state
-    const out: Array<{ id: string; title: string; steps: string[]; taken: number }> = []
+    const out: Array<{ id: string; no: number; place: string; title: string; steps: string[]; taken: number }> = []
     const add = (id: string) => {
       const h = HINTS[id]
       if (!h) return
-      out.push({ id: h.id, title: h.title, steps: h.steps, taken: s.puzzle(id).hintLevel })
+      out.push({ id: h.id, no: h.no, place: h.place, title: h.title, steps: h.steps, taken: s.puzzle(id).hintLevel })
     }
     if (!s.flag('power_on')) {
       add('p1_fuse')

@@ -1,13 +1,23 @@
 /**
  * Three-tier hint ladder.
  *
- * Tier 1 points at a place. Tier 2 names the relationship between two things.
- * Tier 3 gives the method - but never performs the action, so the player still
+ * ヒント1 points at a place. ヒント2 names the relationship between two things.
+ * ヒント3 gives the method - but never performs the action, so the player still
  * has to go and do it. Written in the game's voice, not a manual's.
+ *
+ * Every entry carries its own number and the room it concerns, because a hint
+ * that opens with 「薬品棚に」 is no use to a player who does not yet know which
+ * room the chemical shelf is in. The number is fixed per puzzle rather than
+ * assigned by position in the list, so the same puzzle is always 謎五 however
+ * many others happen to be open at the time.
  */
 
 export interface HintEntry {
   id: string
+  /** Fixed puzzle number, shown as 謎一, 謎二 ... */
+  no: number
+  /** The room this puzzle is solved in. Shown beside the title. */
+  place: string
   title: string
   steps: [string, string, string]
 }
@@ -15,15 +25,19 @@ export interface HintEntry {
 export const HINTS: Record<string, HintEntry> = {
   p1_fuse: {
     id: 'p1_fuse',
+    no: 1,
+    place: '玄関ホール',
     title: '明かりが点かない',
     steps: [
-      '暦の掛かっている壁に、鉄の箱が据えつけてある。蓋に字が書いてある。',
+      '玄関ホール。暦の掛かっている壁に、鉄の箱が据えつけてある。蓋に「配電盤」と書いてある。',
       '三つ並んだ受け金のうち、真ん中だけが空で、その後ろの板が焦げている。同じものが、受付のどこかに仕舞われているはずだ。',
       '受付の抽斗を開ける。予備を真ん中の受け金に差し、それから箱の下のレバーを上げる。順番が逆では上がらない。',
     ],
   },
   p2_observe: {
     id: 'p2_observe',
+    no: 2,
+    place: '玄関ホール／撮影室',
     title: '四十年前の一枚',
     steps: [
       '受付の壁に、この撮影室を写した古い額がある。撮られたのは昭和六十年。',
@@ -33,33 +47,41 @@ export const HINTS: Record<string, HintEntry> = {
   },
   p3_backdrop: {
     id: 'p3_backdrop',
+    no: 3,
+    place: '撮影室',
     title: '幕が下りたまま',
     steps: [
-      '幕を吊る軸の右の端に、金具が出ている。',
+      '撮影室。背景幕を吊っている軸の、右の端を見る。金具が出ている。',
       '軸の端は六角の穴になっている。差し込める柄のものが、壁のどこかに掛かっていたはずだ。',
       '時計の跡の釘から真鍮のクランクを取り、軸の穴に差して回す。巻き上がるまで手を止めないこと。',
     ],
   },
   p4_groundglass: {
     id: 'p4_groundglass',
+    no: 4,
+    place: '撮影室',
     title: '読めない字',
     steps: [
-      '幕の裏の板に、鉛筆の字がある。読もうとすると、天地が逆になっている。',
+      '撮影室。巻き上げた幕の裏、壁ぎわの板に鉛筆の字がある。読もうとすると天地が逆だ。',
       'この部屋には、像を天地ひっくり返して見せる道具が一つだけある。据えつけの、いちばん大きなものだ。',
       '大判カメラのピントグラスを覗く。あの板が枠に入るように見れば、逆さの字はそのまま読める。',
     ],
   },
   p4b_key: {
     id: 'p4b_key',
+    no: 5,
+    place: '撮影室',
     title: '灯の下',
     steps: [
-      'ピントグラス越しに読んだ一行が、まだ使われていない。',
+      '撮影室。ピントグラス越しに読んだ「鍵は灯の下に」が、まだ使われていない。',
       'この館で灯といえば、娘の名でもあり、撮影灯でもある。三脚の立った大きな笠のことだ。',
       '撮影室の撮影灯、いちばん背景幕寄りの一本の台座を調べる。床すれすれのところだ。',
     ],
   },
   p7_marks: {
     id: 'p7_marks',
+    no: 9,
+    place: '玄関ホール／撮影室／事務室',
     title: '赤の下の三つの書き付け',
     steps: [
       '赤い明かりのまま、暗室を出て歩いてみる。',
@@ -69,51 +91,63 @@ export const HINTS: Record<string, HintEntry> = {
   },
   p5_developer: {
     id: 'p5_developer',
+    no: 7,
+    place: '暗室',
     title: '現像液がない',
     steps: [
-      '薬品棚に、粉の缶と、封の切られていない一本がある。',
+      '暗室。南の壁の薬品棚に、粉の缶と、封の切られていない一本がある。',
       '缶の底に、水一リットルに全量、と書いてある。粉のままでは何も起きない。',
       '持ち物で粉末現像剤を選び、蒸留水と合わせる。できた液は、いちばん左のバットに移す。',
     ],
   },
   p5_loupe: {
     id: 'p5_loupe',
+    no: 6,
+    place: '撮影室',
     title: '細かすぎて読めない',
     steps: [
-      '椅子の座面に、糸のほつれた裂け目がある。',
+      '撮影室。壁を向いた撮影椅子の座面に、糸のほつれた裂け目がある。',
       '枠だけのルーペと、玉が一つ。二つは元は同じものだった。',
       '三脚の柱の小抽斗から玉を取り、枠と合わせる。締め輪は指で回るところまで回せばいい。',
     ],
   },
   p6_enlarger: {
     id: 'p6_enlarger',
+    no: 10,
+    place: '暗室',
     title: '金庫の番号',
     steps: [
-      '乾燥ロープに、ネガが一枚だけ挟まったまま残っている。',
+      '暗室。西側の乾燥ロープに、ネガが一枚だけ挟まったまま残っている。',
       '引き伸ばし機はネガを壁に大きく映す機械だ。ただし、白い明かりの下では像が見えない。',
       '安全灯を点け、ネガを引き伸ばし機の枠に入れて灯を入れる。壁に出た像に、ルーペを当てる。',
     ],
   },
   p7_safelight: {
     id: 'p7_safelight',
+    no: 8,
+    place: '暗室',
     title: '赤い明かり',
     steps: [
-      '暗室の戸口の脇に、赤い柄のレバーが一つある。',
+      '暗室。戸口の脇の壁に、赤い柄のレバーが一つ下がっている。',
       'この館は、濡れた印画紙を持って歩けるように、館じゅうに赤い灯が引いてある。',
       'レバーを下ろすと館全体が赤くなる。赤の下でしか見えないものが、玄関ホール、撮影室、事務室に一つずつある。',
     ],
   },
   p8_safe: {
     id: 'p8_safe',
+    no: 11,
+    place: '事務室',
     title: '金庫の環',
     steps: [
-      '事務室の金庫は、環を一つ回すだけの古い型だ。',
+      '事務室。据えつけの金庫は、環を一つ回すだけの古い型だ。',
       '番号は書き残されていない。ただし、四十年前の写真には、この金庫が写り込んでいる。',
       '壁に映したネガをルーペで読む。環の指していた目盛まで回して、把手を引く。',
     ],
   },
   p9_lock: {
     id: 'p9_lock',
+    no: 12,
+    place: '玄関ホール',
     title: '玄関の四つの環',
     steps: [
       '玄関の錠には環が四つ。それぞれに、写真の工程の印が打ってある。',
@@ -123,18 +157,22 @@ export const HINTS: Record<string, HintEntry> = {
   },
   true_develop: {
     id: 'true_develop',
+    no: 13,
+    place: '暗室',
     title: 'まだ現像していない一枚',
     steps: [
-      '金庫の底にあった一枚は、まだ像が出ていない。',
+      '事務室の金庫から出た最後のネガは、まだ像が出ていない。現像は暗室でしかできない。',
       '像を出すには、液と、赤い明かりと、その二つが同時に要る。',
       '安全灯を点けたまま、現像液を張ったバットに最後のネガを浸す。',
     ],
   },
   hidden_restore: {
     id: 'hidden_restore',
+    no: 14,
+    place: '撮影室',
     title: '壁の四つの空白',
     steps: [
-      '年代記の壁には、抜き取られた四つの枠がある。留めた画鋲だけが残っている。',
+      '撮影室。幕の裏の年代記の壁に、抜き取られた四つの枠がある。留めた画鋲だけが残っている。',
       '抜かれた四枚は、この館の中に散らばっている。受付、暗室、事務机、そして金庫。',
       '四枚を持って壁の空白を調べる。年の順に、左から一歳、四歳、七歳、そして空欄の分。',
     ],
