@@ -209,6 +209,8 @@ export class App {
 
   private lighting: LightingRig
   private inspectionLight!: THREE.PointLight
+  /** Frame counter for throttling shadow refreshes while the world moves. */
+  private shadowTick = 0
 
   /**
    * Development-only handle used by the automated playthrough check. It drives
@@ -654,7 +656,18 @@ export class App {
     // something is actually moving - a door swinging, the backdrop rolling up,
     // the lights crossfading - and leave them alone the rest of the time, which
     // in a game of held compositions is nearly always.
-    if (this.timeline.busy || this.lighting.settling) this.stack.requestShadowUpdate()
+    //
+    // Throttled to every third frame while something moves. A refresh redraws
+    // every shadow-casting light - measured at +1,188 draw calls and +83,000
+    // triangles over a steady frame, 6 ms at 1x and 8-10 ms at 2x - and it was
+    // paying that on every frame of every camera move, door swing and light
+    // crossfade, including the whole ending. At a third of the rate the lag is
+    // invisible on shadows this soft.
+    if (this.timeline.busy || this.lighting.settling) {
+      if (this.shadowTick++ % 3 === 0) this.stack.requestShadowUpdate()
+    } else {
+      this.shadowTick = 0
+    }
     // Faded rather than switched, so leaning in and out of a close-up does not
     // read as someone flicking a light on.
     this.inspectionLight.intensity = damp(

@@ -387,11 +387,10 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
           color: 0xe8f0ea,
           roughness: 0.02,
           metalness: 0,
-          transmission: 0.96,
-          thickness: 0.01,
+          transmission: 0,
           ior: 1.62,
           transparent: true,
-          opacity: 0.55,
+          opacity: 0.46,
         }),
       )
       el.rotation.x = Math.PI / 2
@@ -495,10 +494,9 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
       color: 0x2c3a34,
       roughness: 0.04,
       metalness: 0.1,
-      transmission: 0.6,
-      thickness: 0.02,
+      transmission: 0,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.67,
     }), { cast: false })
     glass.rotation.y = Math.PI
     glass.position.set(0, 1.6, -0.262)

@@ -91,10 +91,9 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
     const ashtray = mesh(lathe([[0, 0], [0.055, 0], [0.058, 0.008], [0.048, 0.018], [0.044, 0.006], [0, 0.006]], 20), new THREE.MeshPhysicalMaterial({
       color: 0x2d3a3f,
       roughness: 0.12,
-      transmission: 0.5,
-      thickness: 0.02,
+      transmission: 0,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.71,
     }))
     ashtray.position.set(5.16, 0.762, O.z0 + 0.68)
     group.add(ashtray)
@@ -397,10 +396,9 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
         new THREE.MeshPhysicalMaterial({
           color: 0xb87a3d,
           roughness: 0.16,
-          transmission: 0.4,
-          thickness: 0.001,
+          transmission: 0,
           transparent: true,
-          opacity: 0.94,
+          opacity: 0.79,
           side: THREE.DoubleSide,
         }),
         { cast: false },

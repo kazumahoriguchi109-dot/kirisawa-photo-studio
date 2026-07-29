@@ -577,7 +577,7 @@ export class GameUI {
         this.renderClues()
         break
       case 'hints':
-        this.renderHints()
+        this.renderHints(true)
         break
       case 'settings':
         this.renderSettings()
@@ -854,7 +854,7 @@ export class GameUI {
    * *above* the button that revealed it, so the thing the player had just asked
    * for appeared somewhere they were not looking.
    */
-  private renderHints(): void {
+  private renderHints(opening = false): void {
     const active = this.cb.activeHints()
     this.showPanel(UI_TEXT.hints, active.length ? `${kanjiNum(active.length)} 件` : '')
     if (active.length === 0) {
@@ -862,7 +862,11 @@ export class GameUI {
     }
     // Never open onto a list of shut doors: if nothing the player opened is
     // still active, expand the first one for them.
-    if (active.length > 0 && !active.some((h) => this.hintOpen.has(h.id))) {
+    //
+    // Only when the panel is being opened, though. Applying it on every render
+    // meant that with a single hint active, collapsing it re-expanded it on the
+    // spot - the row simply could not be shut.
+    if (opening && active.length > 0 && !active.some((h) => this.hintOpen.has(h.id))) {
       this.hintOpen.add(active[0].id)
     }
 

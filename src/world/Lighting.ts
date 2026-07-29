@@ -78,6 +78,11 @@ export class LightingRig {
   private settlingNow = true
   /** Practical fixtures whose emissive follows their light. */
   private materials: MaterialLibrary
+  /**
+   * The enlarger's projector, in the scene from the first frame at zero
+   * intensity so the scene's light count never changes. See makeProjector.
+   */
+  private projector: THREE.SpotLight
 
   constructor(scene: THREE.Scene, mats: MaterialLibrary) {
     this.materials = mats
@@ -89,6 +94,12 @@ export class LightingRig {
 
     this.ambient = new THREE.HemisphereLight(0x2a3d55, 0x17130f, 0.5)
     this.root.add(this.ambient)
+
+    this.projector = new THREE.SpotLight(0xfff3e0, 0, 5, Math.PI * 0.11, 0.35, 1.4)
+    this.projector.position.set(-5.62, 1.64, -1.15)
+    this.projector.target.position.set(-6.5, 1.42, -1.15)
+    this.root.add(this.projector)
+    this.root.add(this.projector.target)
 
     this.build()
     this.snapTo('blackout')
@@ -365,11 +376,21 @@ export class LightingRig {
     return l
   }
 
-  /** Used by the enlarger: a temporary projector light in the darkroom. */
+  /**
+   * The enlarger's projector. Built with the rest of the rig and handed out at
+   * zero intensity, never constructed on demand.
+   *
+   * Adding a light to a live scene changes the light count, and Three then
+   * recompiles every material in it on the next frame - synchronously, on the
+   * main thread. Measured on an M1 at the game's default retina buffer, the
+   * first frame after this light appeared took 765 ms in a fresh darkroom and
+   * 3.6-4.0 seconds once the rest of the house had been explored. It also cost
+   * 60-80% of every frame from then on, in every room, because the light stayed
+   * in the scene for the rest of the session: the retina studio went from 78 ms
+   * to 142 ms a frame - 7 fps - and it was armed by merely flipping the
+   * enlarger switch to see what it did.
+   */
   makeProjector(): THREE.SpotLight {
-    const p = new THREE.SpotLight(0xfff3e0, 0, 5, Math.PI * 0.11, 0.35, 1.4)
-    this.root.add(p)
-    this.root.add(p.target)
-    return p
+    return this.projector
   }
 }

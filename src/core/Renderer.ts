@@ -22,7 +22,7 @@ import type { QualityLevel } from './Settings'
  * the device pixel ratio ask for. Kept below the usual 4096 driver limit so the
  * composer's several full-size targets all fit.
  */
-const MAX_DRAWING_BUFFER = 3840
+const MAX_DRAWING_BUFFER = 2880
 
 const GradeShader = {
   uniforms: {
@@ -157,7 +157,11 @@ export const QUALITY_PROFILES: Record<
     softShadows: false,
   },
   high: {
-    pixelRatioCap: 2,
+    // 1.5, not 2. The renderer is entirely fill-bound: measured on an M1, the
+    // studio costs 20 ms a frame at 1600x900 and 65 ms at 3200x1800 - the same
+    // scene, 3.3x the cost, purely for pixels. At 2x on a retina laptop the
+    // default preset was already 15 fps before anything else went wrong.
+    pixelRatioCap: 1.5,
     shadowMapSize: 2048,
     shadows: true,
     bloom: true,

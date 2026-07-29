@@ -74,8 +74,7 @@ export function framedPhoto(
         color: 0xffffff,
         roughness: 0.34,
         metalness: 0,
-        transmission: 0.98,
-        thickness: 0.002,
+        transmission: 0,
         transparent: true,
         opacity: 0.1,
         side: THREE.FrontSide,
@@ -220,11 +219,10 @@ export function bottle(
     color: tint,
     roughness: 0.24,
     metalness: 0,
-    transmission: 0.55,
-    thickness: 0.02,
+    transmission: 0,
     ior: 1.5,
     transparent: true,
-    opacity: 0.92,
+    opacity: 0.77,
   }))
   g.add(glass)
   const cap = mesh(new THREE.CylinderGeometry(radius * 0.42, radius * 0.42, height * 0.09, 18), mats.bakelite)
@@ -446,8 +444,7 @@ export function liquid(w: number, d: number, color: number, opacity = 0.86): THR
       metalness: 0,
       transparent: true,
       opacity,
-      transmission: 0.3,
-      thickness: 0.01,
+      transmission: 0,
       side: THREE.DoubleSide,
     }),
     { cast: false, receive: false },
