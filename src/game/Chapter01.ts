@@ -152,6 +152,11 @@ export class Chapter01 {
     studio.darkroomKey.visible = s.flag('key_revealed') && !s.hasItem('key_darkroom')
     studio.lensInDrawer.visible = !s.hasItem('lens') && !s.hasItem('loupe')
     hall.drawerContents.visible = s.flag('drawer_open')
+    // The two mid-game photographs are visible in their containers from the
+    // moment the container is opened until they are taken, so the second click
+    // is a click on a photograph and a reload still shows one waiting.
+    darkroom.understorePrint.visible = s.flag('understore_open') && !s.hasItem('print_4')
+    office.deskPrint.visible = s.flag('desk_open') && !s.hasItem('print_7')
     ;(hall.fuseSpare as unknown as THREE.Object3D).visible =
       !s.hasItem('spare_fuse') && !s.flag('fuse_seated')
     hall.receptionDrawer.position.z = s.flag('drawer_open') ? 0.28 : 0
@@ -1441,10 +1446,12 @@ export class Chapter01 {
     const flag = `diff_${key}`
     if (!this.flag(flag)) {
       if (!this.flag('saw_1985')) {
-        // Say something that points back at the photograph rather than the
-        // reveal line, so a player exploring out of order is not quietly told
-        // the answer and then denied the credit for it.
-        this.say('何かが違う気がする。見比べるものが要る。')
+        // Points back at the photograph rather than at the reveal line, so a
+        // player exploring out of order is not quietly told the answer and then
+        // denied the credit for it - and names where that photograph is. The
+        // clue and the thing it applies to are in different rooms, and
+        // 「見比べるものが要る」 on its own does not say which room.
+        this.say('何かが違う気がする。見比べるものが要る。受付の壁に、この部屋を写した古い額が掛かっていた。')
         this.d.audio.play('select')
         return
       }
@@ -1869,11 +1876,13 @@ export class Chapter01 {
         if (!this.flag('understore_open')) {
           this.d.state.setFlag('understore_open')
           this.d.audio.play('drawer')
+          darkroom.understorePrint.visible = true
           this.say('薬品の空き箱と、丸めた新聞。奥に、写真が一枚だけ伏せて挟んである。')
           this.d.save.save()
           return
         }
         if (!this.d.state.hasItem('print_4')) {
+          darkroom.understorePrint.visible = false
           this.grant('print_4', '伏せてあった一枚を抜き取る。四歳。椅子には座らず、脚につかまって立っている。')
           return
         }
@@ -2003,7 +2012,13 @@ export class Chapter01 {
         this.clue(
           'clue_safelight',
           '赤い明かり',
-          '安全灯は暗室だけのものではなかった。館じゅうに赤い灯が引いてある。赤の下でしか見えないものがあるかもしれない。',
+          // Names the three rooms. The marks are the backbone of two things -
+          // the hidden ending and the reading that resolves the entrance lock -
+          // and they exist only under the red lamp, at three specific
+          // viewpoints, with nothing anywhere telling the player which walls to
+          // go and stand in front of. 「見えないものがあるかもしれない」 is not
+          // a direction; it is a mood.
+          '安全灯は暗室だけのものではなかった。館じゅうに赤い灯が引いてある。赤の下でしか読めない字が、玄関ホール、撮影室、事務室の壁に一つずつあるらしい。',
           '暗室　安全灯',
         )
       }
@@ -2412,11 +2427,15 @@ export class Chapter01 {
         if (!this.flag('desk_open')) {
           this.d.state.setFlag('desk_open')
           this.d.audio.play('drawer')
-          this.say('文具と、使いかけの帳簿。いちばん下に、写真が一枚だけ伏せてある。')
+          office.deskPrint.visible = true
+          // The drawer does not slide, so the print comes out onto the desk
+          // where it can be seen and then taken.
+          this.say('文具と、使いかけの帳簿。いちばん下に伏せてあった一枚を、机の上に出す。')
           this.d.save.save()
           return
         }
         if (!this.d.state.hasItem('print_7')) {
+          office.deskPrint.visible = false
           this.grant('print_7', '底の一枚を抜き取る。七歳。背景幕は絵のほうだ。')
           return
         }

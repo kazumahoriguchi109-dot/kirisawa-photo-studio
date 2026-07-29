@@ -21,6 +21,8 @@ export interface OfficeProps {
   ledgerOpen: THREE.Mesh
   ledgerBlock: THREE.Mesh
   desk: THREE.Group
+  /** Face-down print from the bottom drawer, shown once the desk is opened. */
+  deskPrint: THREE.Mesh
   deskLamp: THREE.Group
   phosphor: THREE.Mesh
   letterInSafe: THREE.Mesh
@@ -35,6 +37,7 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
 
   // ------------------------------------------------------------------ desk
   const desk = new THREE.Group()
+  let deskPrint!: THREE.Mesh
   const deskLamp = new THREE.Group()
   {
     const w = 1.5
@@ -65,6 +68,24 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
         desk.add(pull)
       }
     }
+    // The photograph out of the bottom drawer, face-down on the writing inlay.
+    //
+    // It had no mesh: the print was handed over on a SECOND click of the desk,
+    // with nothing on screen between the two clicks to say a photograph existed
+    // and no drawer animation to show the desk had been opened. The drawer does
+    // not slide, so the print is set out on the desk rather than left in a
+    // drawer the player cannot see into - and the line that opens it says so.
+    deskPrint = loosePrint(
+      photoTexture('desk-print-back', () => unexposedPrintCanvas({ width: 200, height: 260 })),
+      0.11,
+      0.145,
+    )
+    deskPrint.rotation.x = -Math.PI / 2
+    deskPrint.rotation.z = -0.28
+    deskPrint.position.set(0.24, h + 0.026, 0.1)
+    deskPrint.visible = false
+    desk.add(deskPrint)
+
     desk.position.set((O.x0 + O.x1) / 2 + 0.1, 0, O.z0 + 0.5)
     desk.rotation.y = Math.PI
     group.add(desk)
@@ -536,6 +557,7 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
     ledgerOpen,
     ledgerBlock,
     desk,
+    deskPrint,
     deskLamp,
     phosphor,
     letterInSafe,

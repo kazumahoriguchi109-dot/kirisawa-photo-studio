@@ -3,7 +3,13 @@ import { lathe, mesh, roundedBox, texturedBox } from '../Geo'
 import type { MaterialLibrary } from '../Materials'
 import { OPENINGS, ROOM } from '../Layout'
 import { bottle, labelPlate, liquid, loosePrint, phosphorMark, shelfUnit, tray } from './Common'
-import { negativeCanvas, photoTexture, portraitCanvas, studioRecordCanvas } from '../Photographs'
+import {
+  negativeCanvas,
+  photoTexture,
+  portraitCanvas,
+  studioRecordCanvas,
+  unexposedPrintCanvas,
+} from '../Photographs'
 import { ctx2d, makeCanvas } from '../Textures'
 
 /**
@@ -33,6 +39,8 @@ export interface DarkroomProps {
   negativeSleeve: THREE.Group
   officeKey: THREE.Group
   underBenchStore: THREE.Group
+  /** Face-down print inside it, shown once the shelf has been opened. */
+  understorePrint: THREE.Mesh
   timer: THREE.Group
   clock: THREE.Group
   phosphor: THREE.Mesh
@@ -47,6 +55,7 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
   const group = new THREE.Group()
   group.name = 'props-darkroom'
   let underBenchStore!: THREE.Group
+  let understorePrint!: THREE.Mesh
 
   // ------------------------------------------------------------- wet bench
   {
@@ -80,6 +89,22 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     underBenchStore = shelfUnit(mats, 0.86, 0.72, 0.5, 2, true)
     underBenchStore.position.set(cx + 0.9, 0.06, cz)
     group.add(underBenchStore)
+    // The photograph that is in there, face-down on the middle shelf.
+    //
+    // It had no mesh at all: the print was handed over on a SECOND click of the
+    // shelf, with nothing on screen between the two clicks to say a photograph
+    // was there. After a reload there was no way to tell the shelf had already
+    // been opened, and the take read as re-examining furniture.
+    understorePrint = loosePrint(
+      photoTexture('understore-print-back', () => unexposedPrintCanvas({ width: 200, height: 260 })),
+      0.11,
+      0.145,
+    )
+    understorePrint.rotation.x = -Math.PI / 2
+    understorePrint.rotation.z = 0.22
+    understorePrint.position.set(cx + 0.98, 0.44, cz + 0.06)
+    understorePrint.visible = false
+    group.add(understorePrint)
   }
 
   // -------------------------------------------------------------- the trays
@@ -791,6 +816,7 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     negativeSleeve,
     officeKey,
     underBenchStore,
+    understorePrint,
     timer,
     clock,
     phosphor,
