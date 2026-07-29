@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { boxAt, extrude, lathe, mesh, roundedBox, texturedBox } from '../Geo'
+import { boxAt, lathe, mesh, roundedBox, texturedBox } from '../Geo'
 import type { MaterialLibrary } from '../Materials'
 import { OPENINGS, ROOM } from '../Layout'
 import { chair, dustMotes, framedPhoto, labelPlate, phosphorMark } from './Common'
@@ -433,22 +433,33 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
     groundGlass.name = 'ground-glass'
     viewCamera.add(groundGlass)
     {
-      const hood = mesh(
-        extrude(
-          [
-            [-0.16, -0.17],
-            [0.16, -0.17],
-            [0.16, 0.17],
-            [-0.16, 0.17],
-          ],
-          0.02,
-          { density: 2 },
-        ),
-        new THREE.MeshStandardMaterial({ color: 0x1a1715, roughness: 0.95, side: THREE.DoubleSide }),
-        { cast: true },
-      )
-      hood.position.set(0, 1.6, 0.15)
-      viewCamera.add(hood)
+      // A focusing hood: four shades standing around the glass, open in the
+      // middle so you can look through it.
+      //
+      // It used to be a filled 0.32 x 0.34 extrusion sitting 15 mm in front of
+      // the ground glass - an opaque black slab over the one surface the player
+      // has to read. The close-up opened on it and showed nothing, and no
+      // amount of framing could have helped, because the subject was behind a
+      // wall of its own camera.
+      const hoodMat = new THREE.MeshStandardMaterial({
+        color: 0x1a1715,
+        roughness: 0.95,
+        side: THREE.DoubleSide,
+      })
+      const OPEN_W = 0.21
+      const OPEN_H = 0.23
+      const WALL = 0.035
+      const DEPTH = 0.05
+      for (const [w, h, x, y] of [
+        [OPEN_W + WALL * 2, WALL, 0, OPEN_H / 2 + WALL / 2],
+        [OPEN_W + WALL * 2, WALL, 0, -(OPEN_H / 2 + WALL / 2)],
+        [WALL, OPEN_H, -(OPEN_W / 2 + WALL / 2), 0],
+        [WALL, OPEN_H, OPEN_W / 2 + WALL / 2, 0],
+      ] as Array<[number, number, number, number]>) {
+        const panel = mesh(texturedBox(w, h, DEPTH, 2), hoodMat, { cast: true })
+        panel.position.set(x, 1.6 + y, 0.135 + DEPTH / 2 + 0.004)
+        viewCamera.add(panel)
+      }
     }
 
     // bellows: a tapered accordion made from stacked rings
@@ -466,7 +477,13 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
         geo,
         new THREE.MeshStandardMaterial({ color: 0x171513, roughness: 0.92, side: THREE.DoubleSide }),
       )
-      cameraBellows.rotation.x = Math.PI / 2
+      // Toward the front standard, not out of the back of the camera.
+      //
+      // At +PI/2 the 0.26 accordion ran from z 0.09 to 0.35: it swallowed the
+      // rear standard and the ground glass and stuck 0.18 out behind the
+      // camera, while the 0.26 gap between the two standards - the space a
+      // bellows exists to fill - was empty air.
+      cameraBellows.rotation.x = -Math.PI / 2
       cameraBellows.position.set(0, 1.6, 0.09)
       cameraBellows.scale.set(1, 1, 1)
       viewCamera.add(cameraBellows)

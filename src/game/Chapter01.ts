@@ -2130,7 +2130,10 @@ export class Chapter01 {
           }),
           { cast: false, receive: false },
         )
-        m.position.set(-6.5, 1.42, -1.15)
+        // Just proud of the screen plane, which is itself just inside the
+        // room-side face of the west wall. See Darkroom.ts - all three used to
+        // sit inside the masonry and were depth-culled by it.
+        m.position.set(-6.435, 1.64, -1.09)
         m.rotation.y = Math.PI / 2
         this.d.scene.add(m)
         this.projectionMesh = m

@@ -319,7 +319,15 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, depthWrite: false }),
     { cast: false, receive: false },
   )
-  projectionScreen.position.set(D.x0 + 0.09, 1.42, -1.15)
+  // In front of the plaster, not behind it.
+  //
+  // The west wall is the 0.26 exterior, so its room-side face is at
+  // D.x0 + 0.13. Both this screen and the painted patch sat at D.x0 + 0.087 and
+  // + 0.09 - inside the masonry - and the runtime image plane with them. Depth
+  // testing then hid all three behind the wall, so switching the enlarger on
+  // threw a pool of light and no picture: the player was told to read a dial
+  // off an image that was never drawn.
+  projectionScreen.position.set(D.x0 + 0.145, 1.64, -1.09)
   projectionScreen.rotation.y = Math.PI / 2
   projectionScreen.name = 'projection-screen'
   group.add(projectionScreen)
@@ -329,7 +337,7 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
       new THREE.MeshStandardMaterial({ color: 0xc8bda6, roughness: 0.95 }),
       { cast: false },
     )
-    patch.position.set(D.x0 + 0.087, 1.42, -1.15)
+    patch.position.set(D.x0 + 0.138, 1.64, -1.09)
     patch.rotation.y = Math.PI / 2
     group.add(patch)
   }
