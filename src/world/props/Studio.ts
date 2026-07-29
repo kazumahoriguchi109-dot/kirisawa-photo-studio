@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { boxAt, extrude, lathe, mesh, roundedBox, texturedBox } from '../Geo'
 import type { MaterialLibrary } from '../Materials'
 import { OPENINGS, ROOM } from '../Layout'
-import { chair, dustMotes, framedPhoto, labelPlate, loosePrint, phosphorMark } from './Common'
+import { chair, dustMotes, framedPhoto, labelPlate, phosphorMark } from './Common'
 import {
   groupPhotoCanvas,
   photoTexture,
@@ -808,15 +808,12 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
       group.add(holder)
     }
 
-    // a print left on the floor under the chair, face down
-    const stray = loosePrint(
-      photoTexture('stray-print', () => portraitCanvas(21, { width: 200, height: 260, age: 0.5 })),
-      0.14,
-      0.18,
-    )
-    stray.rotation.set(-Math.PI / 2, 0, 0.7)
-    stray.position.set(-1.15, 0.004, -1.05)
-    group.add(stray)
+    // There used to be a print lying face-down on the floor here. It was pure
+    // dressing - no hotspot anywhere in the chapter - but it was built with the
+    // same helper and at the same size as the four photographs the player has
+    // to collect, so it read as a fifth one and answered nothing when clicked.
+    // A prop that looks exactly like a collectable and is not one is worse than
+    // no prop.
   }
 
   // ============================================== phosphorescent mark + dust

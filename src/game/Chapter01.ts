@@ -15,7 +15,7 @@ import type { HallProps } from '../world/props/Hall'
 import type { StudioProps } from '../world/props/Studio'
 import type { DarkroomProps } from '../world/props/Darkroom'
 import type { OfficeProps } from '../world/props/Office'
-import { processIconCanvas } from '../world/props/Hall'
+import { processIconCanvas, OPEN_TILT } from '../world/props/Hall'
 import type { LightingRig } from '../world/Lighting'
 import type { MaterialLibrary } from '../world/Materials'
 import {
@@ -162,7 +162,8 @@ export class Chapter01 {
       !s.hasItem('spare_fuse') && !s.flag('fuse_seated')
     hall.receptionDrawer.position.z = s.flag('drawer_open') ? 0.28 : 0
     hall.fuseBoxDoor.rotation.y = s.flag('fusebox_open') ? -2.1 : 0
-    hall.breakerLever.rotation.x = s.flag('power_on') ? 0.34 : -0.34
+    // Closed (hanging straight down) once the power is on; standing open before.
+    hall.breakerLever.rotation.x = s.flag('power_on') ? 0 : OPEN_TILT
     office.safeContents.visible = s.flag('safe_open')
     office.safeDoor.rotation.y = s.flag('safe_open') ? -1.9 : 0
     darkroom.developerLiquid.visible = s.flag('developer_poured')
@@ -983,7 +984,7 @@ export class Chapter01 {
     this.d.state.setFlag('power_on')
     this.d.audio.play('breaker')
     await this.d.timeline.to(0.28, (t) => {
-      hall.breakerLever.rotation.x = -0.34 + 0.68 * t
+      hall.breakerLever.rotation.x = OPEN_TILT * (1 - t)
     }, { ease: Ease.outBack }).promise
     this.d.rig.nudgeShake(0.6)
     this.d.state.setLighting('tungsten')

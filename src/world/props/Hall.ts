@@ -58,6 +58,12 @@ export interface HallProps {
   archThreshold: THREE.Group
 }
 
+/**
+ * How far the main switch stands open. The blade hangs straight down when the
+ * circuit is closed, so this is the only angle either side needs to agree on.
+ */
+export const OPEN_TILT = -0.85
+
 const H = ROOM.hall
 
 export function buildHall(mats: MaterialLibrary): HallProps {
@@ -411,31 +417,40 @@ export function buildHall(mats: MaterialLibrary): HallProps {
       fuseBox.add(scorch)
     }
 
-    // main lever, thrown down when the power is dead
+    // Main switch: a knife switch, hinged at the top.
+    //
+    // It used to hang at the very bottom of the box and tilt through 19
+    // degrees, which reads as a handle twitching rather than as a switch being
+    // thrown. This is the shape the real thing has: the blade is hinged at the
+    // top, stands up and out toward you when the circuit is open, and is pulled
+    // DOWN into its jaw to close it. The motion is top to bottom, and it is
+    // large enough to see.
     {
-      // Sized so the whole swing stays inside the carcass. The arm reached
-      // 0.147 below a pivot at y = -0.1, putting the knob at -0.247 while the
-      // bottom plate is at -0.214: at rest the handle hung through the floor of
-      // its own cabinet, and through the bottom of the gate plate behind it.
-      const pivotY = -0.06
-      const armLen = 0.1
-      const knobR = 0.016
-      const pivot = mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.05, 12), mats.brassDull)
+      const pivotY = 0.0
+      const armLen = 0.14
+      const knobR = 0.017
+      // The hinge, across the top of the travel.
+      const pivot = mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.056, 12), mats.brassDull)
       pivot.rotation.z = Math.PI / 2
       pivot.position.set(0, pivotY, -bd + 0.05)
       fuseBox.add(pivot)
-      const arm = mesh(roundedBox(0.028, armLen, 0.02, 0.008, 2, 3), mats.bakelite)
+      // Blade and handle, hanging from the hinge.
+      const arm = mesh(roundedBox(0.03, armLen, 0.018, 0.007, 2, 3), mats.bakelite)
       arm.position.set(0, -armLen / 2, 0)
       breakerLever.add(arm)
       const knob = mesh(new THREE.SphereGeometry(knobR, 14, 10), mats.bakelite)
-      knob.position.set(0, -armLen - knobR * 0.3, 0)
+      knob.position.set(0, -armLen - knobR * 0.35, 0)
       breakerLever.add(knob)
       breakerLever.position.set(0, pivotY, -bd + 0.05)
-      breakerLever.rotation.x = -0.34
+      breakerLever.rotation.x = OPEN_TILT
       fuseBox.add(breakerLever)
-      // The slot the handle travels in, spanning the swing and no further.
-      const gate = mesh(texturedBox(0.05, 0.15, 0.01, 3), mats.steelDark, { cast: false })
-      gate.position.set(0, pivotY - 0.062, -bd + 0.032)
+      // The jaw the blade drops into at the bottom of its travel.
+      const jaw = mesh(texturedBox(0.042, 0.026, 0.03, 3), mats.brassDull, { cast: false })
+      jaw.position.set(0, pivotY - armLen - 0.006, -bd + 0.05)
+      fuseBox.add(jaw)
+      // The plate it travels over.
+      const gate = mesh(texturedBox(0.05, armLen + 0.03, 0.01, 3), mats.steelDark, { cast: false })
+      gate.position.set(0, pivotY - (armLen + 0.03) / 2 + 0.01, -bd + 0.032)
       fuseBox.add(gate)
       const onOff = labelPlate('入　切', 0.055, 0.02, {
         bg: '#7a746a',
@@ -737,17 +752,30 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     // The boarding-over. It starts level with the top tread: any gap and the
     // player can see that there is nothing behind it.
     const boards = new THREE.Group()
-    // Behind the boards, a void. Without it the gaps between the planks show
-    // lit plaster, the whole thing reads as a panelled wall, and the player is
-    // left thinking the stairs merely stop rather than that someone closed them
-    // off - which is the difference between "this game is unfinished" and "this
-    // way is shut".
+    // Behind the boards, the flight actually continues.
+    //
+    // It used to be a flat black panel 8 cm behind the planks, which reads as a
+    // painted-out rectangle: the gaps between the boards showed the same dead
+    // tone at every angle, so the stair looked like it stopped rather than like
+    // it had been closed off. There is no way up - the boarding is solid - but
+    // through the slots you can now see treads going on into the dark, and they
+    // shift against the boards as the camera moves.
+    for (let i = 5; i < 11; i++) {
+      const step = mesh(texturedBox(1.0, 0.045, 0.27, 1.6), mats.woodDark, { cast: false })
+      step.position.set(0, 0.19 + i * 0.19, -i * 0.27)
+      boards.add(step)
+      const riser = mesh(texturedBox(1.0, 0.15, 0.02, 1.6), mats.woodDark, { cast: false })
+      riser.position.set(0, 0.095 + i * 0.19, -i * 0.27 + 0.135)
+      boards.add(riser)
+    }
+    // The far wall of the stairwell, well back, so what shows through the slots
+    // is depth rather than a surface.
     const voidPanel = mesh(
-      texturedBox(1.02, 1.16, 0.02, 1),
-      new THREE.MeshBasicMaterial({ color: 0x0a0806 }),
+      texturedBox(1.3, 2.6, 0.02, 1),
+      new THREE.MeshBasicMaterial({ color: 0x080706 }),
       { cast: false, receive: false },
     )
-    voidPanel.position.set(0, 1.58, -1.2)
+    voidPanel.position.set(0, 1.9, -3.05)
     boards.add(voidPanel)
     for (let i = 0; i < 5; i++) {
       // Dark stock, stood off the plaster far enough to throw a shadow line,
