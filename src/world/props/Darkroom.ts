@@ -163,6 +163,15 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     knob.rotation.z = Math.PI / 2
     knob.position.set(-0.25, 0.86, -0.06)
     enlarger.add(knob)
+    // The spindle it turns. The knob's inner face was at -0.242 and the collar's
+    // outer face at -0.235, so the height wheel hung in the air beside the
+    // casting it is supposed to drive.
+    const spindle = mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.07, 10), mats.steelDark, {
+      cast: false,
+    })
+    spindle.rotation.z = Math.PI / 2
+    spindle.position.set(-0.213, 0.86, -0.06)
+    enlarger.add(spindle)
     // The cast arm from the collar out to the head. Without it the head hung
     // 0.18 to the side of the collar and 0.12 in front of it with clear air in
     // between - the lamphouse floating unsupported beside its own column.
