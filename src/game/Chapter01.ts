@@ -18,7 +18,13 @@ import type { OfficeProps } from '../world/props/Office'
 import { processIconCanvas } from '../world/props/Hall'
 import type { LightingRig } from '../world/Lighting'
 import type { MaterialLibrary } from '../world/Materials'
-import { lastFrameCanvas, photoTexture, portraitCanvas, studioRecordCanvas } from '../world/Photographs'
+import {
+  lastFrameCanvas,
+  photoTexture,
+  portraitCanvas,
+  studioRecordCanvas,
+  unexposedPrintCanvas,
+} from '../world/Photographs'
 import { mesh } from '../world/Geo'
 
 /**
@@ -207,10 +213,27 @@ export class Chapter01 {
       const placed = slot.getObjectByName('restored')
       if (s.flag(`restored_${id}`) && !placed) {
         const variant = CHRONICLE_VARIANTS[i]
+        // Keyed `wall-`, not `item-`.
+        //
+        // photoTexture is a first-writer-wins cache, and this used the same key
+        // as the inventory art for the same id. Whichever ran first defined
+        // both: inspect the fourth print before restoring it and the wall slot
+        // came out blank; restore before inspecting and the item in your hands
+        // came out as a portrait. Which of the two you got depended on the
+        // order you happened to play in.
+        //
+        // And the fourth is blank here as well. It is the mount cut for a
+        // sitting that never happened; the wall is meant to end on an empty
+        // frame that is nonetheless filled.
+        const isBlankMount = id === 'print_last_slot'
         const m = mesh(
           new THREE.PlaneGeometry(0.33, 0.42),
           new THREE.MeshStandardMaterial({
-            map: photoTexture(`item-${id}`, () => portraitCanvas(variant, { width: 230, height: 300, age: 0.24 })),
+            map: photoTexture(`wall-${id}`, () =>
+              isBlankMount
+                ? unexposedPrintCanvas({ width: 230, height: 300 })
+                : portraitCanvas(variant, { width: 230, height: 300, age: 0.24 }),
+            ),
             roughness: 0.6,
           }),
           { cast: false },
@@ -793,6 +816,21 @@ export class Chapter01 {
             '受付の額',
           )
           this.say('撮影室。背景幕の前に椅子が一脚。壁の上のほうに何かが掛かっている。撮られたのは、この館が閉まる年だ。')
+          // Credit the backdrop retrospectively if the幕 has already gone up.
+          //
+          // Without this the game could be made unwinnable by playing it in a
+          // perfectly sensible order. The velvet stops existing as a clickable
+          // surface the moment it is wound up - applyBackdrop hides the cloth -
+          // and nothing gates the crank on having seen this photograph. So
+          // "take the crank, wind the backdrop, then go and look at the 1985
+          // print" left 違い二 permanently unobservable: p2_observe never
+          // solved, 写真　一歳 was never obtainable, and with it the wall and
+          // the hidden ending. The hint panel went on pointing at 幕の柄, an
+          // object no longer in the room. The comparison is still the player's
+          // to make - it is just no longer punished for being made late.
+          if (this.flag('chronicle_open') && !this.flag('diff_backdrop')) {
+            this.markDifference('backdrop', '写真の幕には絵が描いてある。さっき巻き上げたのは、無地の天鵞絨だった。')
+          }
           this.d.save.save()
         } else if (this.d.state.isSolved('p2_observe') && !this.d.state.hasItem('print_1')) {
           this.say('額の台紙が、後ろで一度剥がされている。')
@@ -897,7 +935,8 @@ export class Chapter01 {
       target: hall.phosphor,
       label: '壁に浮かぶ字',
       verb: 'examine',
-      scope: ['hall_n'],
+      // Follows the mark: it hangs on the west wall now, not across the archway.
+      scope: ['hall_w'],
       visible: () => this.d.state.lighting === 'safelight',
       onActivate: () => this.findMark('hall', '灯'),
     })
@@ -1664,7 +1703,15 @@ export class Chapter01 {
       visible: () => !this.d.state.hasItem('powder') && !this.d.state.hasItem('developer'),
       onActivate: () => {
         darkroom.powderTin.visible = false
-        this.grant('powder')
+        // Says what it is and what it is not.
+        //
+        // Taking it used to be silent - a toast and nothing else - and the only
+        // statement anywhere that the powder has to be dissolved was printed on
+        // the UNDERSIDE of the tin, reachable only by turning it over in the
+        // inspector. A player who has never developed a film had no way to know
+        // that a can of powder and a bottle of water are the same object as
+        // 現像液, and that is the hardest stall in the room.
+        this.grant('powder', '粉末の現像剤。封は切ってある。粉のままでは何も起きない。水に溶いてはじめて液になる。')
       },
     })
     this.hs({
@@ -1724,6 +1771,13 @@ export class Chapter01 {
           this.d.audio.play('paper')
           this.say('枠にネガを落とし込む。膜面を下に。')
           this.d.save.save()
+          return
+        }
+        // Holding the safe's undeveloped negative used to get the empty-frame
+        // line - a sentence that is false while you are holding a negative, at
+        // the one moment a player is most likely to try it.
+        if (ctx.selectedItem === 'negative_last') {
+          this.wrong('枠には入る。ただ、まだ像の出ていないネガだ。灯を当てても、壁には何も出ない。')
           return
         }
         this.say('空の枠。ここにネガを一枚入れると、下のレンズが壁に像を投げる。')
@@ -1796,8 +1850,19 @@ export class Chapter01 {
     this.hs({
       id: 'dark:understore',
       target: darkroom.underBenchStore,
+      // Once it is open the label and the verb name the photograph, not the
+      // furniture. Both of the mid-game prints were granted by clicking a
+      // container a SECOND time under 調べる or 開ける - so the act of taking a
+      // photograph read as re-examining a shelf, and after a reload nothing on
+      // screen said the shelf had already been opened.
       label: '作業台の下の棚',
+      labelFor: () =>
+        this.flag('understore_open') && !this.d.state.hasItem('print_4')
+          ? '棚の奥の写真'
+          : '作業台の下の棚',
       verb: 'examine',
+      verbFor: () =>
+        this.flag('understore_open') && !this.d.state.hasItem('print_4') ? 'take' : 'examine',
       scope: ['darkroom_n'],
       survey: true,
       onActivate: () => {
@@ -1809,7 +1874,7 @@ export class Chapter01 {
           return
         }
         if (!this.d.state.hasItem('print_4')) {
-          this.grant('print_4', '四歳。椅子には座らず、脚につかまって立っている。')
+          this.grant('print_4', '伏せてあった一枚を抜き取る。四歳。椅子には座らず、脚につかまって立っている。')
           return
         }
         this.say(FEEDBACK.emptyDrawer)
@@ -1925,7 +1990,16 @@ export class Chapter01 {
       if (!this.flag('seen_safelight')) {
         this.d.state.setFlag('seen_safelight')
         this.solve('p7_safelight')
-        this.say('白い明かりが落ちて、館じゅうが赤くなる。廊下の先にも、同じ赤が点いている。')
+        // Says why the room is red, forward, once. The requirement used to be
+        // discoverable only by failing at it: nothing in the manual, on the
+        // timer or on the shelf stated that developing needs the red lamp.
+        void this.d.ui.narrate(
+          [
+            '白い明かりが落ちて、館じゅうが赤くなる。廊下の先にも、同じ赤が点いている。',
+            '赤の下でなら、出かかった像は焼けない。暗室の仕事は、この明かりでする。',
+          ],
+          { hold: 2000 },
+        )
         this.clue(
           'clue_safelight',
           '赤い明かり',
@@ -2106,12 +2180,35 @@ export class Chapter01 {
 
   private async useOnTray(index: number, selected: string | null): Promise<void> {
     const { darkroom } = this.d
+    const labels = ['現像', '定着', '水洗', '停止']
     if (!selected) {
-      const labels = ['現像', '定着', '水洗', '停止']
-      this.say(
-        `琺瑯のバット。縁のラベルには「${labels[index]}」。台の上の並びは、誰かが動かしたあとに見える。`,
-      )
+      // Each tray says what it is FOR, not only what is written on it. A player
+      // who has never developed a film has no reason to know that 現像 is the
+      // step where the picture appears - which is the one fact the whole room
+      // is built on. The state of the tray is reported too, so the pour is
+      // legible after a reload.
+      const purpose = [
+        '像を出す液を張るほうだ',
+        '像を消えなくする液のほうだ',
+        '最後に水で流すほうだ',
+        '像の出るのを止める液のほうだ',
+      ][index]
+      const state =
+        index === 0
+          ? this.flag('developer_poured')
+            ? '底に琥珀色の液が張ってある'
+            : '底は乾いている'
+          : '底に、乾いた液の輪が残っている'
+      this.say(`琺瑯のバット。縁のラベルには「${labels[index]}」。${purpose}。いまは${state}。`)
       this.d.audio.play('select')
+      return
+    }
+    // The commonest mistake from someone who has never developed a film is
+    // tipping the dry powder straight into a tray. It used to get the flattest
+    // line in the game while FEEDBACK.devNoWater - written for exactly this -
+    // sat in the table with no call site.
+    if (selected === 'powder') {
+      this.wrong(FEEDBACK.devNoWater)
       return
     }
     if (selected === 'developer' && index === 0) {
@@ -2135,7 +2232,7 @@ export class Chapter01 {
       return
     }
     if (selected === 'developer') {
-      this.wrong('現像液を入れるバットは、ラベルで決まっている。ここではない。')
+      this.wrong('現像液を入れるのは、縁に現像と書いてあるバットだ。ここではない。')
       return
     }
     if (selected === 'negative_last') {
@@ -2147,7 +2244,11 @@ export class Chapter01 {
 
   private async developLastNegative(index: number): Promise<void> {
     if (index !== 0) {
-      this.wrong('液の入っていないバットに浸しても、何も出ない。')
+      // Was 「液の入っていないバットに浸しても、何も出ない。」 - two characters
+      // from the no-developer refusal, so the two most different mistakes in
+      // the room produced what read as the same sentence and neither told the
+      // player which of the two they had made.
+      this.wrong('このバットは乾いている。液を張ったのは、いちばん左の一つだけだ。')
       return
     }
     if (!this.flag('developer_poured')) {
@@ -2173,6 +2274,12 @@ export class Chapter01 {
         '縁のほうから、灰色が滲みはじめる。',
         '床。木目。倒れた茶色の瓶。広がっていく液の縁。',
         '人は写っていない。',
+        // The manual lists four steps and the bench holds four trays; the room
+        // only ever asked for the first. A player who had read 三、停止 and
+        // 四、定着 went looking for the stop bath and got a generic refusal from
+        // every remaining tray. The remaining three are done here, in a line,
+        // rather than left as three trays that answer nothing.
+        '停止に移し、定着に移し、水で流す。順は、書いてあるとおりにやる。',
       ],
       { hold: 1600 },
     )
@@ -2183,7 +2290,11 @@ export class Chapter01 {
     mat.map = photoTexture('last-frame-final', () => lastFrameCanvas({ width: 460, height: 340 }))
     mat.needsUpdate = true
     print.visible = true
-    this.grant('print_last')
+    // Named as it is taken. The print appeared on the drying line and arrived
+    // in the inventory at the same moment with no message at all, so the one
+    // object the whole night was spent on was announced by a toast reading
+    // 「最後の一枚／手に取った」 and nothing else.
+    this.grant('print_last', '水を切って、洗濯挟みに吊る。乾いたところで外す。四十年遅れて、一枚できた。')
     this.solve('true_develop')
     this.clue(
       'clue_truth',
@@ -2291,7 +2402,11 @@ export class Chapter01 {
       id: 'office:desk',
       target: office.desk,
       label: '事務机の抽斗',
+      labelFor: () =>
+        this.flag('desk_open') && !this.d.state.hasItem('print_7') ? '抽斗の底の写真' : '事務机の抽斗',
       verb: 'open',
+      verbFor: () =>
+        this.flag('desk_open') && !this.d.state.hasItem('print_7') ? 'take' : 'open',
       scope: ['office_n'],
       onActivate: () => {
         if (!this.flag('desk_open')) {
@@ -2302,7 +2417,7 @@ export class Chapter01 {
           return
         }
         if (!this.d.state.hasItem('print_7')) {
-          this.grant('print_7', '伏せてあった一枚。七歳。背景幕は絵のほうだ。')
+          this.grant('print_7', '底の一枚を抜き取る。七歳。背景幕は絵のほうだ。')
           return
         }
         this.say(FEEDBACK.emptyDrawer)
@@ -2349,7 +2464,10 @@ export class Chapter01 {
 
   private async trySafe(): Promise<void> {
     if (this.flag('safe_open')) {
-      this.takeSafeContents()
+      // Pulling the handle of an open safe does not hand you its contents.
+      // 中のもの is the hotspot that takes them; this dealt out four objects to
+      // a player who had pulled a door.
+      this.say('扉はもう開いている。中のものは、まだ底に残っている。')
       return
     }
     this.dragHandler = null
@@ -2375,21 +2493,38 @@ export class Chapter01 {
 
   private takeSafeContents(): void {
     const s = this.d.state
-    let took = false
-    for (const id of ['note_kyoichi', 'letter_akari', 'negative_last', 'print_last_slot']) {
+    // Each of the four says what it is as it comes out.
+    //
+    // They used to be granted in a silent loop: four toasts inside one window,
+    // all reading 「…／手に取った」, over a single narration line that said
+    // 「紙が三つと、まだ像の出ていない一枚」. That accounts for three papers and
+    // one further object, and 「まだ像の出ていない一枚」 reads as the negative -
+    // so the fourth chronicle photograph, which the hidden ending turns on
+    // entirely, was never named, never described, and arrived as the fourth of
+    // four identical toasts. Players finished runs holding it without knowing.
+    const contents: Array<[string, string]> = [
+      ['note_kyoichi', '折り畳んだ紙が一通。館主の字だ。'],
+      ['letter_akari', '封をしていない手紙が一通。宛名だけが書いてある。'],
+      ['negative_last', 'グラシン紙の袋に、ネガが一枚。まだ像が出ていない。'],
+      ['print_last_slot', '印画紙が一枚。四つ目の枠に合わせて切って、日付まで入れてある。像だけが出ていない。'],
+    ]
+    // Narrated as one run rather than four calls to say(), which replaces the
+    // queue each time and would leave only the last line on screen.
+    const lines: string[] = []
+    for (const [id, message] of contents) {
       if (!s.hasItem(id)) {
         this.grant(id)
-        took = true
+        lines.push(message)
       }
     }
-    if (took) {
+    if (lines.length > 0) {
       this.clue(
         'clue_safe_contents',
         '金庫の中身',
-        '手記が一通。宛名だけの手紙が一通。まだ現像されていないネガが一枚。それに、写真がもう一枚。',
+        '手記が一通。宛名だけの手紙が一通。まだ現像されていないネガが一枚。それに、日付だけ入れて像の出ていない台紙が一枚。',
         '事務室　金庫',
       )
-      this.say('紙が三つと、まだ像の出ていない一枚。')
+      void this.d.ui.narrate(lines, { hold: 2000 })
     } else {
       this.say('あとは、鉄の底が見えているだけだ。埃も入っていない。')
     }

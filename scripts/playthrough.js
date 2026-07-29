@@ -286,7 +286,11 @@ window.__playthrough = async function playthrough(route) {
   expect(d.items().some((i) => i.startsWith('print_last_slot')), '写真（空欄の分）を手に入れた')
 
   // -------------------------------------------------------- phosphor marks
-  d.go('hall_n')
+  // The hall mark hangs on the west wall, beside the fuse box. It used to sit
+  // on the north wall plane at x = -2.0 - inside the archway opening, which
+  // spans -2.6 to -1.0 - so it was floating across the passage to the studio
+  // with no wall behind it.
+  d.go('hall_w')
   await act('hall:phosphor')
   d.go('studio_w')
   await act('studio:phosphor')

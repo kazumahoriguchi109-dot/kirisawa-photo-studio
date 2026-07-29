@@ -100,8 +100,8 @@ export const FEEDBACK = {
   takeImmovable: '明日には無くなるものだ。今日、動かす理由がない。',
   darkroomLocked: '把手は回るが、錠が落ちたままだ。',
   officeLocked: 'すりガラスの向こうは暗い。錠がかかっている。',
-  needDeveloper: '液のないバットに浸しても、何も出ない。',
-  needSafelight: '白い光の下では、感光してしまう。',
+  needDeveloper: 'まだ現像液を作っていない。粉と水を合わせて、いちばん左のバットに張るところからだ。',
+  needSafelight: '白い光の下では、像の出るまえに焼けてしまう。赤の下でする仕事だ。',
   alreadyDone: 'もう済んでいる。',
   nothingHere: '手の届くところに、いま用のあるものはない。',
 } as const

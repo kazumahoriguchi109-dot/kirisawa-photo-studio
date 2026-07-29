@@ -874,7 +874,15 @@ export function buildHall(mats: MaterialLibrary): HallProps {
 
   // ------------------------------------------------- phosphorescent mark
   const phosphor = phosphorMark('灯', 0.3)
-  phosphor.position.set(-2.0, 1.72, 2.885)
+  // On the west wall, between the fuse box and the calendar.
+  //
+  // It used to sit at x = -2.0 on the north wall plane - and the archway to the
+  // studio spans x = -2.6 to -1.0, so the mark was floating in the middle of the
+  // opening with no wall behind it: red writing painted across a passage. It is
+  // also now in the centre of the 配電盤の壁 composition rather than off the
+  // edge of the reception one.
+  phosphor.position.set(H.x0 + 0.085, 1.72, 4.55)
+  phosphor.rotation.y = Math.PI / 2
   group.add(phosphor)
 
   // ------------------------------------------------------- floor dressing

@@ -3,7 +3,7 @@ import { lathe, mesh, roundedBox, texturedBox } from '../Geo'
 import type { MaterialLibrary } from '../Materials'
 import { ROOM } from '../Layout'
 import { chair, labelPlate, ledgerRow, loosePrint, phosphorMark, shelfUnit } from './Common'
-import { photoTexture, portraitCanvas } from '../Photographs'
+import { photoTexture, unexposedPrintCanvas } from '../Photographs'
 import { ctx2d, makeCanvas } from '../Textures'
 
 /**
@@ -423,9 +423,13 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
       cash.position.set(0.02, h / 2 + 0.005, -0.06)
       safeContents.add(cash)
 
-      // the fourth removed print, face-down under the note
+      // The fourth mount, face-down under the note.
+      //
+      // Blank, like the item it becomes. It used to be a full portrait of the
+      // child - which is the one thing this object must not be: the sitting it
+      // was cut for never happened, and a face here quietly undoes the ending.
       const print4 = loosePrint(
-        photoTexture('chron-print-a', () => portraitCanvas(2, { width: 220, height: 290, age: 0.2 })),
+        photoTexture('safe-blank-mount', () => unexposedPrintCanvas({ width: 220, height: 290 })),
         0.13,
         0.17,
       )

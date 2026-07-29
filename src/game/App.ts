@@ -121,6 +121,13 @@ export class App {
         if (detail.clue) {
           this.state.addClue(detail.clue)
         }
+        // Reading the dial off the old negative is the second, quieter route to
+        // the safe's number, and it recorded nothing: neg_dial carries no clue
+        // of its own, learnSafeNumber('negative') had no call site anywhere, so
+        // safe_number_known stayed false and the hint panel went on offering
+        // 金庫の番号 to a player who had already read it off the film. The
+        // alternate clue body written for exactly this case was unreachable.
+        if (detail.id === 'neg_dial') this.chapter?.learnSafeNumber('negative')
         this.save.save()
       },
     })
