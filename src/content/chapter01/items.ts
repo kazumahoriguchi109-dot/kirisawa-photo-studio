@@ -68,20 +68,30 @@ function paperTexture(draw: (g: CanvasRenderingContext2D, w: number, h: number) 
 /** A flat card-like item: front and back can carry different artwork. */
 function card(front: THREE.Texture, back: THREE.Texture, w: number, h: number, thickness = 0.0016): THREE.Group {
   const g = new THREE.Group()
+  // The paper body is inset and the two printed faces stand proud of it.
+  //
+  // Both faces used to sit at exactly +/- thickness/2, which is exactly where
+  // the body's own front and back faces are: three surfaces on two planes, so
+  // the card z-fought with itself and the blank cream body won often enough
+  // that every chronicle photograph showed as an untextured white rectangle -
+  // including the one whose whole point is the date pencilled on its back.
+  const lift = thickness / 2 + 0.0006
   const f = mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshStandardMaterial({ map: front, roughness: 0.62 }), {
     cast: false,
   })
-  f.position.z = thickness / 2
+  f.position.z = lift
   g.add(f)
   const b = mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshStandardMaterial({ map: back, roughness: 0.72 }), {
     cast: false,
   })
-  b.position.z = -thickness / 2
+  b.position.z = -lift
   b.rotation.y = Math.PI
   g.add(b)
-  const edge = mesh(texturedBox(w, h, thickness, 2), new THREE.MeshStandardMaterial({ color: 0xcfc3a4, roughness: 0.8 }), {
-    cast: false,
-  })
+  const edge = mesh(
+    texturedBox(w - 0.0018, h - 0.0018, thickness, 2),
+    new THREE.MeshStandardMaterial({ color: 0xcfc3a4, roughness: 0.8 }),
+    { cast: false },
+  )
   g.add(edge)
   return g
 }

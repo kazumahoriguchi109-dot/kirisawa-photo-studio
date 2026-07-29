@@ -691,8 +691,17 @@ button {
   border-color: rgba(200, 164, 94, 0.18);
   color: var(--on-dark-2);
 }
-.btn.ghost:hover {
+/* The background has to come back with the dark text.
+   `.btn.ghost` and `.btn:hover` have equal specificity and ghost is declared
+   later, so its `background: transparent` beat the brass fill of the hover
+   state - leaving the ink-coloured hover text on the dark panel with nothing
+   behind it. The label simply vanished under the pointer, which reads as a
+   broken button rather than a hover style. */
+.btn.ghost:hover,
+.btn.ghost:focus-visible {
   color: #17130e;
+  background: var(--brass);
+  border-color: var(--brass-lit);
 }
 .btn.danger:hover {
   background: #a33a26;

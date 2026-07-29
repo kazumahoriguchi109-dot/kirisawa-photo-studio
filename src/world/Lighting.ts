@@ -222,15 +222,26 @@ export class LightingRig {
 
     // --- office -------------------------------------------------------------
     const officeBulb = this.makeBulb(0xffe0b0, 0.03)
-    officeBulb.position.set((O.x0 + O.x1) / 2, O.ceiling - 0.3, (O.z0 + O.z1) / 2 - 0.2)
+    // Pulled east, away from the wall it shares with the studio. Point lights
+    // are not stopped by geometry: at the room's centre this bulb sat 1.5 m from
+    // that wall and put a clean circular pool of light on the studio side of it,
+    // at picture-rail height with no fixture anywhere near - which reads as a
+    // floating orb stuck to the wall rather than as light from the next room.
+    officeBulb.position.set(O.x1 - 0.95, O.ceiling - 0.3, (O.z0 + O.z1) / 2 - 0.2)
     this.root.add(officeBulb)
     const office = new THREE.PointLight(0xffd39a, 1, 7.5, 2)
     office.position.copy(officeBulb.position)
-    this.add(office, { blackout: 0, tungsten: 25, safelight: 0, dawn: 15 }, officeBulb)
+    this.add(office, { blackout: 0, tungsten: 17, safelight: 0, dawn: 11 }, officeBulb)
 
-    const deskLamp = new THREE.PointLight(0xffc078, 1, 3.2, 2.2)
+    // A bare point lamp 0.7 m off the north wall at intensity 9.5 clipped that
+    // whole wall - and the papers lying on the desk under it - to pure white:
+    // 8.4% of the office_n frame above 0.95 luma, on the desk the safe puzzle is
+    // read from. The shade is geometry, not an occluder, so the number has to do
+    // the work the shade would. Dimmer, with a shorter reach and a shallower
+    // curve, so it still pools on the desk without flooding the plaster.
+    const deskLamp = new THREE.PointLight(0xffc078, 1, 2.2, 1.9)
     deskLamp.position.set(4.6, 1.02, -2.1)
-    this.add(deskLamp, { blackout: 0, tungsten: 9.5, safelight: 0, dawn: 5.5 })
+    this.add(deskLamp, { blackout: 0, tungsten: 3.6, safelight: 0, dawn: 2.2 })
 
     // --- safelight service circuit ------------------------------------------
     // Kyoichi wired red service lamps through the whole building so wet prints

@@ -558,13 +558,37 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
     const c = makeCanvas(256, 256)
     const g = ctx2d(c)
     g.clearRect(0, 0, 256, 256)
-    const grad = g.createRadialGradient(128, 128, 96, 128, 128, 124)
-    grad.addColorStop(0, 'rgba(206,194,168,0.42)')
-    grad.addColorStop(0.82, 'rgba(206,194,168,0.34)')
-    grad.addColorStop(1, 'rgba(206,194,168,0)')
-    g.fillStyle = grad
+    // A mark, not a glow.
+    //
+    // It used to be a soft radial gradient brighter than the wall, fading to
+    // nothing at the rim - which is the shape of a light source, not of a patch
+    // of wallpaper. A first-time reviewer described it as "a bright, fully
+    // unshaded white sphere hanging in mid-air with no fixture", and that is
+    // fair: nothing about it said "something round hung here". Paper the sun
+    // never reached stays slightly darker and cooler than the paper around it,
+    // and it has an edge, because the clock had an edge.
+    const R = 118
+    const flat = g.createRadialGradient(128, 128, 0, 128, 128, R)
+    flat.addColorStop(0, 'rgba(150,138,112,0.30)')
+    flat.addColorStop(0.86, 'rgba(150,138,112,0.28)')
+    flat.addColorStop(1, 'rgba(150,138,112,0.20)')
+    g.fillStyle = flat
     g.beginPath()
-    g.arc(128, 128, 124, 0, Math.PI * 2)
+    g.arc(128, 128, R, 0, Math.PI * 2)
+    g.fill()
+    // the grime line that collected against the rim
+    g.strokeStyle = 'rgba(96,82,60,0.34)'
+    g.lineWidth = 5
+    g.beginPath()
+    g.arc(128, 128, R - 2, 0, Math.PI * 2)
+    g.stroke()
+    // and a faint dirty halo just outside it
+    const halo = g.createRadialGradient(128, 128, R, 128, 128, R + 12)
+    halo.addColorStop(0, 'rgba(104,90,66,0.20)')
+    halo.addColorStop(1, 'rgba(104,90,66,0)')
+    g.fillStyle = halo
+    g.beginPath()
+    g.arc(128, 128, R + 12, 0, Math.PI * 2)
     g.fill()
     const t = new THREE.CanvasTexture(c)
     t.colorSpace = THREE.SRGBColorSpace
