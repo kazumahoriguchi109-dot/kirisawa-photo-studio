@@ -822,9 +822,14 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     // Until this existed the exit hotspot was the sill, the reveals and the
     // soffit - the frame - and clicking anywhere in the opening hit nothing and
     // answered "there is nothing here", on the one route out of the first room.
+    // Double-sided, because the same opening is walked through from both rooms.
+    // A plane faces +z, and a raycast ignores a back face, so the pad answered
+    // clicks from the hall and not one from the studio: you could walk in and
+    // then had no doorway to click to walk out, with both other studio doors
+    // locked until you find keys that are not in the studio.
     const pad = new THREE.Mesh(
       new THREE.PlaneGeometry(w - 0.04, a.top - 0.04),
-      new THREE.MeshBasicMaterial({ visible: false }),
+      new THREE.MeshBasicMaterial({ visible: false, side: THREE.DoubleSide }),
     )
     pad.position.set((a.x0 + a.x1) / 2, (a.top - 0.04) / 2, a.z)
     pad.name = 'arch-opening'
