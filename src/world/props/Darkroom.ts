@@ -756,7 +756,11 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
         0.06,
         0.13,
       )
-      strip.position.set(-6.15 + i * 0.14, 1.52, D.z0 + 0.085)
+      // Moved clear of the timer. The row ran to x = -5.70 and the timer's case
+      // starts at -5.72, so the last strip and the dial were inside each other
+      // on the wall above the bench - the one place in the room the player
+      // stands and reads.
+      strip.position.set(-6.28 + i * 0.13, 1.52, D.z0 + 0.085)
       strip.rotation.z = (i % 2 ? 1 : -1) * 0.04
       group.add(strip)
     }

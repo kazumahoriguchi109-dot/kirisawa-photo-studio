@@ -397,7 +397,10 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
       lensInDrawer.add(el)
       const rim = mesh(new THREE.TorusGeometry(0.026, 0.0022, 6, 20), mats.brassDull, { cast: false })
       lensInDrawer.add(rim)
-      lensInDrawer.position.set(0.012, -0.03, -0.06)
+      // Resting on the drawer floor. At y = -0.03 the mounting rim reached
+      // -0.057 against a floor board whose top face is at -0.036, so the lens
+      // hung through the bottom of the drawer it is supposed to be lying in.
+      lensInDrawer.position.set(0.012, -0.006, -0.055)
       lensInDrawer.rotation.x = -0.2
       tripodDrawer.add(lensInDrawer)
 
