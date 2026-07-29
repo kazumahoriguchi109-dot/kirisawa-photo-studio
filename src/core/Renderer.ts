@@ -17,6 +17,13 @@ import type { QualityLevel } from './Settings'
  * banding you otherwise get in a dark interior.
  */
 
+/**
+ * Longest edge the drawing buffer is allowed to reach, whatever the window and
+ * the device pixel ratio ask for. Kept below the usual 4096 driver limit so the
+ * composer's several full-size targets all fit.
+ */
+const MAX_DRAWING_BUFFER = 3840
+
 const GradeShader = {
   uniforms: {
     tDiffuse: { value: null as THREE.Texture | null },
@@ -278,6 +285,20 @@ export function createRenderStack(
   function resize(w: number, h: number): void {
     width = Math.max(1, w)
     height = Math.max(1, h)
+    // Cap the drawing buffer, not just the ratio. On a large window at 2x, the
+    // requested buffer runs past what the driver will allocate - a reviewer on
+    // a 2400x1800 window got a scene rendered into one corner of the page and
+    // nothing anywhere else - and the composer keeps several targets this size,
+    // so the ceiling is hit several times over.
+    const cap = Math.min(
+      renderer.capabilities.maxTextureSize || 4096,
+      MAX_DRAWING_BUFFER,
+    )
+    const wanted = Math.min(
+      window.devicePixelRatio || 1,
+      QUALITY_PROFILES[currentQuality].pixelRatioCap,
+    )
+    renderer.setPixelRatio(Math.min(wanted, cap / Math.max(width, height)))
     renderer.setSize(width, height, false)
     // EffectComposer samples the renderer's pixel ratio once, in its
     // constructor - which runs before the quality profile has set one. Without
