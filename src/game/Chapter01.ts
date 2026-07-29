@@ -578,10 +578,13 @@ export class Chapter01 {
     const doorTarget: Record<string, THREE.Object3D> = {
       hall_n: this.d.hall.archThreshold,
       studio_s: this.d.hall.archThreshold,
-      studio_w: this.d.building.darkroomDoorLeaf,
-      darkroom_e: this.d.building.darkroomDoorLeaf,
-      studio_e: this.d.building.officeDoorLeaf,
-      office_w: this.d.building.officeDoorLeaf,
+      // The opening, not the leaf. An open door has swung clear of its doorway,
+      // so a player standing in the office with the door open behind them had
+      // no exit to click and no way back into the studio.
+      studio_w: this.d.building.darkroomOpening,
+      darkroom_e: this.d.building.darkroomOpening,
+      studio_e: this.d.building.officeOpening,
+      office_w: this.d.building.officeOpening,
     }
     for (const [from, exit] of Object.entries(EXITS)) {
       const target = doorTarget[from]
@@ -1597,7 +1600,15 @@ export class Chapter01 {
       label: '作業台のバット',
       verb: 'examine',
       scope: ['darkroom_n'],
-      onActivate: () => void this.enterCloseup('cu_trays', [-5.22, 1.42, -1.66], [-5.22, 0.96, -2.34], { fov: 46 }),
+      // Framed from the trays themselves. Hand-placed, the shot held three of
+      // the four and cut the leftmost off the edge - and the leftmost is the
+      // developing tray, the one the whole puzzle turns on. A player who could
+      // only reach three was told by every one of them that the developer does
+      // not go there, with no way to see the tray that it does go in.
+      onActivate: () => void this.closeupOn('cu_trays', darkroom.trays, [0, 0.62, 1], {
+        fov: 46,
+        margin: 1.22,
+      }),
     })
     darkroom.trays.forEach((t, i) => {
       this.hs({

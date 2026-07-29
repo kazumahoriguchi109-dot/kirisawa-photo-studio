@@ -25,6 +25,9 @@ export interface BuildingRefs {
   exitDoorLeaf: THREE.Group
   darkroomDoorLeaf: THREE.Group
   officeDoorLeaf: THREE.Group
+  /** Invisible pads filling the interior doorways: the clickable way through. */
+  darkroomOpening: THREE.Mesh
+  officeOpening: THREE.Mesh
   /** Warm glow plane outside the shopfront, brightened at dawn. */
   streetGlow: THREE.Mesh
   rain: THREE.Points
@@ -165,6 +168,26 @@ export function buildBuilding(mats: MaterialLibrary): BuildingRefs {
   officeDoorLeaf.rotation.y = -Math.PI / 2
   root.add(officeDoorLeaf)
 
+  // The way through a doorway has to be the doorway, not the door. Both
+  // interior exits used the leaf as their click target, and a leaf that is
+  // open has swung out of the opening and flat against the wall - so from
+  // inside the office, with the door standing open behind them, a player had
+  // nothing in the doorway to click and no way back to the studio at all.
+  // These pads stay in the opening whatever the door is doing.
+  const openingPad = (o: { x: number; z0: number; z1: number; top: number }, name: string): THREE.Mesh => {
+    const pad = new THREE.Mesh(
+      new THREE.PlaneGeometry(o.z1 - o.z0 - 0.04, o.top - 0.04),
+      new THREE.MeshBasicMaterial({ visible: false, side: THREE.DoubleSide }),
+    )
+    pad.position.set(o.x, (o.top - 0.04) / 2, (o.z0 + o.z1) / 2)
+    pad.rotation.y = Math.PI / 2
+    pad.name = name
+    root.add(pad)
+    return pad
+  }
+  const darkroomOpening = openingPad(OPENINGS.darkroomDoor, 'darkroom-opening')
+  const officeOpening = openingPad(OPENINGS.officeDoor, 'office-opening')
+
   const exitDoorLeaf = makeExitDoor(mats)
   exitDoorLeaf.position.set(OPENINGS.exitDoor.x0, 0, OPENINGS.exitDoor.z - EXTERIOR_THICKNESS / 2 + 0.03)
   root.add(exitDoorLeaf)
@@ -207,7 +230,7 @@ export function buildBuilding(mats: MaterialLibrary): BuildingRefs {
   // ------------------------------------------------------------ outside world
   const { streetGlow, rain } = buildOutside(root)
 
-  return { root, exitDoorLeaf, darkroomDoorLeaf, officeDoorLeaf, streetGlow, rain }
+  return { root, exitDoorLeaf, darkroomDoorLeaf, officeDoorLeaf, darkroomOpening, officeOpening, streetGlow, rain }
 }
 
 // ---------------------------------------------------------------------------
