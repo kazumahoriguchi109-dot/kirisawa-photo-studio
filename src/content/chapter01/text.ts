@@ -19,7 +19,9 @@ export const UI_TEXT = {
   foot: '音量は 設定 から変えられる',
 
   inventory: '持ち物',
-  clues: '控え',
+  // 「控え」 is a bookkeeping word - a duplicate, a counterfoil - and a player
+  // reading it on a HUD button has no way to guess it holds what they noticed.
+  clues: '覚え書き',
   hints: '手がかり',
   settings: '設定',
   close: '閉じる',
@@ -52,7 +54,7 @@ export const UI_TEXT = {
 
   hintTierLabels: ['そっと示す', 'つながりを示す', '手順を示す'],
   hintLockedNote: 'これを開くまえに、もう少し部屋を歩いてもいい',
-  hintReveal: 'これを見る',
+  hintReveal: 'ヒントを見る',
   hintAllTaken: 'これ以上に言えることはない',
   hintNothingActive: 'いま行き詰まっているものはない',
 
@@ -379,7 +381,7 @@ export const HOW_TO_PLAY = `　　　　　あそびかた
 
 　道具を合わせる　　持ち物で道具を選び、もう一方を押して 合わせる
 
-　控え　　　　　　　気づいたことは自動で書き留められる　／　J キー
+　覚え書き　　　　　気づいたことは自動で書き留められる　／　J キー
 
 　手がかり　　　　　行き詰まったときに　／　H キー
 

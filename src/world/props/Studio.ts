@@ -317,15 +317,53 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
     head.position.y = 1.4
     viewCamera.add(head)
 
-    // --- accessory drawer built into the tripod column
+    // --- accessory case, banded to the front of the tripod column
+    //
+    // The drawer used to be described as "built into the column" and was
+    // 0.15 x 0.09 x 0.15 - a box wider and deeper than the 0.10 column it was
+    // supposed to live inside, sliding out of thin air with no carcase behind
+    // it. It is now what it would really be: a small wooden accessory case
+    // bracketed to the front of the column by two steel bands, with the drawer
+    // running in it.
+    const CASE_W = 0.19
+    const CASE_H = 0.13
+    const CASE_D = 0.16
+    // Back plate sits against the front of the column (radius 0.05 at this
+    // height), so the case hangs off it rather than through it.
+    const CASE_Z = 0.05 + CASE_D / 2
+    const CASE_FRONT = CASE_Z + CASE_D / 2
+    {
+      const t = 0.01
+      const carcase = new THREE.Group()
+      const plate = (w: number, h: number, d: number, x: number, y: number, z: number): void => {
+        const m = mesh(texturedBox(w, h, d, 2), mats.woodDark)
+        m.position.set(x, y, z)
+        carcase.add(m)
+      }
+      plate(CASE_W, t, CASE_D, 0, CASE_H / 2 - t / 2, 0)
+      plate(CASE_W, t, CASE_D, 0, -CASE_H / 2 + t / 2, 0)
+      plate(t, CASE_H - t * 2, CASE_D, -CASE_W / 2 + t / 2, 0, 0)
+      plate(t, CASE_H - t * 2, CASE_D, CASE_W / 2 - t / 2, 0, 0)
+      plate(CASE_W, CASE_H, t, 0, 0, -CASE_D / 2 + t / 2)
+      carcase.position.set(0, 1.22, CASE_Z)
+      viewCamera.add(carcase)
+      // The two bands that hold it on, passing round the column.
+      for (const by of [0.042, -0.042]) {
+        const band = mesh(new THREE.TorusGeometry(0.052, 0.005, 6, 18), mats.steelDark, { cast: false })
+        band.rotation.x = Math.PI / 2
+        band.position.set(0, 1.22 + by, 0.012)
+        viewCamera.add(band)
+      }
+    }
     {
       const face = mesh(roundedBox(0.15, 0.09, 0.016, 0.005, 2, 2.4), mats.woodMid)
       tripodDrawer.add(face)
+      // Sized to run inside the case: 0.13 deep in a 0.16 carcase.
       const inner = new THREE.Group()
-      inner.add(boxAt(mats.woodMid, 0.14, 0.008, 0.14, 0, -0.04, -0.076))
-      inner.add(boxAt(mats.woodMid, 0.14, 0.07, 0.008, 0, 0, -0.148))
-      inner.add(boxAt(mats.woodMid, 0.008, 0.07, 0.14, -0.07, 0, -0.076))
-      inner.add(boxAt(mats.woodMid, 0.008, 0.07, 0.14, 0.07, 0, -0.076))
+      inner.add(boxAt(mats.woodMid, 0.14, 0.008, 0.13, 0, -0.04, -0.073))
+      inner.add(boxAt(mats.woodMid, 0.14, 0.07, 0.008, 0, 0, -0.134))
+      inner.add(boxAt(mats.woodMid, 0.008, 0.07, 0.13, -0.07, 0, -0.073))
+      inner.add(boxAt(mats.woodMid, 0.008, 0.07, 0.13, 0.07, 0, -0.073))
       tripodDrawer.add(inner)
       const pull = mesh(new THREE.TorusGeometry(0.014, 0.0032, 6, 14), mats.brass, { cast: false })
       pull.position.z = 0.012
@@ -364,9 +402,11 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
       lensInDrawer.rotation.x = -0.2
       tripodDrawer.add(lensInDrawer)
 
-      tripodDrawer.position.set(0, 1.22, 0.05)
-      tripodDrawer.userData.closedZ = 0.05
-      tripodDrawer.userData.openZ = 0.19
+      // Shut, the face is flush with the mouth of the case.
+      const closedZ = CASE_FRONT - 0.008
+      tripodDrawer.position.set(0, 1.22, closedZ)
+      tripodDrawer.userData.closedZ = closedZ
+      tripodDrawer.userData.openZ = closedZ + 0.115
       viewCamera.add(tripodDrawer)
     }
 
@@ -720,7 +760,9 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
         pts.push(
           new THREE.Vector3(
             x0 + (x1 - x0) * t + Math.sin(t * 6) * 0.07,
-            0.012,
+            // Lying on the boards, not floating a centimetre over them: the
+            // tube radius is 0.007, so its axis belongs at that height.
+            0.007,
             z0 + (z1 - z0) * t + Math.cos(t * 5) * 0.09,
           ),
         )

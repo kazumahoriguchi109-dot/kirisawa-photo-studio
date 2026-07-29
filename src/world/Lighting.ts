@@ -352,8 +352,15 @@ export class LightingRig {
    * the room behind it.
    */
   makeInspectionLight(camera: THREE.Object3D): THREE.PointLight {
-    const l = new THREE.PointLight(0xffe9cc, 0, 1.9, 2.4)
-    l.position.set(0.08, 0.12, 0.06)
+    // Stood well back behind the lens, with a gentle falloff.
+    //
+    // At 0.06 behind the camera with decay 2.4 this was an inverse-square bomb:
+    // a close-up frames its subject from 0.25-0.5 m, so the lamp sat about 0.3 m
+    // off it and delivered roughly fifteen times its one-metre intensity. That
+    // is what washed the lock, the fuse box and the loupe to white. Further back
+    // and shallower, the same lamp reads as a raking light instead of a flash.
+    const l = new THREE.PointLight(0xffe9cc, 0, 3.2, 1.8)
+    l.position.set(0.1, 0.14, 0.34)
     camera.add(l)
     return l
   }

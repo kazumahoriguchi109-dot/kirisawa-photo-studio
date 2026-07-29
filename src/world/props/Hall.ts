@@ -212,11 +212,35 @@ export function buildHall(mats: MaterialLibrary): HallProps {
       cup.rotation.z = Math.PI
       telephone.add(cup)
     }
-    // cut cord, hanging
-    const cord = mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.26, 6), mats.rubber, { cast: false })
-    cord.position.set(-0.11, -0.05, -0.06)
-    cord.rotation.z = 0.4
+    // Cut cord, hanging.
+    //
+    // It was a straight 0.26 cylinder leaning at 0.4 radians - a rigid rod, not
+    // a cord. Rubber that has hung off a counter for forty years falls in a
+    // catenary and curls where it was cut, so it is a tube on a curve now, with
+    // a strain relief at the set and a dead end at the bottom.
+    const cordPts = [
+      new THREE.Vector3(-0.088, -0.008, -0.055),
+      new THREE.Vector3(-0.104, -0.072, -0.07),
+      new THREE.Vector3(-0.098, -0.148, -0.058),
+      new THREE.Vector3(-0.126, -0.206, -0.03),
+      new THREE.Vector3(-0.104, -0.236, 0.004),
+    ]
+    const cord = mesh(
+      new THREE.TubeGeometry(new THREE.CatmullRomCurve3(cordPts), 26, 0.0042, 6, false),
+      mats.rubber,
+      { cast: false },
+    )
     telephone.add(cord)
+    // the moulded grommet where it leaves the set
+    const grommet = mesh(new THREE.CylinderGeometry(0.009, 0.007, 0.022, 10), mats.bakelite, { cast: false })
+    grommet.position.set(-0.086, 0.004, -0.055)
+    grommet.rotation.z = 0.22
+    telephone.add(grommet)
+    // the cut: bare copper, showing why the line is dead
+    const copper = mesh(new THREE.CylinderGeometry(0.0022, 0.0022, 0.018, 6), mats.brass, { cast: false })
+    copper.position.set(-0.1, -0.246, 0.012)
+    copper.rotation.set(0.5, 0, 0.35)
+    telephone.add(copper)
     telephone.position.set(0.12, 1.02, 3.22)
     telephone.rotation.y = -0.35
     group.add(telephone)
@@ -253,8 +277,11 @@ export function buildHall(mats: MaterialLibrary): HallProps {
   plate.position.set(-0.36, 1.44, 2.884)
   group.add(plate)
 
-  // two smaller portraits flanking it, to make the wall a wall of work
-  for (const [i, x] of [0.28, -1.0].entries()) {
+  // Two smaller portraits flanking it, to make the wall a wall of work. Both
+  // sit on solid wall: at x = -1.0 the left one was centred on the archway's
+  // own jamb, so 10 cm of frame hung out over the opening and the way through
+  // to the studio read as a gap between pictures rather than as a doorway.
+  for (const [i, x] of [0.28, -0.8].entries()) {
     const p = framedPhoto(mats, photoTexture(`hall-portrait-${i}`, () => portraitCanvas(i + 4, { width: 210, height: 280 })), 0.2, 0.26, {
       frame: 0.022,
       depth: 0.026,
@@ -364,21 +391,29 @@ export function buildHall(mats: MaterialLibrary): HallProps {
 
     // main lever, thrown down when the power is dead
     {
+      // Sized so the whole swing stays inside the carcass. The arm reached
+      // 0.147 below a pivot at y = -0.1, putting the knob at -0.247 while the
+      // bottom plate is at -0.214: at rest the handle hung through the floor of
+      // its own cabinet, and through the bottom of the gate plate behind it.
+      const pivotY = -0.06
+      const armLen = 0.1
+      const knobR = 0.016
       const pivot = mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.05, 12), mats.brassDull)
       pivot.rotation.z = Math.PI / 2
-      pivot.position.set(0, -0.1, -bd + 0.05)
+      pivot.position.set(0, pivotY, -bd + 0.05)
       fuseBox.add(pivot)
-      const arm = mesh(roundedBox(0.028, 0.13, 0.02, 0.008, 2, 3), mats.bakelite)
-      arm.position.set(0, -0.065, 0)
+      const arm = mesh(roundedBox(0.028, armLen, 0.02, 0.008, 2, 3), mats.bakelite)
+      arm.position.set(0, -armLen / 2, 0)
       breakerLever.add(arm)
-      const knob = mesh(new THREE.SphereGeometry(0.019, 14, 10), mats.bakelite)
-      knob.position.set(0, -0.128, 0)
+      const knob = mesh(new THREE.SphereGeometry(knobR, 14, 10), mats.bakelite)
+      knob.position.set(0, -armLen - knobR * 0.3, 0)
       breakerLever.add(knob)
-      breakerLever.position.set(0, -0.1, -bd + 0.05)
+      breakerLever.position.set(0, pivotY, -bd + 0.05)
       breakerLever.rotation.x = -0.34
       fuseBox.add(breakerLever)
-      const gate = mesh(texturedBox(0.06, 0.16, 0.01, 3), mats.steelDark, { cast: false })
-      gate.position.set(0, -0.16, -bd + 0.032)
+      // The slot the handle travels in, spanning the swing and no further.
+      const gate = mesh(texturedBox(0.05, 0.15, 0.01, 3), mats.steelDark, { cast: false })
+      gate.position.set(0, pivotY - 0.062, -bd + 0.032)
       fuseBox.add(gate)
       const onOff = labelPlate('入　切', 0.055, 0.02, {
         bg: '#7a746a',

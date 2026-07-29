@@ -221,14 +221,34 @@ button {
 }
 .turn-zone.left {
   left: 0;
-  background: linear-gradient(90deg, rgba(6, 5, 4, 0.62), rgba(6, 5, 4, 0));
 }
 .turn-zone.right {
   right: 0;
+}
+/* The dim wash is the hover state, not the affordance. The affordance is the
+   chevron, and it is always on while the zone is live: a marker that only
+   exists once the pointer is already on it cannot tell a player where they are
+   allowed to go, so the way out of a room was something you had to find by
+   sweeping the edges. */
+.turn-zone[data-live="1"] {
+  opacity: 1;
+}
+.turn-zone::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  pointer-events: none;
+}
+.turn-zone.left::before {
+  background: linear-gradient(90deg, rgba(6, 5, 4, 0.62), rgba(6, 5, 4, 0));
+}
+.turn-zone.right::before {
   background: linear-gradient(270deg, rgba(6, 5, 4, 0.62), rgba(6, 5, 4, 0));
 }
-.turn-zone:hover,
-.turn-zone[data-focus="1"] {
+.turn-zone:hover::before,
+.turn-zone[data-focus="1"]::before {
   opacity: 1;
 }
 .turn-zone .chev {
@@ -240,10 +260,15 @@ button {
   background: none;
   cursor: pointer;
   box-sizing: border-box;
-  border-top: 1.5px solid rgba(230, 205, 150, 0.92);
-  border-left: 1.5px solid rgba(230, 205, 150, 0.92);
-  filter: drop-shadow(0 1px 5px rgba(0, 0, 0, 0.85));
-  transition: transform 0.24s cubic-bezier(0.22, 0.61, 0.36, 1);
+  border-top: 2px solid rgba(238, 216, 168, 0.95);
+  border-left: 2px solid rgba(238, 216, 168, 0.95);
+  filter: drop-shadow(0 1px 5px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 12px rgba(0, 0, 0, 0.8));
+  opacity: 0.62;
+  transition: transform 0.24s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.2s ease;
+}
+.turn-zone:hover .chev,
+.turn-zone[data-focus="1"] .chev {
+  opacity: 1;
 }
 .turn-zone.left .chev {
   border-width: 0 0 2px 2px;
@@ -283,7 +308,11 @@ button {
   right: 10px;
   text-align: right;
 }
-.turn-zone:hover .zone-label {
+/* The destination name stays a hover reveal. The chevron says "you can go this
+   way" at all times; the name answers "where to", which is a question the
+   player only asks once they are pointing at it. */
+.turn-zone:hover .zone-label,
+.turn-zone[data-focus="1"] .zone-label {
   opacity: 1;
 }
 
@@ -458,7 +487,7 @@ button {
 }
 
 /* =========================================================================
-   Bottom bar: 持ち物 / 控え / 手がかり / 設定
+   Bottom bar: 持ち物 / 覚え書き / 手がかり / 設定
    ========================================================================= */
 #hud-bar {
   position: absolute;
@@ -518,7 +547,7 @@ button {
 }
 
 /* =========================================================================
-   Panels (持ち物, 設定, 控え, 手がかり, documents)
+   Panels (持ち物, 設定, 覚え書き, 手がかり, documents)
    ========================================================================= */
 .scrim {
   position: absolute;
@@ -730,10 +759,10 @@ button {
   color: #ece2cd;
   text-shadow: 0 1px 3px #000, 0 0 10px rgba(0, 0, 0, 0.9);
 }
-.inv-cell[data-state="new"] {
-  border-color: rgba(240, 215, 155, 0.7);
-  box-shadow: inset 0 0 24px rgba(200, 164, 94, 0.14);
-}
+/* A new item gets the 「新」 corner mark and nothing else. It used to also take
+   a lit border and an inner glow, which is the same language selection uses -
+   so a freshly picked-up item looked exactly like the item you had chosen to
+   use, and the player could not tell what was actually armed. */
 .inv-cell[data-state="new"]::before {
   content: "新";
   position: absolute;
@@ -919,7 +948,7 @@ button {
   background: rgba(90, 74, 50, 0.14);
 }
 
-/* --- clue book (控え) --------------------------------------------------- */
+/* --- clue book (覚え書き) --------------------------------------------------- */
 .clue {
   padding: 0.9em 0 1em;
   border-bottom: 1px dashed rgba(200, 164, 94, 0.18);
@@ -950,40 +979,100 @@ button {
 }
 
 /* --- hints ------------------------------------------------------------- */
-.hint-block {
-  margin-bottom: 1.1em;
-  padding-bottom: 1.1em;
-  border-bottom: 1px dashed rgba(200, 164, 94, 0.16);
+/* Each stuck thing is one row that opens downward onto its own steps. All of
+   them expanded at once read as a wall of text with no way to tell which
+   「ヒントを見る」 belonged to what. */
+.hint-item {
+  border-bottom: 1px solid rgba(200, 164, 94, 0.14);
 }
-.hint-block:last-child {
+.hint-item:last-of-type {
   border-bottom: 0;
 }
-.hint-block h4 {
-  margin: 0 0 0.6em;
+.hint-head {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  width: 100%;
+  padding: 1em 0.2em;
+  background: none;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+}
+.hint-head:hover .hint-title {
+  color: #fff3dc;
+}
+.hint-title {
+  flex: 1 1 auto;
   font-family: var(--f-mincho);
   font-size: 1em;
-  font-weight: 400;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   color: #f0e2c4;
+  transition: color 0.16s ease;
+}
+.hint-meta {
+  flex: 0 0 auto;
+  font-size: 0.74em;
+  letter-spacing: 0.12em;
+  color: var(--on-dark-3);
+}
+/* Chevron: down when shut, up when open. */
+.hint-chev {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  border-right: 1.5px solid rgba(200, 164, 94, 0.7);
+  border-bottom: 1.5px solid rgba(200, 164, 94, 0.7);
+  transform: rotate(45deg) translate(-2px, -2px);
+  transition: transform 0.22s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.hint-item[data-open="1"] .hint-chev {
+  transform: rotate(-135deg) translate(-2px, -2px);
+}
+.hint-body {
+  display: none;
+  padding: 0 0.2em 1.1em;
+}
+.hint-item[data-open="1"] .hint-body {
+  display: block;
+  animation: hint-open 0.22s ease both;
+}
+@keyframes hint-open {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 .hint-step {
   margin: 0 0 0.55em;
-  padding: 0.65em 0.9em;
+  padding: 0.75em 1em;
   font-size: 0.86em;
   line-height: 1.95;
   background: rgba(40, 33, 24, 0.55);
   border-left: 2px solid rgba(200, 164, 94, 0.4);
 }
+/* The next tier and its button, always at the bottom of the open row - so the
+   line the player just paid for appears where they were already looking. */
 .hint-locked {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1em;
-  padding: 0.55em 0.9em;
+  flex-wrap: wrap;
+  padding: 0.7em 1em;
   font-size: 0.8em;
   color: var(--on-dark-3);
   background: rgba(24, 19, 14, 0.5);
   border-left: 2px solid rgba(200, 164, 94, 0.12);
+}
+.hint-tier {
+  flex: 1 1 12em;
+  line-height: 1.7;
 }
 
 /* --- settings ---------------------------------------------------------- */

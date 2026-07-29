@@ -40,7 +40,9 @@ const TOTAL_ENDINGS = 3
  * would undo the one rule the darkroom scenes are built on.
  */
 const INSPECTION_LIGHT: Record<string, number> = {
-  blackout: 3.4,
+  // Lowered along with the lamp's falloff: with the old decay this number was
+  // fighting an inverse-square curve, and won.
+  blackout: 2.3,
   // Low once the house lights are on. The room already carries the exposure,
   // and the extra was enough to blow the highlights off the 1985 photograph -
   // which is the one image the observation puzzle asks the player to read.

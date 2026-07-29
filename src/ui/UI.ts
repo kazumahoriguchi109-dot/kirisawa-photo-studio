@@ -38,6 +38,16 @@ export interface UICallbacks {
   activeHints(): Array<{ id: string; title: string; steps: string[]; taken: number }>
 }
 
+/**
+ * Narration dwell. A finished line stays up for HOLD_BASE plus HOLD_PER_CHAR
+ * for every character in it, capped at HOLD_MAX. Tuned against Japanese
+ * reading speed at roughly 14 characters a second, with headroom - the player
+ * is reading a room at the same time.
+ */
+const HOLD_BASE_MS = 1600
+const HOLD_PER_CHAR_MS = 78
+const HOLD_MAX_MS = 7000
+
 type PanelId = 'inventory' | 'clues' | 'hints' | 'settings' | 'document' | 'credits' | 'howto' | null
 
 export class GameUI {
@@ -69,6 +79,8 @@ export class GameUI {
   private narrationTimer = 0
   private narrationResolve: (() => void) | null = null
   private selectedForCombine: string | null = null
+  /** Which hint rows are expanded. Survives the re-render after taking one. */
+  private hintOpen = new Set<string>()
   private detailHost: HTMLElement | null = null
   private lastHoverId = ''
 
@@ -219,8 +231,13 @@ export class GameUI {
     // all. The only way out was clicking the scrim, which is invisible, or Esc,
     // which the HUD advertises but which a player has no reason to trust after
     // finding no button.
-    const panelClose = this.el('button', 'panel-close clickable', `×　${UI_TEXT.back}`)
-    panelClose.setAttribute('aria-label', UI_TEXT.back)
+    // Bare ×, not 「× 戻る」. Every panel already ends in 閉じる, and two
+    // controls on one panel that do the same thing under two different words
+    // read as two different things - a player looking at 戻る and 閉じる has to
+    // stop and work out which one leaves and which one goes back a step.
+    const panelClose = this.el('button', 'panel-close clickable', '×')
+    panelClose.setAttribute('aria-label', UI_TEXT.close)
+    panelClose.title = UI_TEXT.close
     panelClose.addEventListener('click', () => this.closeTop())
     head.append(this.panelTitle, this.panelSub, panelClose)
     this.panelBody = this.el('div', 'panel-body')
@@ -388,33 +405,51 @@ export class GameUI {
   narrate(lines: string[] | string, opts: { hold?: number } = {}): Promise<void> {
     const arr = Array.isArray(lines) ? lines : [lines]
     this.narrationQueue = arr.slice()
+    this.holdBase = opts.hold ?? HOLD_BASE_MS
     window.clearTimeout(this.narrationTimer)
     this.narrationResolve?.()
     return new Promise<void>((resolve) => {
       this.narrationResolve = resolve
-      this.playNextLine(opts.hold ?? 1500)
+      this.playNextLine()
     })
+  }
+
+  /**
+   * How long a finished line stays up before the next one replaces it.
+   *
+   * It used to be a flat 1500 ms for every line, so 「壁。」 and a
+   * forty-character sentence about what is written on the back of a photograph
+   * were given exactly the same time to be read, and the long ones were gone
+   * before a player got to the end of them. Scaled by length now, with a floor
+   * that keeps short lines from flickering and a ceiling that stops a long one
+   * from feeling stuck. A click always skips ahead.
+   */
+  private holdFor(line: string): number {
+    return Math.min(HOLD_MAX_MS, this.holdBase + line.length * HOLD_PER_CHAR_MS)
   }
 
   /** Instantly finish the line being typed, or move to the next one. */
   advanceNarration(): boolean {
     if (!this.narration.dataset.show) return false
     if (this.typing) {
+      // Completing the line is not the same as asking for the next one: the
+      // player wanted to stop waiting for the typewriter, not to skip the text.
       this.typing = false
       this.narrationLine.textContent = this.currentFull
       window.clearTimeout(this.narrationTimer)
-      this.narrationTimer = window.setTimeout(() => this.playNextLine(1500), 900)
+      this.narrationTimer = window.setTimeout(() => this.playNextLine(), this.holdFor(this.currentFull))
       return true
     }
     window.clearTimeout(this.narrationTimer)
-    this.playNextLine(1500)
+    this.playNextLine()
     return true
   }
 
   private typing = false
   private currentFull = ''
+  private holdBase = HOLD_BASE_MS
 
-  private playNextLine(hold: number): void {
+  private playNextLine(): void {
     const next = this.narrationQueue.shift()
     if (next === undefined) {
       this.narration.dataset.show = ''
@@ -426,11 +461,12 @@ export class GameUI {
     }
     this.currentFull = next
     this.narration.dataset.show = '1'
+    const hold = this.holdFor(next)
     const cps = TEXT_SPEED_CPS[this.settings.get().textSpeed]
     if (!Number.isFinite(cps)) {
       this.narrationLine.textContent = next
       this.typing = false
-      this.narrationTimer = window.setTimeout(() => this.playNextLine(hold), hold)
+      this.narrationTimer = window.setTimeout(() => this.playNextLine(), hold)
       return
     }
     this.typing = true
@@ -441,7 +477,7 @@ export class GameUI {
       this.narrationLine.textContent = next.slice(0, i)
       if (i >= next.length) {
         this.typing = false
-        this.narrationTimer = window.setTimeout(() => this.playNextLine(hold), hold)
+        this.narrationTimer = window.setTimeout(() => this.playNextLine(), hold)
         return
       }
       this.narrationTimer = window.setTimeout(step, 1000 / cps)
@@ -809,37 +845,78 @@ export class GameUI {
 
   // ----------------------------------------------------------------- hints
 
+  /**
+   * One row per stuck thing, each opening downward onto its own steps.
+   *
+   * Every hint used to be expanded at once, so the panel opened as a wall of
+   * text with the 「ヒントを見る」 buttons scattered down it and no way to tell
+   * which one belonged to what. Worse, taking a hint printed the new line
+   * *above* the button that revealed it, so the thing the player had just asked
+   * for appeared somewhere they were not looking.
+   */
   private renderHints(): void {
     const active = this.cb.activeHints()
-    this.showPanel(UI_TEXT.hints, active.length ? '' : UI_TEXT.hintNothingActive)
+    this.showPanel(UI_TEXT.hints, active.length ? `${kanjiNum(active.length)} 件` : '')
     if (active.length === 0) {
       this.panelBody.innerHTML = `<div class="inv-empty">${UI_TEXT.hintNothingActive}</div>`
     }
-    for (const h of active) {
-      const block = this.el('div', 'hint-block')
-      block.innerHTML = `<h4>${h.title}</h4>`
-      h.steps.forEach((s, i) => {
-        if (i < h.taken) {
-          const p = this.el('p', 'hint-step jp', s)
-          block.appendChild(p)
-        } else if (i === h.taken) {
-          const row = this.el('div', 'hint-locked')
-          row.innerHTML = `<span>${UI_TEXT.hintTierLabels[i]}　—　${UI_TEXT.hintLockedNote}</span>`
-          const b = this.el('button', 'btn ghost clickable', UI_TEXT.hintReveal)
-          b.addEventListener('click', () => {
-            this.cb.onTakeHint(h.id)
-            this.renderHints()
-          })
-          row.appendChild(b)
-          block.appendChild(row)
-        }
-      })
-      if (h.taken >= h.steps.length) {
-        const p = this.el('p', 'hint-step jp', UI_TEXT.hintAllTaken)
-        block.appendChild(p)
-      }
-      this.panelBody.appendChild(block)
+    // Never open onto a list of shut doors: if nothing the player opened is
+    // still active, expand the first one for them.
+    if (active.length > 0 && !active.some((h) => this.hintOpen.has(h.id))) {
+      this.hintOpen.add(active[0].id)
     }
+
+    for (const h of active) {
+      const open = this.hintOpen.has(h.id)
+      const item = this.el('div', 'hint-item')
+      item.dataset.open = open ? '1' : '0'
+
+      const head = this.el('button', 'hint-head clickable')
+      head.setAttribute('aria-expanded', open ? 'true' : 'false')
+      head.append(
+        this.el('span', 'hint-title jp', h.title),
+        this.el(
+          'span',
+          'hint-meta',
+          h.taken >= h.steps.length
+            ? UI_TEXT.hintAllTaken
+            : `${kanjiNum(h.taken)}／${kanjiNum(h.steps.length)}`,
+        ),
+        this.el('span', 'hint-chev'),
+      )
+      head.addEventListener('click', () => {
+        if (!this.hintOpen.delete(h.id)) this.hintOpen.add(h.id)
+        this.renderHints()
+      })
+      item.appendChild(head)
+
+      const body = this.el('div', 'hint-body')
+      for (let i = 0; i < h.taken; i++) body.appendChild(this.el('p', 'hint-step jp', h.steps[i]))
+      if (h.taken < h.steps.length) {
+        const row = this.el('div', 'hint-locked')
+        row.appendChild(
+          this.el(
+            'span',
+            'hint-tier jp',
+            `${UI_TEXT.hintTierLabels[h.taken]}　—　${UI_TEXT.hintLockedNote}`,
+          ),
+        )
+        const b = this.el('button', 'btn ghost clickable', UI_TEXT.hintReveal)
+        b.addEventListener('click', (e) => {
+          e.stopPropagation()
+          this.cb.onTakeHint(h.id)
+          this.hintOpen.add(h.id)
+          this.renderHints()
+        })
+        row.appendChild(b)
+        body.appendChild(row)
+      } else {
+        body.appendChild(this.el('p', 'hint-step jp', UI_TEXT.hintAllTaken))
+      }
+      item.appendChild(body)
+      this.panelBody.appendChild(item)
+    }
+
     const close = this.el('button', 'btn clickable', UI_TEXT.close)
     close.addEventListener('click', () => this.closeTop())
     this.panelFoot.appendChild(close)
@@ -992,7 +1069,7 @@ export class GameUI {
     })
     const wipe = this.el('button', 'btn danger clickable', '進行データの消去')
     wipe.addEventListener('click', () => {
-      this.confirm('進行データを消す', '記録も、控えも、すべて消える。見たエンディングの記録だけが残る。', () =>
+      this.confirm('進行データを消す', '記録も、覚え書きも、すべて消える。見たエンディングの記録だけが残る。', () =>
         this.cb.onResetProgress(),
       )
     })

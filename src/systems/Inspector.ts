@@ -111,8 +111,13 @@ export class Inspector {
   }
 
   rotate(dx: number, dy: number): void {
-    this.targetYaw -= dx * 0.008
-    this.targetPitch = clamp(this.targetPitch - dy * 0.008, -1.35, 1.35)
+    // Drag the object, not the camera. The pivot is rotated directly, so the
+    // face turned toward the player has to follow the pointer: dragging right
+    // must swing that face right, dragging down must tip its top toward you.
+    // Both signs were inverted, which is the one thing in a turntable everybody
+    // notices immediately - it feels like the object is pushing back.
+    this.targetYaw += dx * 0.008
+    this.targetPitch = clamp(this.targetPitch + dy * 0.008, -1.35, 1.35)
     this.spin = 0
   }
 

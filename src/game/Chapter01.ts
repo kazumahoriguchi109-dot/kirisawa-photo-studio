@@ -166,7 +166,11 @@ export class Chapter01 {
     darkroom.negativeSleeve.visible = !s.hasItem('negative_old')
     const officeKeyMesh = darkroom.officeKey.getObjectByName('office-key')
     if (officeKeyMesh) officeKeyMesh.visible = !s.hasItem('key_office') && !s.flag('office_open')
-    studio.tripodDrawer.position.z = s.flag('tripod_drawer_open') ? 0.19 : 0.05
+    // Read from the prop, not repeated here: the case the drawer runs in is
+    // built from its own dimensions, so hard-coded travel drifts out of it.
+    studio.tripodDrawer.position.z = s.flag('tripod_drawer_open')
+      ? (studio.tripodDrawer.userData.openZ as number)
+      : (studio.tripodDrawer.userData.closedZ as number)
     if (s.flag('mirror_read')) this.applyGroundGlassTexture()
     // An ending already reached must not leave the exit permanently "used": the
     // player continues from the same save to find the other endings.
@@ -254,7 +258,7 @@ export class Chapter01 {
   private clue(id: string, title: string, body: string, source: string): void {
     if (this.d.state.addClue({ id, title, body, source })) {
       this.d.audio.play('discovery')
-      this.d.ui.toast(title, '控え')
+      this.d.ui.toast(title, '覚え書き')
     }
   }
 
@@ -519,7 +523,10 @@ export class Chapter01 {
     const glowing = this.d.state.lighting === 'safelight'
     for (const m of this.phosphorMeshes) {
       const mat = m.material as THREE.MeshBasicMaterial
-      const target = glowing ? 0.5 : 0
+      // Was 0.5. Additive green at half strength over a red-lit wall is a
+      // smudge you can tell is there and cannot read - and these three marks
+      // are a puzzle the player has to actually read, not notice.
+      const target = glowing ? 0.95 : 0
       if (instant) mat.opacity = target
       else {
         this.d.timeline.to(
@@ -1285,8 +1292,10 @@ export class Chapter01 {
         if (!this.flag('tripod_drawer_open')) {
           this.d.state.setFlag('tripod_drawer_open')
           this.d.audio.play('drawer')
+          const closedZ = studio.tripodDrawer.userData.closedZ as number
+          const openZ = studio.tripodDrawer.userData.openZ as number
           this.d.timeline.to(0.5, (t) => {
-            studio.tripodDrawer.position.z = 0.05 + 0.14 * t
+            studio.tripodDrawer.position.z = closedZ + (openZ - closedZ) * t
           }, { ease: Ease.outCubic })
           this.say('付属品の抽斗。布に包まれた玉が一つ、転がっている。')
           this.d.save.save()
@@ -1485,7 +1494,14 @@ export class Chapter01 {
     }
     this.applyGroundGlassTexture()
 
-    await this.enterCloseup('cu_glass', [1.18, 1.6, 0.42], [1.18, 1.6, 0.11], { fov: 26 })
+    // Framed on the glass itself. Hand-placed it sat 0.31 m off the back of the
+    // camera at a 26 degree lens, which put the inspection lamp almost on the
+    // surface and turned the one thing the player is meant to read into a white
+    // rectangle.
+    await this.closeupOn('cu_glass', this.d.studio.groundGlass, [0, 0.08, 1], {
+      fov: 32,
+      margin: 1.15,
+    })
     if (!this.flag('mirror_read')) {
       this.d.state.setFlag('mirror_read')
       this.d.audio.play('discovery')
@@ -1605,7 +1621,10 @@ export class Chapter01 {
       // developing tray, the one the whole puzzle turns on. A player who could
       // only reach three was told by every one of them that the developer does
       // not go there, with no way to see the tray that it does go in.
-      onActivate: () => void this.closeupOn('cu_trays', darkroom.trays, [0, 0.62, 1], {
+      // Looked down on from above the bench rather than in along it. At a
+      // shallow angle the enlarger, which stands on its own bench at the west
+      // end, sat between the camera and the trays and took a third of the shot.
+      onActivate: () => void this.closeupOn('cu_trays', darkroom.trays, [0, 1.25, 0.85], {
         fov: 46,
         margin: 1.22,
       }),

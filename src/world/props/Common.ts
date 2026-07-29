@@ -521,12 +521,16 @@ export function phosphorMark(text: string, size: number, aspect = 1): THREE.Mesh
   // Hand-brushed rather than typeset: it was painted on with a finger-width
   // brush by someone who did not expect it to be read for forty years.
   const fit = Math.min(ph * 0.78, (pw * 0.86) / Math.max(1, text.length))
-  g.fillStyle = '#86e0a8'
-  g.font = `400 ${Math.round(fit)}px "Hiragino Mincho ProN", "Yu Mincho", serif`
+  // Brighter and heavier than it was. A thin 400-weight stroke in #86e0a8 at
+  // half opacity read as a green smear under the safelight; the three marks
+  // spell a sentence the player is asked to piece together across three rooms,
+  // so they have to survive being looked at from across a dim room.
+  g.fillStyle = '#b6f7cd'
+  g.font = `500 ${Math.round(fit)}px "Hiragino Mincho ProN", "Yu Mincho", serif`
   g.textAlign = 'center'
   g.textBaseline = 'middle'
-  g.shadowColor = 'rgba(120,255,190,0.45)'
-  g.shadowBlur = fit * 0.18
+  g.shadowColor = 'rgba(150,255,205,0.7)'
+  g.shadowBlur = fit * 0.26
   g.fillText(text, pw / 2, ph / 2 + ph * 0.03)
   const t = new THREE.CanvasTexture(c)
   t.colorSpace = THREE.SRGBColorSpace

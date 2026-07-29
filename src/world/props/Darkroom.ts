@@ -163,6 +163,12 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     knob.rotation.z = Math.PI / 2
     knob.position.set(-0.25, 0.86, -0.06)
     enlarger.add(knob)
+    // The cast arm from the collar out to the head. Without it the head hung
+    // 0.18 to the side of the collar and 0.12 in front of it with clear air in
+    // between - the lamphouse floating unsupported beside its own column.
+    const armCast = mesh(roundedBox(0.22, 0.052, 0.16, 0.008, 2, 2.4), mats.steelDark)
+    armCast.position.set(-0.08, 0.86, -0.01)
+    enlarger.add(armCast)
 
     // head: lamphouse, condenser, negative stage, lens
     const lamphouse = mesh(
@@ -318,13 +324,36 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
   {
     const box = mesh(roundedBox(0.1, 0.15, 0.05, 0.008, 2, 3), mats.bakelite)
     safelightSwitch.add(box)
-    const lever = mesh(roundedBox(0.03, 0.06, 0.03, 0.008, 2, 4), new THREE.MeshStandardMaterial({
-      color: 0xb4432f,
-      roughness: 0.42,
-    }))
-    lever.position.set(0, -0.02, 0.03)
+    // A throw lever on a pivot, not a chip of red glued to the front.
+    //
+    // It was a 3 cm block sitting at z = 0.03 on a case whose front face is at
+    // 0.025, so half of it was inside the case and about 2 cm of red tip stood
+    // out - and the game rotated that block about its own centre, which spins
+    // it on the spot instead of swinging it. A player told to find a lever with
+    // a red handle was looking for something with a handle.
+    const red = new THREE.MeshStandardMaterial({ color: 0xb4432f, roughness: 0.42 })
+    const boss = mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.036, 12), mats.brassDull)
+    boss.rotation.z = Math.PI / 2
+    boss.position.set(0, 0.048, 0.032)
+    safelightSwitch.add(boss)
+
+    // The animated node is the pivot itself, so the game's rotation.x swings the
+    // arm about the boss. The arm inside it is pre-tilted out of the case, which
+    // is what keeps both ends of the throw clear of the plate.
+    const lever = new THREE.Group()
+    lever.position.set(0, 0.048, 0.032)
     lever.rotation.x = 0.5
     lever.name = 'lever'
+    const swing = new THREE.Group()
+    swing.rotation.x = -0.6
+    const armLen = 0.085
+    const arm = mesh(roundedBox(0.024, armLen, 0.024, 0.006, 2, 4), red)
+    arm.position.y = -armLen / 2
+    swing.add(arm)
+    const ball = mesh(new THREE.SphereGeometry(0.017, 14, 10), red)
+    ball.position.y = -armLen - 0.006
+    swing.add(ball)
+    lever.add(swing)
     safelightSwitch.add(lever)
     const lab = labelPlate('安全灯', 0.09, 0.03, {
       bg: '#3a2a24',
@@ -348,6 +377,13 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
   chemShelf.rotation.y = Math.PI
   group.add(chemShelf)
 
+  // Top face of the shelf the chemicals stand on, derived from the unit rather
+  // than guessed. Everything on this shelf was placed at y = 1.50-1.55 against
+  // a board whose surface is at 1.5587, so the bottles were sunk a centimetre
+  // into it and the developer tin - the one the puzzle needs - stood with half
+  // its height inside the plank.
+  const CHEM_SHELF_Y = 1.24 + 0.92 / 3 + 0.024 / 2
+
   const powderTin = new THREE.Group()
   const waterBottle = bottle(mats, 0.24, 0.05, '蒸留水', 0x2e3a42)
   {
@@ -355,7 +391,7 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     const names = ['定着', '停止', '硬膜', '調色', '減力']
     names.forEach((n, i) => {
       const b = bottle(mats, 0.17 + (i % 2) * 0.03, 0.037, n)
-      b.position.set(-5.02 + i * 0.14, 1.55, D.z1 - 0.2)
+      b.position.set(-5.02 + i * 0.14, CHEM_SHELF_Y, D.z1 - 0.2)
       group.add(b)
     })
 
@@ -399,10 +435,10 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     )
     wrap.position.y = 0.065
     powderTin.add(wrap)
-    powderTin.position.set(-3.92, 1.5, D.z1 - 0.2)
+    powderTin.position.set(-3.92, CHEM_SHELF_Y, D.z1 - 0.2)
     group.add(powderTin)
 
-    waterBottle.position.set(-4.2, 1.5, D.z1 - 0.2)
+    waterBottle.position.set(-4.2, CHEM_SHELF_Y, D.z1 - 0.2)
     group.add(waterBottle)
 
     // a graduated measuring cylinder and a stirring rod
@@ -639,10 +675,15 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
 
   // ------------------------------------------------------------- dressing
   {
-    // blackout curtain hanging beside the door
+    // Blackout curtain, pushed to the far side of the door.
+    //
+    // Hung at z1 + 0.1 it spanned z1 - 0.2 to z1 + 0.4 at x = D.x1 - 0.14, which
+    // is two centimetres in front of the safelight switch at z1 + 0.24. The
+    // switch the player is told to look for - "a lever with a red handle beside
+    // the darkroom door" - was behind a black curtain the whole time.
     const curtain = mesh(
       (() => {
-        const g = new THREE.PlaneGeometry(0.6, 2.0, 8, 4)
+        const g = new THREE.PlaneGeometry(0.22, 2.0, 6, 4)
         const pos = g.attributes.position as THREE.BufferAttribute
         for (let i = 0; i < pos.count; i++) pos.setZ(i, Math.sin(pos.getX(i) * 12) * 0.03)
         pos.needsUpdate = true
@@ -651,7 +692,8 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
       })(),
       new THREE.MeshStandardMaterial({ color: 0x14120f, roughness: 0.98, side: THREE.DoubleSide }),
     )
-    curtain.position.set(D.x1 - 0.14, 1.02, OPENINGS.darkroomDoor.z1 + 0.1)
+    // Between the jamb and the key board, which ends at z0 - 0.20.
+    curtain.position.set(D.x1 - 0.14, 1.02, OPENINGS.darkroomDoor.z0 - 0.05)
     curtain.rotation.y = Math.PI / 2
     group.add(curtain)
 
