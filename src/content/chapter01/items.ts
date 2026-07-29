@@ -377,7 +377,7 @@ export const ITEMS: Record<string, ItemDef> = {
 
   lens: {
     id: 'lens',
-    name: '凸レンズ',
+    name: 'ルーペの玉',
     desc: '三脚の柱の小抽斗に、布に包まれて入っていた。片面だけ強く膨らんでいる。指で押さえた跡が、油のかたちで残っている。',
     category: 'material',
     viewRadius: 0.07,
@@ -618,7 +618,7 @@ export const ITEMS: Record<string, ItemDef> = {
   // -------------------------------------------------------------- negatives
   negative_old: {
     id: 'negative_old',
-    name: '古いネガ（像あり）',
+    name: '古いネガ',
     desc: '乾燥ロープに挟まれたまま残っていた一枚。すでに像が出ている。透かすと、撮影室らしい部屋が明暗の逆で写っている。細かいところは肉眼では読めないので、引き伸ばし機で壁に映すか、ルーペを当てる。現像液に浸すものではない。',
     category: 'record',
     viewRadius: 0.14,
@@ -646,7 +646,7 @@ export const ITEMS: Record<string, ItemDef> = {
 
   negative_last: {
     id: 'negative_last',
-    name: '最後のネガ（未現像）',
+    name: '未現像のネガ',
     desc: '金庫の底に、包んだまま入っていた。まだ像が出ていない。光に透かしても何も見えない。像を出すには、現像液を張ったバットに浸すしかない。引き伸ばし機に入れても壁には何も映らない。',
     category: 'record',
     viewRadius: 0.13,

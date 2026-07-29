@@ -13,6 +13,20 @@
   --z-panel: 40;
   --z-modal: 50;
   --z-transition: 60;
+  /* Above the transition layer.
+     Panels, the document reader and their scrim used to sit at 40 while the
+     title and the ending sat at 60 - and the ending paints an opaque gradient.
+     So pressing 制作について on the ending screen drew the credits underneath the
+     screen the player was looking at: the button did nothing, visibly. Opening
+     設定 from the title had the mirror problem, with the vertical 「霧沢写真館」
+     lockup drawing over the panel. An overlay the player summoned has to sit on
+     top of whatever they summoned it from. */
+  --z-overlay: 70;
+  /* Transient feedback rides above everything. The combine toast and the
+     narration line both fire while the inventory panel is open, and both used
+     to play under an 86%-opaque scrim - so combining two items that do not go
+     together produced no visible response at all. */
+  --z-notify: 80;
 
   /* --- type ------------------------------------------------------------ */
   --f-mincho: "Hiragino Mincho ProN", "HiraMinProN-W3", "Yu Mincho", "YuMincho",
@@ -140,7 +154,11 @@ button {
    ========================================================================= */
 #verb-chip {
   position: absolute;
-  z-index: var(--z-world);
+  /* Above the close-up exit bar, which is also --z-hud and is appended later,
+     so equal values were not enough: the name of anything in the top-right of a
+     close-up was painted over by the control that leaves it. Still below the
+     panels, where world input is suspended and the chip is hidden anyway. */
+  z-index: 35;
   transform: translate(-50%, calc(-100% - 14px));
   padding: 0.32em 0.85em 0.36em;
   font-size: 0.82em;
@@ -159,6 +177,16 @@ button {
 #verb-chip[data-show="1"] {
   opacity: 1;
   transform: translate(-50%, calc(-100% - 18px));
+}
+/* Flipped below the anchor when the anchor is near the top of the frame. The
+   chip is drawn entirely above its target, so a hotspot in the top of the
+   picture - a ceiling lamp, the top of the backdrop roller, the wall writing -
+   pushed it off the screen, where `body { overflow: hidden }` cut it. */
+#verb-chip[data-below="1"] {
+  transform: translate(-50%, 14px);
+}
+#verb-chip[data-below="1"][data-show="1"] {
+  transform: translate(-50%, 18px);
 }
 #verb-chip .verb {
   color: var(--brass);
@@ -217,6 +245,15 @@ button {
   justify-content: center;
 }
 .turn-zone[data-live="0"] {
+  pointer-events: none;
+}
+/* ...and so is the button inside it.
+   `pointer-events: none` on a parent does not stop a descendant that sets
+   `auto`, and `#ui button { pointer-events: auto }` did exactly that - so in
+   any view where a direction is closed, an invisible 46 px disc sat at the
+   middle of that edge and swallowed clicks meant for the world behind it. Its
+   handler calls stopPropagation before it checks whether the zone is live. */
+.turn-zone[data-live="0"] .chev {
   pointer-events: none;
 }
 .turn-zone.left {
@@ -420,7 +457,7 @@ button {
   bottom: 12.5%;
   transform: translateX(-50%);
   width: min(760px, 78vw);
-  z-index: var(--z-hud);
+  z-index: var(--z-notify);
   pointer-events: none;
   text-align: center;
 }
@@ -466,7 +503,7 @@ button {
   position: absolute;
   right: 2.2vw;
   top: 8vh;
-  z-index: var(--z-hud);
+  z-index: var(--z-notify);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -568,7 +605,7 @@ button {
 .scrim {
   position: absolute;
   inset: 0;
-  z-index: var(--z-panel);
+  z-index: var(--z-overlay);
   background: radial-gradient(
     120% 100% at 50% 50%,
     rgba(6, 5, 4, 0.55),
@@ -588,7 +625,7 @@ button {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%) scale(0.985);
-  z-index: var(--z-panel);
+  z-index: var(--z-overlay);
   width: min(880px, 90vw);
   max-height: 84vh;
   display: flex;
@@ -719,7 +756,18 @@ button {
   background: var(--brass);
   border-color: var(--brass-lit);
 }
-.btn.danger:hover {
+/* The destructive controls are the quietest at rest, not the loudest.
+   進行データの消去 was a plain `.btn` among three `.btn.ghost` neighbours, which
+   made deleting the save the most prominent thing in the settings panel - and a
+   keyboard user tabbing onto it got the same brass highlight the safe buttons
+   get, because the only danger styling was a hover rule. */
+.btn.danger {
+  background: transparent;
+  border-color: rgba(217, 65, 42, 0.32);
+  color: #b98476;
+}
+.btn.danger:hover,
+.btn.danger:focus-visible {
   background: #a33a26;
   border-color: #d9412a;
   color: #fff3e8;
@@ -897,6 +945,29 @@ button {
   margin: 0;
   font-weight: 400;
 }
+/* The item's condition, beside its name. */
+.detail-state {
+  margin-left: 0.9em;
+  padding: 0.14em 0.62em;
+  font-size: 0.56em;
+  letter-spacing: 0.12em;
+  vertical-align: 0.22em;
+  border-radius: 2px;
+  color: #17130e;
+  background: var(--brass-2);
+}
+.detail-state.s-new {
+  background: var(--brass-lit);
+}
+.detail-state.s-transformed {
+  background: #6b7f52;
+  color: #f4ead6;
+}
+.detail-state.s-spent {
+  background: rgba(90, 78, 62, 0.9);
+  color: #cbbfa8;
+}
+
 .detail-desc {
   font-size: 0.88em;
   line-height: 2;
@@ -926,7 +997,7 @@ button {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%) rotate(-0.25deg) scale(0.99);
-  z-index: var(--z-panel);
+  z-index: var(--z-overlay);
   width: min(660px, 92vw);
   max-height: 86vh;
   overflow-y: auto;
@@ -949,11 +1020,23 @@ button {
 }
 .doc pre {
   margin: 0;
-  font-family: var(--f-mincho);
-  font-size: clamp(0.82em, 1.55vw, 1em);
-  line-height: 2.15;
-  letter-spacing: 0.05em;
-  white-space: pre-wrap;
+  /* Monospaced, and with proportional metrics off.
+     These two documents are laid out with full-width spaces: the 予約控 is a
+     booking table and the 暗室作業手順 has a hanging indent, and both are read
+     to solve puzzles. Set in Mincho with `palt` inherited from .jp, the
+     full-width punctuation narrowed and every column drifted out of line.
+     `tabular-nums` and `palt 0` keep the grid; the mono stack keeps the
+     character cell. */
+  font-family: var(--f-mono), var(--f-mincho);
+  font-feature-settings: "palt" 0;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(0.72em, 1.32vw, 0.92em);
+  line-height: 2.05;
+  letter-spacing: 0.02em;
+  /* Long lines scroll rather than wrapping into ragged prose: a wrapped
+     continuation loses its leading indent and the table falls apart. */
+  white-space: pre;
+  overflow-x: auto;
   color: #241d15;
 }
 .doc .doc-close {
@@ -1210,12 +1293,18 @@ input[type="range"]::-moz-range-thumb {
   background: var(--brass-lit);
 }
 .seg {
+  /* Wraps rather than clipping.
+     Four options - ゆっくり／ふつう／はやい／一度に - need about 300 px at scale
+     1 and 390 px at the largest UI scale, and the settings row collapses to a
+     single column below 640 px. With `overflow: hidden` and no wrapping the
+     last option was sliced in half and stopped reading as a choice. */
   display: inline-flex;
+  flex-wrap: wrap;
   border: 1px solid rgba(200, 164, 94, 0.24);
   border-radius: 2px;
-  overflow: hidden;
 }
 .seg button {
+  flex: 0 0 auto;
   padding: 0.42em 0.9em;
   font-size: 0.8em;
   letter-spacing: 0.1em;

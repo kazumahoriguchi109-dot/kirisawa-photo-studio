@@ -1966,7 +1966,9 @@ export class Chapter01 {
       id: 'dark:phosphor',
       target: darkroom.phosphor,
       label: '壁に浮かぶ字',
-      verb: 'read',
+      // 調べる, like the other three marks. Four hotspots share this label and
+      // do the same thing; this one alone offered 読む.
+      verb: 'examine',
       scope: ['darkroom_n'],
       visible: () => this.d.state.lighting === 'safelight',
       onActivate: () => {
@@ -2352,9 +2354,9 @@ export class Chapter01 {
     if (!s.flag('developer_poured')) return
     const hasFinal = s.hasItem('negative_last') && !s.flag('last_developed')
     const body = s.flag('last_developed')
-      ? '現像液はいちばん左のバットに張ってある。最後のネガはもう現像した。'
+      ? '現像液はいちばん左のバットに張ってある。未現像のネガはもう現像した。'
       : hasFinal
-        ? '現像液はいちばん左のバットに張ってある。まだ像の出ていない最後のネガも手元にある。あとは安全灯を点けて、そのネガをいちばん左のバットに浸すだけだ。'
+        ? '現像液はいちばん左のバットに張ってある。まだ像の出ていない未現像のネガも手元にある。あとは安全灯を点けて、そのネガをいちばん左のバットに浸すだけだ。'
         : '現像液はいちばん左のバットに張ってある。あとは、まだ像の出ていないネガが要る。乾燥ロープの古いネガはもう像が出ているから、これではない。'
     s.upsertClue({
       id: 'clue_darkroom_state',

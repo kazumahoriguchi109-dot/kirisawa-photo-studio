@@ -522,11 +522,20 @@ export class GameUI {
     this.verbChip.style.top = `${info.screen.y}%`
     this.verbChip.dataset.show = '1'
     const vw = this.root.clientWidth
+    const vh = this.root.clientHeight
     const half = this.verbChip.offsetWidth / 2
     const pad = 10
     const wanted = (info.screen.x / 100) * vw
     const clamped = Math.max(half + pad, Math.min(vw - half - pad, wanted))
     this.verbChip.style.left = `${clamped}px`
+    // Only the x axis was bounded. The chip is drawn entirely ABOVE the thing
+    // it names, so anything in the top of the picture pushed it off the top of
+    // the window, where the page's overflow:hidden cut it - a ceiling lamp or
+    // the wall writing had a name the player could never read. Below a certain
+    // height it flips and hangs under its anchor instead.
+    const needed = this.verbChip.offsetHeight + 24
+    const anchorY = (info.screen.y / 100) * vh
+    this.verbChip.dataset.below = anchorY < needed ? '1' : ''
     this.noticeRing.style.left = `${info.screen.x}%`
     this.noticeRing.style.top = `${info.screen.y}%`
     this.noticeRing.dataset.show = '1'
@@ -705,7 +714,15 @@ export class GameUI {
       grid.appendChild(cell)
     }
 
-    const first = this.state.selectedItemId ?? this.state.inventory[0].id
+    // Open on what the player most likely came to look at: whatever is selected,
+    // else the newest unexamined item, else the first.
+    //
+    // It used to open on inventory[0] unconditionally and mark it examined, so
+    // opening the panel stripped the 「新」 mark off an item the player had never
+    // looked at and decremented the HUD badge - while the item that badge was
+    // counting sat further down the grid, still unread.
+    const newest = [...this.state.inventory].reverse().find((e) => e.state === 'new')
+    const first = this.state.selectedItemId ?? newest?.id ?? this.state.inventory[0].id
     this.showItemDetail(first)
   }
 
@@ -724,6 +741,23 @@ export class GameUI {
     this.detailHost.appendChild(stage)
 
     const name = this.el('h3', 'detail-name', def.name)
+    // The item's condition, in words.
+    //
+    // UI_TEXT.itemStateNew / Examined / Transformed / Spent existed and were
+    // rendered nowhere, so a key that had already been used showed exactly the
+    // same panel as a fresh one - same description, same live 「選ぶ」 - and the
+    // only signal was a dimmed thumbnail back in the grid.
+    const STATE_LABEL: Record<string, string> = {
+      new: UI_TEXT.itemStateNew,
+      examined: UI_TEXT.itemStateExamined,
+      transformed: UI_TEXT.itemStateTransformed,
+      spent: UI_TEXT.itemStateSpent,
+    }
+    const stateWord = STATE_LABEL[entry.state]
+    if (stateWord && entry.state !== 'examined') {
+      const tag = this.el('span', `detail-state s-${entry.state}`, stateWord)
+      name.appendChild(tag)
+    }
     const desc = this.el('p', 'detail-desc jp', def.desc)
     this.detailHost.append(name, desc)
 
@@ -740,6 +774,11 @@ export class GameUI {
     const selBtn = this.el('button', 'btn clickable')
     const isSel = this.state.selectedItemId === id
     selBtn.textContent = isSel ? UI_TEXT.deselect : UI_TEXT.select
+    // An item whose job is done cannot be armed. It stays in the bag as a
+    // memento - the keys, the developer, the placed photographs all do - but
+    // offering a live 「選ぶ」 on it invites the player to carry a used key
+    // around every lock in the building.
+    if (entry.state === 'spent' && !isSel) selBtn.disabled = true
     selBtn.addEventListener('click', () => {
       this.cb.onSelectItem(isSel ? null : id)
       this.renderInventory()
@@ -1178,9 +1217,16 @@ export class GameUI {
     if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return
     switch (e.code) {
       case 'Escape':
+        // Close-up first. あそびかた promises 「右クリック か Esc」 to leave a
+        // close-up, and Escape did not know close-ups existed - it opened the
+        // settings panel instead, which is the opposite of what the game's own
+        // instruction screen teaches.
         if (this.openPanel) {
           e.preventDefault()
           this.closeTop()
+        } else if (this.closeupBar.dataset.show === '1') {
+          e.preventDefault()
+          this.cb.onCloseupBack()
         } else if (!this.titleVisible) {
           e.preventDefault()
           this.open('settings')
