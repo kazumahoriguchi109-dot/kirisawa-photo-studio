@@ -166,18 +166,21 @@ export function buildHall(mats: MaterialLibrary): HallProps {
   const drawerContents = new THREE.Group()
   {
     const fuse = makeFuse(mats)
-    fuse.position.set(-0.06, -0.02, 0.06)
+    // On the drawer floor. The board's top face is at -0.1675 for this drawer,
+    // and these three sat at -0.02 to -0.03 - floating 14 cm inside a drawer the
+    // close-up looks straight down into.
+    fuse.position.set(-0.06, -0.158, 0.06)
     fuse.rotation.z = Math.PI / 2
     fuse.rotation.y = 0.3
     drawerContents.add(fuse)
     const pencil = mesh(new THREE.CylinderGeometry(0.0042, 0.0042, 0.085, 6), mats.woodMid)
     pencil.rotation.set(Math.PI / 2, 0, 0.5)
-    pencil.position.set(0.08, -0.025, 0.02)
+    pencil.position.set(0.08, -0.1605, 0.02)
     drawerContents.add(pencil)
     const card = mesh(new THREE.PlaneGeometry(0.09, 0.055), mats.paper, { cast: false })
     card.rotation.x = -Math.PI / 2
     card.rotation.z = 0.2
-    card.position.set(0.02, -0.03, -0.05)
+    card.position.set(0.02, -0.1665, -0.05)
     drawerContents.add(card)
     receptionDrawer.add(drawerContents)
   }
@@ -194,7 +197,8 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     const plunger = mesh(new THREE.CylinderGeometry(0.007, 0.007, 0.016, 10), mats.brass)
     plunger.position.y = 0.062
     bellGroup.add(plunger)
-    bellGroup.position.set(-0.72, 1.02, 3.16)
+    // On the counter top at 1.0225, not 2.5 mm inside it.
+    bellGroup.position.set(-0.72, 1.0225, 3.16)
     group.add(bellGroup)
   }
 
@@ -233,11 +237,18 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     // catenary and curls where it was cut, so it is a tube on a curve now, with
     // a strain relief at the set and a dead end at the bottom.
     const cordPts = [
-      new THREE.Vector3(-0.088, -0.008, -0.055),
-      new THREE.Vector3(-0.104, -0.072, -0.07),
-      new THREE.Vector3(-0.098, -0.148, -0.058),
-      new THREE.Vector3(-0.126, -0.206, -0.03),
-      new THREE.Vector3(-0.104, -0.236, 0.004),
+      // Over the near edge of the counter, then down its face.
+      //
+      // It used to leave the set toward -Z and drop straight down: the whole
+      // cord, the grommet and the cut end were inside the counter's top slab
+      // and its solid carcase, so the telephone appeared to have no cord at
+      // all. The set stands at z 3.48 now and the run continues past the
+      // counter's front at 3.595.
+      new THREE.Vector3(-0.088, -0.004, 0.055),
+      new THREE.Vector3(-0.104, -0.010, 0.115),
+      new THREE.Vector3(-0.098, -0.062, 0.150),
+      new THREE.Vector3(-0.126, -0.150, 0.138),
+      new THREE.Vector3(-0.104, -0.214, 0.156),
     ]
     const cord = mesh(
       new THREE.TubeGeometry(new THREE.CatmullRomCurve3(cordPts), 26, 0.0042, 6, false),
@@ -247,26 +258,26 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     telephone.add(cord)
     // the moulded grommet where it leaves the set
     const grommet = mesh(new THREE.CylinderGeometry(0.009, 0.007, 0.022, 10), mats.bakelite, { cast: false })
-    grommet.position.set(-0.086, 0.004, -0.055)
+    grommet.position.set(-0.086, 0.002, 0.048)
     grommet.rotation.z = 0.22
     telephone.add(grommet)
     // the cut: bare copper, showing why the line is dead
     const copper = mesh(new THREE.CylinderGeometry(0.0022, 0.0022, 0.018, 6), mats.brass, { cast: false })
-    copper.position.set(-0.1, -0.246, 0.012)
-    copper.rotation.set(0.5, 0, 0.35)
+    copper.position.set(-0.102, -0.226, 0.162)
+    copper.rotation.set(1.2, 0, 0.35)
     telephone.add(copper)
-    telephone.position.set(0.12, 1.02, 3.22)
+    telephone.position.set(0.12, 1.0225, 3.42)
     telephone.rotation.y = -0.35
     group.add(telephone)
   }
 
   {
     const ledgers = shelfUnit(mats, 0.5, 0.34, 0.24, 1, true)
-    ledgers.position.set(-0.62, 1.04, 3.44)
+    ledgers.position.set(-0.62, 1.0225, 3.44)
     ledgers.rotation.y = 0.06
     group.add(ledgers)
     const stack = mesh(texturedBox(0.2, 0.05, 0.15, 2.4), mats.paper)
-    stack.position.set(-0.62, 1.07, 3.44)
+    stack.position.set(-0.62, 1.0755, 3.44)
     group.add(stack)
   }
 
@@ -760,7 +771,7 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     // it had been closed off. There is no way up - the boarding is solid - but
     // through the slots you can now see treads going on into the dark, and they
     // shift against the boards as the camera moves.
-    for (let i = 5; i < 11; i++) {
+    for (let i = 5; i < 7; i++) {
       const step = mesh(texturedBox(1.0, 0.045, 0.27, 1.6), mats.woodDark, { cast: false })
       step.position.set(0, 0.19 + i * 0.19, -i * 0.27)
       boards.add(step)
@@ -775,7 +786,7 @@ export function buildHall(mats: MaterialLibrary): HallProps {
       new THREE.MeshBasicMaterial({ color: 0x080706 }),
       { cast: false, receive: false },
     )
-    voidPanel.position.set(0, 1.9, -3.05)
+    voidPanel.position.set(0, 1.9, -1.46)
     boards.add(voidPanel)
     for (let i = 0; i < 5; i++) {
       // Dark stock, stood off the plaster far enough to throw a shadow line,
@@ -829,7 +840,15 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     // climbs toward +x. Started from H.x1 - 0.62 it ran a clear half metre out
     // through the exterior wall; this puts the top tread and the boarding just
     // inside it.
-    stairs.position.set(H.x1 - 1.22, 0, 5.02)
+    // Pulled west so the flight stays inside the room and the boarded-off part
+    // has somewhere to be.
+    //
+    // At x1 - 1.22 the fourth tread ran to 0.595 against an east wall whose
+    // face is at 0.52 - 75 mm of a lit tread inside masonry - and the whole
+    // continuation behind the boards sat beyond the wall, where nothing could
+    // ever show through the slots. Moved back, the boards land near 0.22 and
+    // there is a genuine 0.28 of stairwell in front of the plaster.
+    stairs.position.set(H.x1 - 1.50, 0, 5.02)
     stairs.rotation.y = -Math.PI / 2
     group.add(stairs)
   }
@@ -875,7 +894,12 @@ export function buildHall(mats: MaterialLibrary): HallProps {
       { cast: false },
     )
     heightMarks.add(m)
-    heightMarks.position.set(OPENINGS.hallArch.x1 + 0.028, 0.86, 2.86)
+    // On the wall, not in it, and clear of the arch casing.
+    //
+    // At x1 + 0.028 the plane sat inside the jamb casing and crossed the
+    // opening edge, and at z 2.86 it was 20 mm inside plaster whose face is at
+    // 2.88 - a clue object that could not be seen at all.
+    heightMarks.position.set(OPENINGS.hallArch.x1 + 0.10, 0.86, 2.885)
     group.add(heightMarks)
   }
 

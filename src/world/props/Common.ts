@@ -145,10 +145,16 @@ export function drawerUnit(
     const inner = new THREE.Group()
     const iw = width - t * 2 - 0.03
     const id = depth - 0.06
-    inner.add(boxAt(mats.woodMid, iw, 0.01, id, 0, -dh / 2 + 0.02, -0.02))
-    inner.add(boxAt(mats.woodMid, iw, dh * 0.7, 0.01, 0, 0, -0.02 - id / 2))
-    inner.add(boxAt(mats.woodMid, 0.01, dh * 0.7, id, -iw / 2, 0, -0.02))
-    inner.add(boxAt(mats.woodMid, 0.01, dh * 0.7, id, iw / 2, 0, -0.02))
+    // The sides and back stand ON the floor board rather than floating above it.
+    // Centred on y = 0 they began 0.0325 above their own bottom and stopped
+    // short of the top of the drawer face - a box whose walls touched nothing.
+    const floorY = -dh / 2 + 0.02
+    const wallH = dh * 0.78
+    const wallY = floorY + wallH / 2
+    inner.add(boxAt(mats.woodMid, iw, 0.01, id, 0, floorY, -0.02))
+    inner.add(boxAt(mats.woodMid, iw, wallH, 0.01, 0, wallY, -0.02 - id / 2))
+    inner.add(boxAt(mats.woodMid, 0.01, wallH, id, -iw / 2, wallY, -0.02))
+    inner.add(boxAt(mats.woodMid, 0.01, wallH, id, iw / 2, wallY, -0.02))
     d.add(inner)
     // brass cup pull
     const pull = mesh(lathe(

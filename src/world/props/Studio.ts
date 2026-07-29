@@ -202,7 +202,13 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
       backdropRoll.add(plateM)
     }
 
-    const tube = mesh(new THREE.CylinderGeometry(0.062, 0.062, rollLen, 22), mats.steelDark)
+    // Long enough to reach both brackets.
+    //
+    // The arms stand at +/- (rollLen/2 + 0.09) with a half-thickness of 0.035,
+    // so their inner faces are 0.055 beyond each end of a tube cut to rollLen
+    // exactly: a 4.2 m steel roller hanging in mid-air between two brackets it
+    // never touched.
+    const tube = mesh(new THREE.CylinderGeometry(0.062, 0.062, rollLen + 0.14, 22), mats.steelDark)
     tube.rotation.z = Math.PI / 2
     tube.position.set(rollX, rollY, WALL_N + 0.1)
     backdropRoll.add(tube)
@@ -223,7 +229,10 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
       }), { cast: false })
       hole.rotation.z = Math.PI / 2
       crankSocket.add(hole)
-      crankSocket.position.set(rollX + rollLen / 2 + 0.055, rollY, WALL_N + 0.1)
+      // Inboard of the bracket, on the end of the shaft. It used to sit 0.030
+      // clear of the shaft end and 0.025 inside the bracket arm at the same
+      // time - a hex boss floating in the gap between the two.
+      crankSocket.position.set(rollX + rollLen / 2 + 0.02, rollY, WALL_N + 0.1)
       crankSocket.name = 'crank-socket'
       backdropRoll.add(crankSocket)
     }
@@ -238,9 +247,9 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
       crankFitted.add(arm)
       const grip = mesh(lathe([[0.017, 0], [0.019, 0.02], [0.017, 0.06], [0, 0.062]], 12), mats.woodDark)
       grip.rotation.z = Math.PI / 2
-      grip.position.set(0.075, 0.15, 0)
+      grip.position.set(0.07, 0.15, 0)
       crankFitted.add(grip)
-      crankFitted.position.set(rollX + rollLen / 2 + 0.11, rollY, WALL_N + 0.1)
+      crankFitted.position.set(rollX + rollLen / 2 + 0.02, rollY, WALL_N + 0.1)
       crankFitted.visible = false
       backdropRoll.add(crankFitted)
     }
@@ -763,8 +772,16 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
       color: 0xcfc6ae,
       roughness: 0.7,
     }))
-    board.position.set(S.x0 + 0.34, 0.66, 1.5)
-    board.rotation.set(0, Math.PI / 2, 0.16)
+    // Leaning on the wall, standing on the floor.
+    //
+    // The 0.16 tilt is about the board's own long axis, which at this rotation
+    // is sideways rather than into the wall - so it stood 0.245 clear of the
+    // plaster balanced on one corner, with its bottom edge 53 mm below the
+    // floor. Tilted about Z it now leans back against the wall and its lower
+    // edge rests on the boards.
+    board.position.set(S.x0 + 0.20, 0.73, 1.5)
+    board.rotation.set(0, Math.PI / 2, 0)
+    board.rotation.x = 0.13
     group.add(board)
 
     // a posing table with a vase

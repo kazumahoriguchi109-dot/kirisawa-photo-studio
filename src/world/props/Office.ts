@@ -56,8 +56,10 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
     desk.add(inlay)
     // pedestals
     for (const s of [-1, 1]) {
-      const ped = mesh(texturedBox(0.42, h - 0.06, d - 0.06, 1.6), mats.woodMid)
-      ped.position.set(s * (w / 2 - 0.24), (h - 0.06) / 2, 0)
+      // Up to the underside of the top. At h - 0.06 the pedestals stopped at
+      // 0.68 while the top's underside is 0.72, so the desk floated 4 cm.
+      const ped = mesh(texturedBox(0.42, h - 0.02, d - 0.06, 1.6), mats.woodMid)
+      ped.position.set(s * (w / 2 - 0.24), (h - 0.02) / 2, 0)
       desk.add(ped)
       for (let i = 0; i < 3; i++) {
         const face = mesh(roundedBox(0.38, 0.19, 0.018, 0.004, 2, 2.2), mats.woodDark, { cast: false })
@@ -87,7 +89,10 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
     desk.add(deskPrint)
 
     desk.position.set((O.x0 + O.x1) / 2 + 0.1, 0, O.z0 + 0.5)
-    desk.rotation.y = Math.PI
+    // Drawers toward the room. Turned through pi they faced the north wall
+    // 0.076 away, so the side the player looks at from 事務机 was the back of
+    // the desk and the drawer faces were pressed into plaster.
+    desk.rotation.y = 0
     group.add(desk)
 
     // banker's lamp
@@ -124,7 +129,9 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
 
     const chairO = chair(mats, 0.46)
     chairO.position.set(4.66, 0, O.z0 + 1.35)
-    chairO.rotation.y = 0.25
+    // Facing the desk. chair() seats the sitter toward local +Z, and the desk
+    // is at -Z of here, so the chair had its back to the only thing in reach.
+    chairO.rotation.y = Math.PI + 0.25
     group.add(chairO)
   }
 
@@ -186,14 +193,23 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
 
   // ------------------------------------------------------------ the shelves
   {
+    // Open face into the room, and short of the south wall.
+    //
+    // At -pi/2 the mouth pointed at the west wall 0.02 away and the plywood
+    // back faced the room, so every spine label read into plaster. The unit is
+    // 1.5 wide along world Z at this rotation, and centred at z1 - 0.5 it ran
+    // from -0.45 to 1.05 through a south wall whose face is at 0.72.
+    const SHELF_Z = O.z1 - 1.28
     const shelf = shelfUnit(mats, 1.5, 1.9, 0.32, 4, true)
-    shelf.position.set(O.x0 + 0.26, 0, O.z1 - 0.5)
-    shelf.rotation.y = -Math.PI / 2
+    shelf.position.set(O.x0 + 0.26, 0, SHELF_Z)
+    shelf.rotation.y = Math.PI / 2
     group.add(shelf)
     for (let i = 0; i < 4; i++) {
       const row = ledgerRow(mats, 6 + i, 0.26)
-      row.position.set(O.x0 + 0.26, 0.045 + i * 0.475, O.z1 - 0.5 + (i % 2 ? 0.1 : -0.06))
-      row.rotation.y = -Math.PI / 2
+      // Standing on the boards. shelfUnit's board tops are at 0.012 + 0.475i;
+      // the rows sat at 0.045 + 0.475i and floated 33 mm on every shelf.
+      row.position.set(O.x0 + 0.26, 0.012 + i * 0.475, SHELF_Z + (i % 2 ? 0.1 : -0.06))
+      row.rotation.y = Math.PI / 2
       group.add(row)
     }
     // storage boxes on the top
@@ -202,7 +218,7 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
         color: 0x6b5c44,
         roughness: 0.86,
       }))
-      b.position.set(O.x0 + 0.26, 2.0, O.z1 - 0.9 + i * 0.42)
+      b.position.set(O.x0 + 0.26, 1.94, SHELF_Z - 0.4 + i * 0.42)
       group.add(b)
     }
   }
@@ -360,14 +376,17 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
       const grip = mesh(new THREE.TorusGeometry(0.074, 0.007, 8, 34), mats.brass, { cast: false })
       grip.position.z = 0.04
       safeDial.add(grip)
-      safeDial.position.set((w - 0.06) / 2, 0.02, 0.026)
+      // Seated on the door leaf. The leaf's outer face is at 0.275 in this
+      // frame and the dial boss sat at 0.294..0.314 - a 19 mm gap of nothing
+      // between the dial and the safe.
+      safeDial.position.set((w - 0.06) / 2, 0.02, 0.007)
       safeDial.name = 'safe-dial'
       safeDoor.add(safeDial)
       // fixed index mark above the dial
       const idx = mesh(new THREE.ConeGeometry(0.008, 0.018, 3), mats.brass, { cast: false })
       idx.rotation.x = Math.PI / 2
       idx.rotation.z = Math.PI
-      idx.position.set((w - 0.06) / 2, 0.116, 0.05)
+      idx.position.set((w - 0.06) / 2, 0.116, 0.031)
       safeDoor.add(idx)
     }
     // handle

@@ -160,7 +160,10 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
         arm.rotation.x = s * 0.06
         tong.add(arm)
       }
-      tong.position.set(-6.05 + i * 0.5, BENCH_Y + 0.06, D.z0 + 0.76)
+      // Resting on the zinc, on the bench. At +0.06 they floated 28 mm above
+      // the top, and at z0 + 0.76 two thirds of each pair hung off the front
+      // edge into open air.
+      tong.position.set(-6.05 + i * 0.5, BENCH_Y + 0.033, D.z0 + 0.62)
       tong.rotation.y = 0.3 + i * 0.2
       group.add(tong)
     }
@@ -358,7 +361,9 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     const bracket = mesh(texturedBox(0.05, 0.12, 0.02, 3), mats.steelDark, { cast: false })
     bracket.position.set(0, 0.09, -0.08)
     safelight.add(bracket)
-    safelight.position.set(-5.0, 2.06, D.z0 + 0.1)
+    // Flush with the plaster. The lathe body runs 0.12 backwards from here, so
+    // at z0 + 0.1 all but 20 mm of the fitting was inside the wall.
+    safelight.position.set(-5.0, 2.06, D.z0 + 0.2)
     group.add(safelight)
   }
 
@@ -408,7 +413,7 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     // label all grew toward +x - which here is the inside of a 16 cm wall whose
     // room-side face is at -3.28, so nine tenths of the safelight lever was
     // buried in masonry. It is a switch the player has to find and pull.
-    safelightSwitch.position.set(D.x1 - 0.12, 1.42, OPENINGS.darkroomDoor.z1 + 0.24)
+    safelightSwitch.position.set(D.x1 - 0.105, 1.42, OPENINGS.darkroomDoor.z1 + 0.24)
     safelightSwitch.rotation.y = -Math.PI / 2
     group.add(safelightSwitch)
   }
@@ -607,7 +612,9 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     key.position.set(0.0, -0.055, 0.024)
     key.name = 'office-key'
     officeKey.add(key)
-    officeKey.position.set(D.x1 - 0.12, 1.46, OPENINGS.darkroomDoor.z0 - 0.28)
+    // Against the plaster. The board is 0.016 thick about its own centre, so
+    // at x1 - 0.12 its back stood 32 mm clear of a wall face at x1 - 0.08.
+    officeKey.position.set(D.x1 - 0.088, 1.46, OPENINGS.darkroomDoor.z0 - 0.28)
     officeKey.rotation.y = -Math.PI / 2
     group.add(officeKey)
   }
@@ -709,7 +716,7 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     second.position.set(0, 0.035, 0.028)
     second.name = 'second-hand'
     clock.add(second)
-    clock.position.set(-4.3, 1.98, D.z0 + 0.09)
+    clock.position.set(-4.3, 1.98, D.z0 + 0.135)
     group.add(clock)
   }
 
@@ -743,14 +750,20 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
       roughness: 0.34,
       metalness: 0.4,
     }))
-    sink.position.set(D.x0 + 0.42, BENCH_Y - 0.1, D.z0 + 0.42)
+    // Under the east end of the bench.
+    //
+    // At D.x0 + 0.42 it was a solid block driven straight through the worktop
+    // and its zinc, and the developing tray - the one the whole room turns on -
+    // stood inside its plan footprint with the base plate buried. Hung below
+    // the slab at the far end it is out of the trays' way entirely.
+    sink.position.set(D.x0 + 2.74, BENCH_Y - 0.185, D.z0 + 0.42)
     group.add(sink)
     const tap = mesh(new THREE.TorusGeometry(0.07, 0.008, 8, 18, Math.PI), mats.chrome)
-    tap.position.set(D.x0 + 0.42, BENCH_Y + 0.28, D.z0 + 0.2)
+    tap.position.set(D.x0 + 2.74, BENCH_Y + 0.28, D.z0 + 0.2)
     tap.rotation.y = Math.PI / 2
     group.add(tap)
     const riser = mesh(new THREE.CylinderGeometry(0.009, 0.009, 0.3, 10), mats.chrome, { cast: false })
-    riser.position.set(D.x0 + 0.42, BENCH_Y + 0.15, D.z0 + 0.13)
+    riser.position.set(D.x0 + 2.74, BENCH_Y + 0.15, D.z0 + 0.13)
     group.add(riser)
 
     // print washer, print paper boxes
