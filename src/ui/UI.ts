@@ -4,6 +4,24 @@ import { CREDITS, DOCUMENTS, HOW_TO_PLAY, UI_TEXT, type EndingText } from '../co
 import { ITEMS } from '../content/chapter01/items'
 import type { Inspector } from '../systems/Inspector'
 import { VERB_LABEL, type HoverInfo } from '../systems/Interaction'
+import { SLOT_COUNT, type SaveMeta } from '../core/Save'
+
+/** What choosing a slot means: begin there, resume it, or write into it. */
+export type SlotMode = 'new' | 'load' | 'save'
+
+const formatPlaytime = (ms: number): string => {
+  const total = Math.max(0, Math.floor(ms / 1000))
+  const h = Math.floor(total / 3600)
+  const m = Math.floor((total % 3600) / 60)
+  return h > 0 ? `${h}時間${m}分` : `${m}分`
+}
+
+const formatSavedAt = (at: number): string => {
+  if (!at) return ''
+  const d = new Date(at)
+  const p = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}/${p(d.getMonth() + 1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`
+}
 
 /**
  * The whole DOM overlay.
@@ -31,6 +49,10 @@ export interface UICallbacks {
   onResetProgress(): void
   onRestartChapter(): void
   onSave(): void
+  /** Metadata for all three save slots, newest state each time it is asked. */
+  slotMetas(): SaveMeta[]
+  /** Start a new run in this slot, load it, or write the current run into it. */
+  onSlotChosen(mode: SlotMode, slot: number): void
   onPanelOpen(): void
   onPanelClose(): void
   onEndingDismiss(): void
@@ -48,7 +70,7 @@ const HOLD_BASE_MS = 1600
 const HOLD_PER_CHAR_MS = 78
 const HOLD_MAX_MS = 7000
 
-type PanelId = 'inventory' | 'clues' | 'hints' | 'settings' | 'document' | 'credits' | 'howto' | null
+type PanelId = 'inventory' | 'clues' | 'hints' | 'settings' | 'document' | 'credits' | 'howto' | 'slots' | null
 
 export class GameUI {
   private root: HTMLElement
@@ -314,8 +336,11 @@ export class GameUI {
       b.addEventListener('click', fn)
       menu.appendChild(b)
     }
-    add(UI_TEXT.menuNew, null, () => this.cb.onNewGame())
-    if (opts.hasSave) add(UI_TEXT.menuContinue, opts.saveLabel ?? null, () => this.cb.onContinue())
+    // Both entries go through the slot list, so which of the three records is
+    // about to be started or resumed is always a shown choice rather than a
+    // guess the game makes on the player's behalf.
+    add(UI_TEXT.menuNew, null, () => this.openSlots('new'))
+    if (opts.hasSave) add(UI_TEXT.menuContinue, opts.saveLabel ?? null, () => this.openSlots('load'))
     add(UI_TEXT.menuSettings, null, () => this.open('settings'))
     add(UI_TEXT.menuHowTo, null, () => this.open('howto'))
     // Credits are not a title-screen menu item: they belong at the end of a
@@ -593,6 +618,9 @@ export class GameUI {
         break
       case 'settings':
         this.renderSettings()
+        break
+      case 'slots':
+        this.renderSlots()
         break
       case 'credits':
         this.renderPaper('制作について', CREDITS)
@@ -1127,11 +1155,10 @@ export class GameUI {
     const box = this.el('div', 'detail-actions')
     const fs = this.el('button', 'btn ghost clickable', '全画面')
     fs.addEventListener('click', () => this.cb.onFullscreen())
+    // Choose the slot. 「記録する」 used to write the single autosave silently,
+    // which gave a player no way to keep one run while trying another ending.
     const save = this.el('button', 'btn ghost clickable', '記録する')
-    save.addEventListener('click', () => {
-      this.cb.onSave()
-      this.toast(UI_TEXT.saved)
-    })
+    save.addEventListener('click', () => this.openSlots('save'))
     const restart = this.el('button', 'btn ghost clickable', '章のやり直し')
     restart.addEventListener('click', () => {
       this.confirm('章をはじめからやり直す', 'いま館で起きたことは、すべて無かったことになる。', () =>
@@ -1154,15 +1181,91 @@ export class GameUI {
     this.panelFoot.appendChild(close)
   }
 
-  private confirm(title: string, body: string, onYes: () => void): void {
-    this.panelBody.innerHTML = ''
-    this.panelFoot.innerHTML = ''
-    this.panelTitle.textContent = title
-    this.panelSub.textContent = ''
+  private slotMode: SlotMode = 'load'
+
+  /** Open the slot list in one of its three meanings. */
+  openSlots(mode: SlotMode): void {
+    this.slotMode = mode
+    this.open('slots')
+  }
+
+  /**
+   * The three save slots.
+   *
+   * One list serves starting, resuming and writing, because the thing the player
+   * needs to see is the same in all three cases: what is in each slot, and which
+   * one they are about to affect.
+   */
+  private renderSlots(): void {
+    const mode = this.slotMode
+    // showPanel, not the fields directly: it is what actually puts the panel on
+    // screen. Setting the title alone left the scrim up over an invisible panel.
+    this.showPanel(
+      mode === 'new' ? '新しく始める' : mode === 'load' ? 'つづきから' : 'この場面を記録する',
+      '記録は三つまで',
+    )
+
+    const metas = this.cb.slotMetas()
+    const list = this.el('div', 'slot-list')
+    for (let i = 0; i < SLOT_COUNT; i++) {
+      const m = metas[i] ?? null
+      const row = this.el('button', 'slot-row clickable')
+      // Loading an empty slot is the one combination with nothing to do.
+      const dead = mode === 'load' && !m?.exists
+      if (dead) {
+        row.disabled = true
+        row.classList.add('slot-empty')
+      }
+      const name = this.el('div', 'slot-name', `記録 ${['一', '二', '三'][i]}`)
+      const body = this.el('div', 'slot-body')
+      if (m?.exists) {
+        body.textContent = `${m.areaLabel}　謎 ${m.solvedCount}　${formatPlaytime(m.playtimeMs)}`
+        const when = this.el('div', 'slot-when', formatSavedAt(m.savedAt))
+        body.appendChild(when)
+        if (m.endingId) name.appendChild(this.el('span', 'slot-tag', '結末を見た'))
+      } else {
+        body.textContent = '空'
+      }
+      // Say plainly when a choice destroys something.
+      if (m?.exists && mode !== 'load') {
+        row.appendChild(this.el('span', 'slot-warn', '上書き'))
+      }
+      row.append(name, body)
+      row.addEventListener('click', () => {
+        if (m?.exists && mode !== 'load') {
+          this.confirmSlot(mode, i)
+          return
+        }
+        this.cb.onSlotChosen(mode, i)
+        this.closeTop()
+      })
+      list.appendChild(row)
+    }
+    this.panelBody.appendChild(list)
+
+    const close = this.el('button', 'btn clickable', UI_TEXT.cancel)
+    close.addEventListener('click', () => this.closeTop())
+    this.panelFoot.appendChild(close)
+  }
+
+  private confirmSlot(mode: SlotMode, slot: number): void {
+    const which = `記録 ${['一', '二', '三'][slot]}`
+    this.confirm(
+      `${which}に上書きする`,
+      mode === 'new'
+        ? `${which}に入っている進行は消える。`
+        : `${which}に入っている進行を、いまの場面で置き換える。`,
+      () => this.cb.onSlotChosen(mode, slot),
+      () => this.renderSlots(),
+    )
+  }
+
+  private confirm(title: string, body: string, onYes: () => void, onNo?: () => void): void {
+    this.showPanel(title)
     const p = this.el('p', 'detail-desc jp', body)
     this.panelBody.appendChild(p)
     const no = this.el('button', 'btn ghost clickable', UI_TEXT.cancel)
-    no.addEventListener('click', () => this.renderSettingsFresh())
+    no.addEventListener('click', () => (onNo ? onNo() : this.renderSettingsFresh()))
     const yes = this.el('button', 'btn danger clickable', UI_TEXT.confirm)
     yes.addEventListener('click', () => {
       onYes()

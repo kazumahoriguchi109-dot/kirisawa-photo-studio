@@ -188,6 +188,11 @@ export class Chapter01 {
     // An ending already reached must not leave the exit permanently "used": the
     // player continues from the same save to find the other endings.
     if (s.endingId) s.setFlag('exit_open', false)
+    // The entrance is shut whenever we are inside the building, whatever the
+    // ending cinematic last did to it. Only the ending opens it, and the ending
+    // is not a state you come back to: continuing after one puts you back in the
+    // hall, and a new game starts in a closed house.
+    building.exitDoorLeaf.rotation.y = building.exitDoorLeaf.userData.closedYaw as number
     building.darkroomDoorLeaf.rotation.y =
       (building.darkroomDoorLeaf.userData.closedYaw as number) + (s.flag('darkroom_open') ? -1.6 : 0)
     building.officeDoorLeaf.rotation.y =
@@ -2645,9 +2650,11 @@ export class Chapter01 {
     const dir = ndc && centre !== null && ndc.x < centre ? -1 : 1
     this.dialAngle += dir * ((Math.PI * 2) / 50)
     this.applyDial()
-    const now = this.dialNumber()
+    // No toast per notch. One click is one notch now, so a toast for each of
+    // them stacked into a column of 環 二 / 環 三 / 環 四 down the side of the
+    // screen. The dial is engraved and it turns under a fixed pointer - the
+    // number is on the face, which is where you read a dial.
     this.d.audio.play('detent', { gain: 0.6 })
-    this.d.ui.toast(kansuji(now), '環')
     this.d.state.setPuzzleWork('p8_safe', { angle: this.dialAngle })
     if (!this.flag('dial_turned')) {
       this.d.state.setFlag('dial_turned')
@@ -2692,8 +2699,9 @@ export class Chapter01 {
       this.applyDial()
       const now = this.dialNumber()
       if (now !== before) {
+        // Same as the click path: the detent is the feedback, the face is the
+        // readout. A toast per notch turns one drag into a wall of them.
         this.d.audio.play('detent', { gain: 0.6 })
-        this.d.ui.toast(kansuji(now), '環')
         this.d.state.setPuzzleWork('p8_safe', { angle: this.dialAngle })
       }
     }

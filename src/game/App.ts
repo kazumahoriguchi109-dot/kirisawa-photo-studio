@@ -9,7 +9,7 @@ import { GameState } from '../state/GameState'
 import { CameraRig } from '../systems/CameraRig'
 import { InteractionSystem } from '../systems/Interaction'
 import { Inspector } from '../systems/Inspector'
-import { GameUI } from '../ui/UI'
+import { GameUI, type SlotMode } from '../ui/UI'
 import { buildMaterials } from '../world/Materials'
 import { setTextureResolutionScale } from '../world/Textures'
 import { buildBuilding, updateRain } from '../world/Building'
@@ -158,6 +158,8 @@ export class App {
       onResetProgress: () => this.resetProgress(),
       onRestartChapter: () => void this.restartChapter(),
       onSave: () => this.save.save(),
+      slotMetas: () => this.save.metaAll(areaLabelForNode),
+      onSlotChosen: (mode, slot) => void this.onSlotChosen(mode, slot),
       onPanelOpen: () => {
         this.interaction.setEnabled(false)
         this.ui.setHover(null, null)
@@ -511,25 +513,50 @@ export class App {
   // ---------------------------------------------------------------- session
 
   private refreshTitle(): void {
-    const meta = this.save.meta(areaLabelForNode)
+    // Described by the newest record, since that is the one 「つづきから」 offers
+    // first - and the menu entry only appears if any of the three has anything.
+    const meta = this.save.meta(areaLabelForNode, this.save.latestSlot() ?? this.save.activeSlot())
     const label = meta.exists
       ? `${meta.areaLabel}　／　${formatTime(meta.playtimeMs)}`
       : undefined
     this.ui.refreshTitleMenu({ hasSave: meta.exists, saveLabel: label })
   }
 
-  private async startNewGame(): Promise<void> {
+  /**
+   * The one place a slot choice is acted on.
+   *
+   * Every route in and out of a run names its slot, so autosave can never write
+   * over a record the player was keeping: starting or loading makes that slot
+   * active, and 記録する writes the run where it is told to without moving where
+   * the autosave goes.
+   */
+  private async onSlotChosen(mode: SlotMode, slot: number): Promise<void> {
+    if (mode === 'save') {
+      const ok = this.save.save(slot)
+      this.ui.toast(ok ? UI_TEXT.saved : '記録できなかった')
+      this.refreshTitle()
+      return
+    }
+    if (mode === 'load') {
+      await this.continueGame(slot)
+      return
+    }
+    await this.startNewGame(slot)
+  }
+
+  private async startNewGame(slot = this.save.activeSlot()): Promise<void> {
     await this.audio.start()
-    this.save.clearProgress()
+    this.save.setActiveSlot(slot)
+    this.save.clearProgress(slot)
     this.state.resetProgress(true)
     this.chapter.syncWorldToState()
     await this.enterGame(true)
   }
 
-  private async continueGame(): Promise<void> {
+  private async continueGame(slot = this.save.latestSlot() ?? this.save.activeSlot()): Promise<void> {
     await this.audio.start()
-    if (!this.save.load()) {
-      await this.startNewGame()
+    if (!this.save.load(slot)) {
+      await this.startNewGame(slot)
       return
     }
     this.chapter.syncWorldToState()
@@ -611,11 +638,13 @@ export class App {
     this.audio.setLighting('dawn')
     this.audio.playEscapeSequence()
 
-    const leaf = this.chapter ? null : null
-    void leaf
     const door = this.scene.getObjectByName('door-exit')
     if (door) {
-      const base = door.rotation.y
+      // From the recorded shut angle, not from wherever the door is now. Reading
+      // the live rotation meant a second ending started from the first one's open
+      // position and swung a further 1.5 rad.
+      const base = (door.userData.closedYaw as number | undefined) ?? 0
+      door.rotation.y = base
       await this.timeline.to(2.2, (t) => {
         door.rotation.y = base - 1.5 * t
       }).promise

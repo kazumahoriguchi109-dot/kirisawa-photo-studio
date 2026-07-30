@@ -203,6 +203,12 @@ export function buildBuilding(mats: MaterialLibrary): BuildingRefs {
 
   const exitDoorLeaf = makeExitDoor(mats)
   exitDoorLeaf.position.set(OPENINGS.exitDoor.x0, 0, OPENINGS.exitDoor.z - EXTERIOR_THICKNESS / 2 + 0.03)
+  // Recorded like the interior leaves, so the shut position is a fact about the
+  // door rather than whatever rotation it happens to be carrying. The ending
+  // read its base angle off the live rotation and never put it back: each ending
+  // swung it a further 1.5 rad and a new game began with the entrance standing
+  // wide open on an empty save.
+  exitDoorLeaf.userData.closedYaw = exitDoorLeaf.rotation.y
   root.add(exitDoorLeaf)
 
   // ------------------------------------------------------- shopfront glazing
