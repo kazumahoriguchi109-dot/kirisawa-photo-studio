@@ -199,7 +199,14 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
     // back faced the room, so every spine label read into plaster. The unit is
     // 1.5 wide along world Z at this rotation, and centred at z1 - 0.5 it ran
     // from -0.45 to 1.05 through a south wall whose face is at 0.72.
-    const SHELF_Z = O.z1 - 1.28
+    // Clear of the doorway, at the north end of the west wall.
+    //
+    // The unit is 1.5 along world Z, so centred at z1 - 1.28 it ran from -1.23
+    // to 0.27 - across the whole of the office door's opening at -1.05..-0.15,
+    // 0.10 behind the wall. Opening the door from the studio revealed a wall of
+    // ledgers where the room should be, and the way through read as blocked.
+    // Centred at z0 + 0.85 it runs -2.70..-1.20 and leaves the opening clear.
+    const SHELF_Z = O.z0 + 0.85
     const shelf = shelfUnit(mats, 1.5, 1.9, 0.32, 4, true)
     shelf.position.set(O.x0 + 0.26, 0, SHELF_Z)
     shelf.rotation.y = Math.PI / 2

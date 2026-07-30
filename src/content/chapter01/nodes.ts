@@ -111,7 +111,12 @@ export const NODES: ViewNode[] = [
 
   // -------------------------------------------------------------- 事務室
   ...ring('office', [
-    { dir: 'n', label: '事務机', at: [4.62, E, -1.35], pitch: -0.2, fov: 58 },
+    // The desk, not the wall above it. At -0.2 the ledger sat 37 degrees below
+    // the eye against a frame that ended at 40.5, so the one surface this view
+    // exists for was jammed against the bottom edge and four fifths of the
+    // screen was plaster. Backed off and pitched down until the desk top is in
+    // the lower middle of the frame with the licence still above it.
+    { dir: 'n', label: '事務机', at: [4.68, E, -1.12], pitch: -0.36, fov: 60 },
     { dir: 'e', label: '金庫', at: [5.05, E - 0.06, -1.3], pitch: -0.24, fov: 54 },
     { dir: 's', label: '壁の貼り紙', at: [4.6, E, -0.55], fov: 56 },
     { dir: 'w', label: '撮影室へ', at: [4.3, E, -0.5], fov: 56 },

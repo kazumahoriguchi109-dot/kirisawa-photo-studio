@@ -786,7 +786,6 @@ export class GameUI {
       this.cb.onSelectItem(isSel ? null : id)
       this.renderInventory()
     })
-    actions.appendChild(selBtn)
 
     const comBtn = this.el('button', 'btn ghost clickable')
     comBtn.textContent = this.selectedForCombine === id ? UI_TEXT.cancel : UI_TEXT.combine
@@ -795,14 +794,17 @@ export class GameUI {
       this.renderInventory()
       if (this.selectedForCombine) this.toast('合わせる相手を選ぶ')
     })
-    actions.appendChild(comBtn)
 
+    // Appended secondary-first, so the row reads 読む / 合わせる / 選ぶ and the
+    // primary verb - the one carrying the highlight - is the rightmost button.
     if (def.document) {
       const readBtn = this.el('button', 'btn ghost clickable')
       readBtn.textContent = UI_TEXT.read
       readBtn.addEventListener('click', () => this.openDocument(def.document as string))
       actions.appendChild(readBtn)
     }
+    actions.appendChild(comBtn)
+    actions.appendChild(selBtn)
 
     this.inspector.setHeldItems(this.state.inventory.map((e) => e.id))
     this.inspector.show(def, entry.found)
@@ -814,12 +816,16 @@ export class GameUI {
     // opening an item sat below the fold with nothing on screen to say so - a
     // player holding the right item had no way to select it and no way to know
     // one existed. The footer is laid out separately and cannot be pushed off.
+    //
+    // 閉じる sits at the left and the item's own verbs at the right: the verbs
+    // are what the player came here to press, and every other footer in the game
+    // puts its affirmative action on the right.
     this.panelFoot.innerHTML = ''
     this.panelFoot.classList.add('has-actions')
-    this.panelFoot.appendChild(actions)
     const close = this.el('button', 'btn clickable', UI_TEXT.close)
     close.addEventListener('click', () => this.closeTop())
     this.panelFoot.appendChild(close)
+    this.panelFoot.appendChild(actions)
   }
 
   private bindInspectorInput(stage: HTMLElement): void {

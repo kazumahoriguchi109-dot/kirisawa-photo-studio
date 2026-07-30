@@ -218,7 +218,26 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
     wrap.position.copy(tube.position)
     backdropRoll.add(wrap)
 
-    // hex socket on the right-hand end of the shaft
+    // Hex socket on the right-hand end of the shaft, OUTBOARD of the bracket.
+    //
+    // It used to sit inboard, in the 0.010 gap between the velvet wrap and the
+    // bracket arm's inner face. The arm is 0.07 x 0.36 of dark steel standing
+    // directly between that gap and every viewpoint that can see the roll, so
+    // the brass boss the player is told to look at was behind it - and the
+    // fitted crank was worse: its arm at local x 0.06 put the handle at 1.58,
+    // which is inside the bracket. A roller blind's crank projects past its
+    // bracket, where a hand can reach it, so that is where this one goes.
+    const bracketOuter = rollX + rollLen / 2 + 0.09 + 0.035
+    const socketX = bracketOuter + 0.045
+
+    // the shaft end carried through the bracket to the socket
+    {
+      const stub = mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.14, 12), mats.steelDark)
+      stub.rotation.z = Math.PI / 2
+      stub.position.set(bracketOuter - 0.048, rollY, WALL_N + 0.1)
+      backdropRoll.add(stub)
+    }
+
     {
       const boss = mesh(new THREE.CylinderGeometry(0.036, 0.036, 0.05, 6), mats.brassDull)
       boss.rotation.z = Math.PI / 2
@@ -229,27 +248,26 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
       }), { cast: false })
       hole.rotation.z = Math.PI / 2
       crankSocket.add(hole)
-      // Inboard of the bracket, on the end of the shaft. It used to sit 0.030
-      // clear of the shaft end and 0.025 inside the bracket arm at the same
-      // time - a hex boss floating in the gap between the two.
-      crankSocket.position.set(rollX + rollLen / 2 + 0.02, rollY, WALL_N + 0.1)
+      crankSocket.position.set(socketX, rollY, WALL_N + 0.1)
       crankSocket.name = 'crank-socket'
       backdropRoll.add(crankSocket)
     }
 
-    // the crank once fitted (hidden until the puzzle accepts it)
+    // The crank once fitted (hidden until the puzzle accepts it). Everything
+    // runs outward from the socket face so no part of it enters the bracket.
     {
       const shaft = mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.1, 8), mats.brass)
       shaft.rotation.z = Math.PI / 2
+      shaft.position.set(0.05, 0, 0)
       crankFitted.add(shaft)
       const arm = mesh(roundedBox(0.02, 0.17, 0.02, 0.006, 2, 3), mats.brass)
-      arm.position.set(0.06, 0.07, 0)
+      arm.position.set(0.09, 0.075, 0)
       crankFitted.add(arm)
       const grip = mesh(lathe([[0.017, 0], [0.019, 0.02], [0.017, 0.06], [0, 0.062]], 12), mats.woodDark)
       grip.rotation.z = Math.PI / 2
-      grip.position.set(0.07, 0.15, 0)
+      grip.position.set(0.1, 0.155, 0)
       crankFitted.add(grip)
-      crankFitted.position.set(rollX + rollLen / 2 + 0.02, rollY, WALL_N + 0.1)
+      crankFitted.position.set(socketX, rollY, WALL_N + 0.1)
       crankFitted.visible = false
       backdropRoll.add(crankFitted)
     }

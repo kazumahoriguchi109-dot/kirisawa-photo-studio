@@ -665,22 +665,7 @@ export class Chapter01 {
       label: '受付の抽斗',
       verb: 'open',
       scope: ['hall_n'],
-      // Looked into from the front and a little above.
-      //
-      // There is a narrow band of workable angles here. Too shallow and the
-      // drawer's own face cuts off the floor - which is what hid the fuse the
-      // first puzzle needs. Too steep and the counter top, which the drawer
-      // lives under, comes between the camera and the drawer instead. With the
-      // bay split into four shallow drawers the face only stands 0.15 above the
-      // contents, so the window is roughly 32 to 36 degrees: this sightline
-      // passes the counter's front edge at y 0.959 against an underside at
-      // 0.978, and rises 33 degrees over the drawer face.
-      onActivate: () => void this.closeupOn('cu_drawer', hall.receptionDrawer, [0.1, 0.55, 0.83], {
-          fov: 44,
-          // Looked into, not looked at: the drawer is half a metre deep, so a
-          // distance that just fits its bounds puts the near edge on the lens.
-          margin: 2.1,
-        }),
+      onActivate: () => void this.frameDrawer(),
     })
     this.hs({
       id: 'cu:drawer:pull',
@@ -690,16 +675,22 @@ export class Chapter01 {
       scope: 'cu_drawer',
       labelFor: () => (this.flag('drawer_open') ? '抽斗の中' : '抽斗'),
       verbFor: () => (this.flag('drawer_open') ? 'examine' : 'pull'),
-      onActivate: () => {
+      onActivate: async () => {
         if (!this.flag('drawer_open')) {
           this.d.state.setFlag('drawer_open')
           this.d.audio.play('drawer')
           hall.drawerContents.visible = true
-          this.d.timeline.to(0.55, (t) => {
+          const slide = this.d.timeline.to(0.55, (t) => {
             hall.receptionDrawer.position.z = 0.32 * t
           }, { ease: Ease.outCubic })
           this.say('紙の袋に、磁器のヒューズが一本。鉛筆の折れたのと、名刺が一枚。')
           this.d.save.save()
+          // Close in on what the drawer turned out to hold - but only once it
+          // has finished coming out. Re-framing while the slide was still
+          // running measured the contents where they sat inside a shut drawer
+          // and then let the drawer travel its 0.32 straight into the lens.
+          await slide.promise
+          await this.frameDrawer()
           return
         }
         // Once it is in the box it is gone from the drawer for good: the item
@@ -1569,7 +1560,10 @@ export class Chapter01 {
    */
   private async lookThroughGroundGlass(): Promise<void> {
     if (!this.flag('chronicle_open')) {
-      this.say('すりガラスに、天鵞絨の暗い面が天地逆さまに映っている。')
+      // Names the obstacle and what moving it would do. It used to report only
+      // that the velvet was reflected, which left a player who had looked here
+      // early with nothing to act on and no reason to come back.
+      this.say('すりガラスに映るのは、天鵞絨の暗い面だけだ。この幕を巻き上げれば、裏にあるものがここに映る。')
       this.d.audio.play('select')
       return
     }
@@ -1600,6 +1594,33 @@ export class Chapter01 {
     }
   }
 
+  /**
+   * The reception drawer, framed for the state it is in.
+   *
+   * Looked into from the front and a little above, and there is only a narrow
+   * band of workable angles: too shallow and the drawer's own face cuts off the
+   * floor - which is what hid the fuse the first puzzle needs - and too steep
+   * and the counter top the drawer lives under comes between the camera and the
+   * drawer instead. This sightline passes the counter's front edge at y 0.959
+   * against an underside at 0.978 and rises 33 degrees over the face.
+   *
+   * The subject has to change with the state, though. Framed on the contents
+   * while the drawer is still shut, the camera closes on things sealed inside a
+   * box and fills the screen with its front board; framed on the drawer once it
+   * is open, it aims at the middle of a half-metre carcase and leaves the three
+   * things lying on the floor as a strip along the bottom edge.
+   */
+  private async frameDrawer(): Promise<void> {
+    const open = this.flag('drawer_open')
+    const hall = this.d.hall
+    await this.closeupOn(
+      'cu_drawer',
+      open ? hall.receptionDrawerContents : hall.receptionDrawer,
+      [0.1, 0.55, 0.83],
+      { fov: 44, margin: open ? 3.4 : 2.1 },
+    )
+  }
+
   /** The reversed wall text as the view camera shows it: turned through 180. */
   private applyGroundGlassTexture(): void {
     const { studio } = this.d
@@ -1610,19 +1631,23 @@ export class Chapter01 {
       const g = c.getContext('2d')!
       g.fillStyle = '#3c4038'
       g.fillRect(0, 0, 512, 512)
-      // the wall, seen through the lens: upside down and left-right reversed
-      g.save()
-      g.translate(512, 512)
-      g.rotate(Math.PI)
+      // The wall, seen through the lens - which is to say the right way up.
+      //
+      // Kyoichi wrote the note the right way up and hung it inverted, so the
+      // board itself is unreadable and a view camera turns it back. This canvas
+      // rotated it through 180 degrees a SECOND time, so the glass showed the
+      // same upside-down sentence as the wall while the narration announced that
+      // it could now be read: the player was told to read something that was
+      // still upside down, with nothing on screen to explain why it wasn't.
+      // Drawn upright, the camera does what the puzzle says it does.
       g.fillStyle = 'rgba(150,140,118,0.5)'
       g.fillRect(40, 150, 432, 240)
       g.fillStyle = 'rgba(28,24,18,0.9)'
       g.font = '400 54px "Hiragino Mincho ProN", "Yu Mincho", serif'
       g.textAlign = 'center'
-      g.fillText('この壁だけは残す', 256, 250)
+      g.fillText('この壁だけは残す', 256, 222)
       g.font = '400 66px "Hiragino Mincho ProN", "Yu Mincho", serif'
-      g.fillText('鍵は灯の下に', 256, 340)
-      g.restore()
+      g.fillText('鍵は灯の下に', 256, 322)
       // ground-glass grain and the fresnel rings
       for (let i = 0; i < 9000; i++) {
         g.fillStyle = `rgba(255,255,255,${Math.random() * 0.05})`

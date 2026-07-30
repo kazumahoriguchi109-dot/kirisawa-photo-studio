@@ -35,6 +35,8 @@ export interface HallProps {
   breakerLever: THREE.Group
   /** Reception drawer that holds the spare fuse. */
   receptionDrawer: THREE.Group
+  /** What lies on that drawer's floor, so the close-up can frame it directly. */
+  receptionDrawerContents: THREE.Group
   /** The pedestal the drawer slides in, so the hotspot has a findable target. */
   drawerUnit: THREE.Group
   drawerContents: THREE.Group
@@ -182,18 +184,22 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     const fuse = makeFuse(mats)
     // On the drawer floor. With four drawers in the bay the board's top face is
     // at -0.0682, and everything here is set against that.
-    fuse.position.set(-0.06, -0.0577, 0.06)
+    //
+    // Centred, not tucked into the front-left corner. The close-up frames this
+    // group, so whatever sits at its edge is what ends up against the frame -
+    // and the fuse is the one thing in the drawer the player needs.
+    fuse.position.set(0, -0.0577, 0.015)
     fuse.rotation.z = Math.PI / 2
     fuse.rotation.y = 0.3
     drawerContents.add(fuse)
     const pencil = mesh(new THREE.CylinderGeometry(0.0042, 0.0042, 0.085, 6), mats.woodMid)
     pencil.rotation.set(Math.PI / 2, 0, 0.5)
-    pencil.position.set(0.08, -0.0640, 0.02)
+    pencil.position.set(0.075, -0.0640, -0.025)
     drawerContents.add(pencil)
     const card = mesh(new THREE.PlaneGeometry(0.09, 0.055), mats.paper, { cast: false })
     card.rotation.x = -Math.PI / 2
     card.rotation.z = 0.2
-    card.position.set(0.02, -0.0676, -0.05)
+    card.position.set(-0.035, -0.0676, -0.055)
     drawerContents.add(card)
     receptionDrawer.add(drawerContents)
   }
@@ -1214,6 +1220,7 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     fuseSpare,
     breakerLever,
     receptionDrawer,
+    receptionDrawerContents: drawerContents,
     drawerUnit: drawers.group,
     drawerContents,
     recordPhoto,
