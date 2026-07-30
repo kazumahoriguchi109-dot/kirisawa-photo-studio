@@ -267,17 +267,12 @@ window.__playthrough = async function playthrough(route) {
   await act('cu:safe:handle', null)
   expect(!d.flags().safe_open, '番号が違えば開かない')
   // turn the dial to the recorded number the honest way
-  app.debug.chapter.beginDialForTest ? app.debug.chapter.beginDialForTest(27) : null
-  await act('cu:safe:dial')
-  const handler = app.debug.chapter.activeDragHandler
-  if (handler) {
+  // One notch per click now, the same as the entrance lock's rings, so the
+  // harness clicks the ring the way a player does instead of reaching for the
+  // drag handler the dial used to expose.
+  {
     let guard = 0
-    while (guard++ < 400) {
-      handler(6)
-      const n = app.debug.state.puzzle('p8_safe').work.angle
-      void n
-      if (readDial(app) === 27) break
-    }
+    while (readDial(app) !== 27 && guard++ < 60) await act('cu:safe:dial', null, 20)
   }
   expect(readDial(app) === 27, '環を二十七に合わせた')
   await act('cu:safe:handle', null, 2600)

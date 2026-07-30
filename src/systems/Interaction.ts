@@ -37,6 +37,12 @@ export const VERB_LABEL: Record<Verb, string> = {
 export interface HotspotContext {
   /** Item currently selected in the inventory, if any. */
   selectedItem: string | null
+  /**
+   * Where on screen the click landed, in NDC. Needed by anything whose answer
+   * depends on which part of it you hit - the safe's ring turns one notch
+   * towards the side you click.
+   */
+  ndc?: { x: number; y: number }
 }
 
 export interface HotspotDef {
@@ -54,6 +60,14 @@ export interface HotspotDef {
   verbFor?: (ctx: HotspotContext) => Verb
   labelFor?: (ctx: HotspotContext) => string
   onActivate: (ctx: HotspotContext) => void | Promise<void>
+  /**
+   * Called when a drag *starts* on this hotspot, so a thing that turns can be
+   * turned by dragging it. Without this the safe's ring needed a click to take
+   * hold and then a second, separate drag: dragging it - which is what everyone
+   * tries - did nothing at all, and a drag that nothing has captured produces no
+   * feedback of any kind, so the dial read as broken.
+   */
+  onGrab?: (ctx: HotspotContext) => void
   /** If set, activating moves the camera here first. */
   closeup?: CloseupSpec
   /** Nudge the notice ring / chip anchor. */

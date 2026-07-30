@@ -393,7 +393,20 @@ export class App {
       this.pointerNdc = { x: s.ndcX, y: s.ndcY }
     })
     // Dragging never steers the camera. The only thing that consumes a drag is
-    // a puzzle that has explicitly captured it, such as the safe dial.
+    // a puzzle that has captured it, such as the safe dial - and a drag that
+    // begins on something turnable captures it here, so the ring can simply be
+    // dragged instead of needing a click to take hold first.
+    this.input.events.on('dragStart', (s) => {
+      if (!this.inGame || this.ui.isPanelOpen) return
+      if (this.chapter.activeDragHandler || this.chapter.isBusy) return
+      this.pointerNdc = { x: s.ndcX, y: s.ndcY }
+      this.scene.updateMatrixWorld(true)
+      this.interaction.setScope(this.chapter.currentScope)
+      const hit = this.interaction.pick(s.ndcX, s.ndcY, {
+        selectedItem: this.state.selectedItemId,
+      })
+      hit?.hotspot.onGrab?.({ selectedItem: this.state.selectedItemId })
+    })
     this.input.events.on('drag', ({ dx, dy, sample }) => {
       this.pointerNdc = { x: sample.ndcX, y: sample.ndcY }
       const captured = this.chapter?.activeDragHandler
@@ -404,6 +417,10 @@ export class App {
     })
     this.input.events.on('dragEnd', () => {
       this.canvas.dataset.cursor = ''
+      // Let go at the end of the gesture. Holding the capture past the release
+      // meant the next click was spent letting go instead of doing what it was
+      // aimed at: after setting the ring, the click on the handle was swallowed.
+      this.chapter?.clearDrag()
     })
     this.input.events.on('click', (s) => {
       this.pointerNdc = { x: s.ndcX, y: s.ndcY }
@@ -478,7 +495,10 @@ export class App {
       }
       return
     }
-    hovered.hotspot.onActivate({ selectedItem: this.state.selectedItemId })
+    hovered.hotspot.onActivate({
+      selectedItem: this.state.selectedItemId,
+      ndc: { x: this.pointerNdc.x, y: this.pointerNdc.y },
+    })
   }
 
   private survey(): void {

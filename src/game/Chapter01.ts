@@ -1744,6 +1744,14 @@ export class Chapter01 {
         scope: 'cu_trays',
         verbFor: (ctx) => (ctx.selectedItem ? 'use' : 'examine'),
         onActivate: (ctx) => void this.useOnTray(i, ctx.selectedItem),
+        // Trying to drag a tray into the manual's order is the right instinct
+        // and the wrong answer - 「順は台に非ず　書に在り」 - but a drag nothing
+        // has captured is completely silent, so the attempt read as a dead
+        // mechanic rather than as a wrong idea. Say so instead.
+        onGrab: () => {
+          if (this.busy) return
+          this.say('並べ替えようとしても、バットは重い。直すのは並びではない。どれに液を張るかだ。')
+        },
       })
     })
 
@@ -2503,7 +2511,8 @@ export class Chapter01 {
       label: '環',
       verb: 'turn',
       scope: 'cu_safe',
-      onActivate: () => this.beginDial(),
+      onActivate: (ctx) => this.clickDial(ctx.ndc),
+      onGrab: () => this.beginDial(true),
     })
     this.hs({
       id: 'cu:safe:handle',
@@ -2615,18 +2624,68 @@ export class Chapter01 {
     })
   }
 
-  private beginDial(): void {
+  /**
+   * One notch per click, towards the side of the ring you clicked.
+   *
+   * Dragging was the only way to turn it, and it was a two-part gesture: click
+   * to take hold, then drag. Dragging it straight away - which is what everyone
+   * tries - did nothing, and a drag nothing has captured produces no feedback of
+   * any kind, so the dial read as broken. Every other turnable thing in the
+   * building, the four rings on the entrance lock included, is one click per
+   * step; this is now the same. Dragging still works for anyone who tries it.
+   */
+  private clickDial(ndc?: { x: number; y: number }): void {
     if (this.flag('safe_open')) {
       this.say('環は空回りする。もう開いている。')
       return
     }
+    const centre = this.dialCentreNdc()
+    // Right half of the ring turns it up, left half down. With no pointer
+    // position to compare against, fall back to turning it up.
+    const dir = ndc && centre !== null && ndc.x < centre ? -1 : 1
+    this.dialAngle += dir * ((Math.PI * 2) / 50)
+    this.applyDial()
+    const now = this.dialNumber()
+    this.d.audio.play('detent', { gain: 0.6 })
+    this.d.ui.toast(kansuji(now), '環')
+    this.d.state.setPuzzleWork('p8_safe', { angle: this.dialAngle })
+    if (!this.flag('dial_turned')) {
+      this.d.state.setFlag('dial_turned')
+      this.say('環が一つ動く。右を押せば進み、左を押せば戻る。合わせたら把手を引く。')
+    }
+  }
+
+  /** Screen x of the ring's centre, so a click can be read as left or right. */
+  private dialCentreNdc(): number | null {
+    const dial = this.d.office.safeDial
+    if (!dial) return null
+    dial.updateWorldMatrix(true, false)
+    const p = new THREE.Vector3().setFromMatrixPosition(dial.matrixWorld)
+    return p.project(this.d.rig.camera).x
+  }
+
+  /**
+   * Take hold of the ring for a drag.
+   *
+   * `silent` is the drag-started path: the gesture is its own explanation, and
+   * announcing 「環に手を掛ける」 on every drag would talk over the numbers the
+   * player is watching.
+   */
+  private beginDial(silent = false): void {
+    if (this.flag('safe_open')) {
+      if (!silent) this.say('環は空回りする。もう開いている。')
+      return
+    }
     if (this.dragHandler) {
+      if (silent) return
       this.dragHandler = null
       this.say('手を離す。')
       return
     }
-    this.say(`環に手を掛ける。左右に引けば回る。いまは ${this.dialNumber()}。`)
-    this.d.audio.play('select')
+    if (!silent) {
+      this.say(`環に手を掛ける。左右に引けば回る。いまは ${this.dialNumber()}。`)
+      this.d.audio.play('select')
+    }
     this.dragHandler = (dx) => {
       const before = this.dialNumber()
       this.dialAngle += dx * 0.012
