@@ -600,8 +600,17 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
     }
   }
 
+  // Low enough to be inside the office's own view of this wall.
+  //
+  // At y 1.9 it projected to NDC y 1.11 from office_n - above the top edge, and
+  // office_e does not face this wall at all - so the third of the three marks
+  // could not be clicked from anywhere. The hidden ending requires all three, so
+  // it was unreachable. The view was pitched down to bring the desk into frame
+  // and this went out of the top with it; the mark moves rather than the desk
+  // view, which is the framing that was asked for. Measured after the move: NDC
+  // (0.20, 0.70) from office_n, nothing in front of it.
   const phosphor = phosphorMark('かえす', 0.2, 2.6)
-  phosphor.position.set(4.9, 1.9, O.z0 + 0.086)
+  phosphor.position.set(4.9, 1.6, O.z0 + 0.086)
   group.add(phosphor)
 
   return {
