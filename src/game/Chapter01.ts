@@ -1776,7 +1776,21 @@ export class Chapter01 {
         label: ['一つめのバット', '二つめのバット', '三つめのバット', '四つめのバット'][i],
         verb: 'examine',
         scope: 'cu_trays',
-        verbFor: (ctx) => (ctx.selectedItem ? 'use' : 'examine'),
+        // While a tray is in hand the whole bench has to say so: which one is
+        // lifted, and that every other tray is now a place to set it down. With
+        // no such marking a tester could not tell a swap from a put-back and
+        // spent fifty clicks working out what the bench was doing.
+        labelFor: () => {
+          const names = ['一つめのバット', '二つめのバット', '三つめのバット', '四つめのバット']
+          if (this.heldTray === i) return `${names[i]}（持っている）`
+          if (this.heldTray !== null) return `ここへ置く`
+          return names[i]
+        },
+        verbFor: (ctx) => {
+          if (ctx.selectedItem) return 'use'
+          if (this.heldTray !== null) return this.heldTray === i ? 'pull' : 'push'
+          return 'take'
+        },
         onActivate: (ctx) => {
           // With nothing in hand, a tray is a thing you pick up and put down:
           // one click lifts it and describes it, the next lands it somewhere.
