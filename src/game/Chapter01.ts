@@ -160,7 +160,7 @@ export class Chapter01 {
     office.deskPrint.visible = s.flag('desk_open') && !s.hasItem('print_7')
     ;(hall.fuseSpare as unknown as THREE.Object3D).visible =
       !s.hasItem('spare_fuse') && !s.flag('fuse_seated')
-    hall.receptionDrawer.position.z = s.flag('drawer_open') ? 0.28 : 0
+    hall.receptionDrawer.position.z = s.flag('drawer_open') ? 0.32 : 0
     hall.fuseBoxDoor.rotation.y = s.flag('fusebox_open') ? -2.1 : 0
     // Closed (hanging straight down) once the power is on; standing open before.
     hall.breakerLever.rotation.x = s.flag('power_on') ? 0 : OPEN_TILT
@@ -665,11 +665,21 @@ export class Chapter01 {
       label: '受付の抽斗',
       verb: 'open',
       scope: ['hall_n'],
-      onActivate: () => void this.closeupOn('cu_drawer', hall.receptionDrawer, [0.18, 0.8, 1], {
-          fov: 42,
+      // Looked into from the front and a little above.
+      //
+      // There is a narrow band of workable angles here. Too shallow and the
+      // drawer's own face cuts off the floor - which is what hid the fuse the
+      // first puzzle needs. Too steep and the counter top, which the drawer
+      // lives under, comes between the camera and the drawer instead. With the
+      // bay split into four shallow drawers the face only stands 0.15 above the
+      // contents, so the window is roughly 32 to 36 degrees: this sightline
+      // passes the counter's front edge at y 0.959 against an underside at
+      // 0.978, and rises 33 degrees over the drawer face.
+      onActivate: () => void this.closeupOn('cu_drawer', hall.receptionDrawer, [0.1, 0.55, 0.83], {
+          fov: 44,
           // Looked into, not looked at: the drawer is half a metre deep, so a
           // distance that just fits its bounds puts the near edge on the lens.
-          margin: 2.4,
+          margin: 2.1,
         }),
     })
     this.hs({
@@ -686,7 +696,7 @@ export class Chapter01 {
           this.d.audio.play('drawer')
           hall.drawerContents.visible = true
           this.d.timeline.to(0.55, (t) => {
-            hall.receptionDrawer.position.z = 0.28 * t
+            hall.receptionDrawer.position.z = 0.32 * t
           }, { ease: Ease.outCubic })
           this.say('紙の袋に、磁器のヒューズが一本。鉛筆の折れたのと、名刺が一枚。')
           this.d.save.save()

@@ -41,6 +41,16 @@ export const OPENINGS = {
   officeDoor: { z0: -1.05, z1: -0.15, x: 3.2, top: 2.02 },
   /** The way out, in the hall's south wall. */
   exitDoor: { x0: -2.52, x1: -1.12, z: 6.4, top: 2.18 },
+  /**
+   * The stairwell mouth in the hall's east wall.
+   *
+   * The flight is boarded over and nobody is going up it, but a staircase that
+   * stops against a solid wall reads as unfinished geometry. Cutting the wall
+   * where the stair passes through it means the dark beyond the boards is a real
+   * shaft with treads in it, and the slots between the planks look into
+   * somewhere rather than at plaster 30 cm behind them.
+   */
+  stairWell: { z0: 4.46, z1: 5.58, x: 0.6, bottom: 0.84, top: 2.26 },
   /** Shopfront glazing beside the exit door. */
   shopWindow: { x0: -0.72, x1: 0.32, z: 6.4, bottom: 0.92, top: 2.16 },
 } as const

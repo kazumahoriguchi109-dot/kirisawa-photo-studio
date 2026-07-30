@@ -110,7 +110,20 @@ export function buildBuilding(mats: MaterialLibrary): BuildingRefs {
   // Hall: west, east, and the glazed shopfront to the south.
   const H = ROOM.hall
   root.add(buildWall(H.x0, H.z0, H.x0, H.z1, H.ceiling, WALL_THICKNESS, mats.plasterWall, [], { name: 'hall-w' }))
-  root.add(buildWall(H.x1, H.z0, H.x1, H.z1, H.ceiling, WALL_THICKNESS, mats.plasterWall, [], { name: 'hall-e' }))
+  {
+    // The stairwell mouth: the flight passes through this wall on its way up.
+    const stair: Opening = {
+      from: OPENINGS.stairWell.z0 - H.z0,
+      to: OPENINGS.stairWell.z1 - H.z0,
+      bottom: OPENINGS.stairWell.bottom,
+      top: OPENINGS.stairWell.top,
+    }
+    root.add(
+      buildWall(H.x1, H.z0, H.x1, H.z1, H.ceiling, WALL_THICKNESS, mats.plasterWall, [stair], {
+        name: 'hall-e',
+      }),
+    )
+  }
   {
     const doorOpening: Opening = {
       from: OPENINGS.exitDoor.x0 - H.x0,

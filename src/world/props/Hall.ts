@@ -61,8 +61,14 @@ export interface HallProps {
 /**
  * How far the main switch stands open. The blade hangs straight down when the
  * circuit is closed, so this is the only angle either side needs to agree on.
+ *
+ * Bounded by the cabinet. The carcass opening is at z = 0 and the hinge sits
+ * 0.028 in front of the back plate, so the handle's reach and this angle
+ * together have to keep the knob behind z = 0 - at 0.85 rad with a 0.14 arm the
+ * knob stood 62 mm out through the front of the box and through the door when
+ * it was shut.
  */
-export const OPEN_TILT = -0.85
+export const OPEN_TILT = -0.62
 
 const H = ROOM.hall
 
@@ -156,31 +162,38 @@ export function buildHall(mats: MaterialLibrary): HallProps {
   // Sized and placed from the bay so the fronts fill the opening in the joinery.
   const drawerH = drawerBay.y1 - drawerBay.y0
   const drawerD = 0.5
-  const drawers = drawerUnit(mats, drawerBay.w - 0.024, drawerH, drawerD, 2)
+  // Four shallow drawers, not two deep ones.
+  //
+  // Split in two, each drawer was 0.385 tall - and its face therefore stood
+  // 0.35 above the things lying on its floor. Looking into it from the close-up's
+  // 38 degrees, the face hid the floor completely: the narration named a fuse, a
+  // pencil stub and a calling card, and the player saw an empty dark box. A
+  // counter drawer for stationery is about 19 cm, which is what four gives, and
+  // at that depth the contents are in plain view.
+  const drawers = drawerUnit(mats, drawerBay.w - 0.024, drawerH, drawerD, 4)
   drawers.group.position.set(drawerBay.x, drawerBay.y0, drawerBay.zFront - drawerD / 2 + 0.01)
   group.add(drawers.group)
-  // The upper of the two: a drawer you reach into standing at the counter.
-  const receptionDrawer = drawers.drawers[1]
+  // The top one: the drawer you reach into standing at the counter.
+  const receptionDrawer = drawers.drawers[3]
 
   // what is inside the top drawer: a fuse in its paper sleeve, a pencil stub
   const drawerContents = new THREE.Group()
   {
     const fuse = makeFuse(mats)
-    // On the drawer floor. The board's top face is at -0.1675 for this drawer,
-    // and these three sat at -0.02 to -0.03 - floating 14 cm inside a drawer the
-    // close-up looks straight down into.
-    fuse.position.set(-0.06, -0.158, 0.06)
+    // On the drawer floor. With four drawers in the bay the board's top face is
+    // at -0.0682, and everything here is set against that.
+    fuse.position.set(-0.06, -0.0577, 0.06)
     fuse.rotation.z = Math.PI / 2
     fuse.rotation.y = 0.3
     drawerContents.add(fuse)
     const pencil = mesh(new THREE.CylinderGeometry(0.0042, 0.0042, 0.085, 6), mats.woodMid)
     pencil.rotation.set(Math.PI / 2, 0, 0.5)
-    pencil.position.set(0.08, -0.1605, 0.02)
+    pencil.position.set(0.08, -0.0640, 0.02)
     drawerContents.add(pencil)
     const card = mesh(new THREE.PlaneGeometry(0.09, 0.055), mats.paper, { cast: false })
     card.rotation.x = -Math.PI / 2
     card.rotation.z = 0.2
-    card.position.set(0.02, -0.1665, -0.05)
+    card.position.set(0.02, -0.0676, -0.05)
     drawerContents.add(card)
     receptionDrawer.add(drawerContents)
   }
@@ -438,30 +451,41 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     // large enough to see.
     {
       const pivotY = 0.0
-      const armLen = 0.14
-      const knobR = 0.017
+      // Everything here is sized against the cabinet, not chosen by eye.
+      //
+      // The hinge sits 0.028 in front of the back plate. The furthest point of
+      // the assembly is the front of the knob, at (armLen + knobR * 0.35) from
+      // the hinge plus its own radius; swung through OPEN_TILT that reaches
+      // LEVER_Z + d * sin(tilt) + knobR, and the carcass opening is at z = 0.
+      // With a 0.14 arm at 0.85 rad it came to +0.062 - the handle stood out
+      // through the front of the box, and through the door when it was shut.
+      // A shorter arm swinging further keeps the throw legible and stays in.
+      const LEVER_Z = -bd + 0.028
+      const armLen = 0.1
+      const knobR = 0.015
       // The hinge, across the top of the travel.
-      const pivot = mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.056, 12), mats.brassDull)
+      const pivot = mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.052, 12), mats.brassDull)
       pivot.rotation.z = Math.PI / 2
-      pivot.position.set(0, pivotY, -bd + 0.05)
+      pivot.position.set(0, pivotY, LEVER_Z)
       fuseBox.add(pivot)
       // Blade and handle, hanging from the hinge.
-      const arm = mesh(roundedBox(0.03, armLen, 0.018, 0.007, 2, 3), mats.bakelite)
+      const arm = mesh(roundedBox(0.028, armLen, 0.016, 0.006, 2, 3), mats.bakelite)
       arm.position.set(0, -armLen / 2, 0)
       breakerLever.add(arm)
       const knob = mesh(new THREE.SphereGeometry(knobR, 14, 10), mats.bakelite)
       knob.position.set(0, -armLen - knobR * 0.35, 0)
       breakerLever.add(knob)
-      breakerLever.position.set(0, pivotY, -bd + 0.05)
+      breakerLever.position.set(0, pivotY, LEVER_Z)
       breakerLever.rotation.x = OPEN_TILT
       fuseBox.add(breakerLever)
       // The jaw the blade drops into at the bottom of its travel.
-      const jaw = mesh(texturedBox(0.042, 0.026, 0.03, 3), mats.brassDull, { cast: false })
-      jaw.position.set(0, pivotY - armLen - 0.006, -bd + 0.05)
+      const jaw = mesh(texturedBox(0.04, 0.024, 0.026, 3), mats.brassDull, { cast: false })
+      jaw.position.set(0, pivotY - armLen - 0.005, LEVER_Z)
       fuseBox.add(jaw)
-      // The plate it travels over.
-      const gate = mesh(texturedBox(0.05, armLen + 0.03, 0.01, 3), mats.steelDark, { cast: false })
-      gate.position.set(0, pivotY - (armLen + 0.03) / 2 + 0.01, -bd + 0.032)
+      // The plate it travels over, set back against the interior board so the
+      // blade never touches it.
+      const gate = mesh(texturedBox(0.046, armLen + 0.028, 0.01, 3), mats.steelDark, { cast: false })
+      gate.position.set(0, pivotY - (armLen + 0.028) / 2 + 0.01, -bd + 0.013)
       fuseBox.add(gate)
       const onOff = labelPlate('入　切', 0.055, 0.02, {
         bg: '#7a746a',
@@ -923,7 +947,7 @@ export function buildHall(mats: MaterialLibrary): HallProps {
     // it had been closed off. There is no way up - the boarding is solid - but
     // through the slots you can now see treads going on into the dark, and they
     // shift against the boards as the camera moves.
-    for (let i = 5; i < 7; i++) {
+    for (let i = 5; i < 11; i++) {
       const step = mesh(texturedBox(1.0, 0.045, 0.27, 1.6), mats.woodDark, { cast: false })
       step.position.set(0, 0.19 + i * 0.19, -i * 0.27)
       boards.add(step)
@@ -931,14 +955,37 @@ export function buildHall(mats: MaterialLibrary): HallProps {
       riser.position.set(0, 0.095 + i * 0.19, -i * 0.27 + 0.135)
       boards.add(riser)
     }
-    // The far wall of the stairwell, well back, so what shows through the slots
-    // is depth rather than a surface.
+    // The shaft the flight climbs into.
+    //
+    // The hall's east wall is cut open where the stair passes through it - see
+    // OPENINGS.stairWell - so this is an enclosed space rather than a black
+    // panel: two side walls, a soffit over the flight, and a landing wall at the
+    // top. Local -Z is uphill, and the wall's inner face is about 1.42 up the
+    // slope from this group's origin, so everything past that is outside the
+    // room and only ever seen through the slots between the planks.
+    const shaftMat = new THREE.MeshStandardMaterial({ color: 0x1a1611, roughness: 0.98 })
+    const SHAFT_NEAR = -1.3
+    const SHAFT_FAR = -3.15
+    const SHAFT_MID = (SHAFT_NEAR + SHAFT_FAR) / 2
+    const SHAFT_LEN = Math.abs(SHAFT_FAR - SHAFT_NEAR)
+    for (const sx of [-1, 1]) {
+      const side = mesh(texturedBox(0.02, 2.4, SHAFT_LEN, 1.4), shaftMat, { cast: false })
+      side.position.set(sx * 0.55, 1.3, SHAFT_MID)
+      boards.add(side)
+    }
+    const soffit = mesh(texturedBox(1.12, 0.02, SHAFT_LEN, 1.4), shaftMat, { cast: false })
+    soffit.position.set(0, 2.5, SHAFT_MID)
+    boards.add(soffit)
+    const landing = mesh(texturedBox(1.12, 2.4, 0.02, 1.4), shaftMat, { cast: false })
+    landing.position.set(0, 1.3, SHAFT_FAR)
+    boards.add(landing)
+    // and the darkness that swallows the last treads before the landing
     const voidPanel = mesh(
-      texturedBox(1.3, 2.6, 0.02, 1),
-      new THREE.MeshBasicMaterial({ color: 0x080706 }),
+      texturedBox(1.06, 1.4, 0.02, 1),
+      new THREE.MeshBasicMaterial({ color: 0x070605 }),
       { cast: false, receive: false },
     )
-    voidPanel.position.set(0, 1.9, -1.46)
+    voidPanel.position.set(0, 2.0, SHAFT_FAR + 0.03)
     boards.add(voidPanel)
     for (let i = 0; i < 5; i++) {
       // Dark stock, stood off the plaster far enough to throw a shadow line,

@@ -10,13 +10,11 @@
 
 export const UI_TEXT = {
   title: '霧沢写真館',
-  subtitle: '最後の一枚',
   menuNew: 'はじめから',
   menuContinue: 'つづきから',
   menuSettings: '設定',
   menuHowTo: 'あそびかた',
   menuCredits: '制作について',
-  foot: '音量は 設定 から変えられる',
 
   inventory: '持ち物',
   // 「控え」 is a bookkeeping word - a duplicate, a counterfoil - and a player

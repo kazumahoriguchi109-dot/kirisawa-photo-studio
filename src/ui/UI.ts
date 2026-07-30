@@ -284,15 +284,18 @@ export class GameUI {
       .split('')
       .map((ch, i) => `<span style="animation-delay:${i * 0.07}s">${ch}</span>`)
       .join('')
+    // Title only. The subtitle used to be set below the rule here; the lockup
+    // reads better as the name alone, and the phrase is already on the ending.
     const rule = this.el('span', 't-rule')
-    const sub = this.el('p', 't-sub', UI_TEXT.subtitle)
-    lockup.append(main, rule, sub)
+    lockup.append(main, rule)
 
     const menu = this.el('div')
     menu.id = 'title-menu'
     this.titleScreen.append(gradeEl, lockup, menu)
 
-    const foot = this.el('div', '', `v1.0　／　${UI_TEXT.foot}`)
+    // The version, and nothing else. The volume line belongs in 設定, which is
+    // one item up in the menu the player is already looking at.
+    const foot = this.el('div', '', `v${__APP_VERSION__}`)
     foot.id = 'title-foot'
     this.titleScreen.appendChild(foot)
     this.root.appendChild(this.titleScreen)
