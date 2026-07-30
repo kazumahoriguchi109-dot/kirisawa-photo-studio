@@ -1813,11 +1813,19 @@ export class Chapter01 {
       label: '引き伸ばし機',
       verb: 'examine',
       scope: ['darkroom_w'],
+      // Framed on the head, which is where everything in this close-up lives -
+      // the lamp knob and the negative frame. Including the whole machine put a
+      // 1.12 column and its baseboard in the bounds and shrank the head, and the
+      // negative frame, to a few dozen pixels near the top of the frame.
+      // Seen across the optical axis, from the side the carrier's pull sticks out
+      // of. The head is rotated a quarter turn so its axis runs west, which puts
+      // the lamphouse on the east side: viewed from the east the dome is nearest
+      // the camera and the negative stage is directly behind it.
       onActivate: () => void this.closeupOn(
           'cu_enlarger',
-          [darkroom.enlargerHead, darkroom.negativeCarrier, darkroom.enlarger],
-          [1, 0.16, 0.34],
-          { fov: 42, margin: 1.2 },
+          [darkroom.enlargerHead, darkroom.negativeCarrier],
+          [0.35, 0.18, 1],
+          { fov: 42, margin: 1.35 },
         ),
     })
     this.hs({
@@ -1853,7 +1861,8 @@ export class Chapter01 {
     })
     this.hs({
       id: 'cu:enlarger:lamp',
-      target: darkroom.enlargerHead,
+      // The lamphouse, not the whole head - see enlargerLamp in Darkroom.ts.
+      target: darkroom.enlargerLamp,
       label: '灯のつまみ',
       verb: 'turn',
       scope: 'cu_enlarger',

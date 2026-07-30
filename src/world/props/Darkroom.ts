@@ -26,6 +26,8 @@ export interface DarkroomProps {
   developerLiquid: THREE.Mesh
   enlarger: THREE.Group
   enlargerHead: THREE.Group
+  /** Just the lamphouse and its vent, so the lamp hotspot owns the lamp. */
+  enlargerLamp: THREE.Group
   enlargerLampGlow: THREE.Mesh
   /** The wall the enlarger throws its image onto. */
   projectionScreen: THREE.Mesh
@@ -172,6 +174,7 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
   // ---------------------------------------------------------------- enlarger
   const enlarger = new THREE.Group()
   const enlargerHead = new THREE.Group()
+  const enlargerLamp = new THREE.Group()
   const negativeCarrier = new THREE.Group()
   let enlargerLampGlow!: THREE.Mesh
   {
@@ -228,20 +231,61 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     const vent = mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.05, 12), mats.steelDark, { cast: false })
     vent.position.set(0, 0.1, -0.24)
     enlargerHead.add(vent)
+    // Grouped so the lamp hotspot can own the lamp rather than the whole head:
+    // aimed at enlargerHead it claimed the stage, the bellows and the lens too,
+    // and every surface of the machine answered 「灯のつまみ」.
+    enlargerLamp.add(lamphouse, vent)
+    enlargerHead.add(enlargerLamp)
 
-    const stage = mesh(roundedBox(0.19, 0.03, 0.16, 0.004, 2, 2.4), mats.cameraBody)
-    stage.position.set(0, 0, 0.02)
-    enlargerHead.add(stage)
-    // the negative carrier drawer that slides into the stage
+    // The negative stage: a slot, not a slab.
+    //
+    // It was one solid roundedBox(0.19, 0.03, 0.16) at local (0, 0, 0.02) with
+    // the carrier - roundedBox(0.16, 0.016, 0.13) - at the SAME position, so the
+    // carrier was smaller on every axis than the block it sat inside. It could
+    // not be seen and a raycast could never reach it, which made the one thing
+    // the player has to load unclickable: the hint says to put the negative in
+    // the frame and there was no frame on screen to put it in.
+    //
+    // Light runs along local z here (lamphouse at -0.12, lens at +0.16), so the
+    // aperture has to stay clear in x-y and the carrier slides in along x
+    // between two guide rails.
+    for (const sy of [1, -1]) {
+      const rail = mesh(roundedBox(0.2, 0.014, 0.07, 0.004, 2, 2.4), mats.cameraBody)
+      rail.position.set(0, sy * 0.044, 0.02)
+      enlargerHead.add(rail)
+    }
+    // the pillars either side of the aperture, clear of the light path
+    for (const sx of [1, -1]) {
+      const post = mesh(roundedBox(0.03, 0.075, 0.07, 0.004, 2, 2.4), mats.cameraBody)
+      post.position.set(sx * 0.085, 0, 0.02)
+      enlargerHead.add(post)
+    }
+
+    // The negative carrier that slides into that slot, with its pull standing
+    // clear of the housing so there is something to look at and something to hit.
     {
-      const frame = mesh(roundedBox(0.16, 0.016, 0.13, 0.003, 2, 3), mats.steelDark)
-      negativeCarrier.add(frame)
-      const window = mesh(new THREE.PlaneGeometry(0.075, 0.06), new THREE.MeshBasicMaterial({ color: 0x000000 }), {
+      const bar = (w: number, h: number, x: number, y: number) => {
+        const m = mesh(roundedBox(w, h, 0.014, 0.003, 2, 2), mats.steelDark)
+        m.position.set(x, y, 0)
+        negativeCarrier.add(m)
+      }
+      bar(0.15, 0.013, 0, 0.032)
+      bar(0.15, 0.013, 0, -0.032)
+      bar(0.022, 0.077, -0.064, 0)
+      // The pull: longer, and it projects 0.023 past the posts at x 0.10. Brass,
+      // because everything in this building you are meant to take hold of is -
+      // the crank, the height wheel's collar, the fuse caps - and against a
+      // lamphouse this dark under a safelight, dark steel is not a cue.
+      const pull = mesh(roundedBox(0.05, 0.077, 0.018, 0.004, 2, 2), mats.brassDull)
+      pull.position.set(0.098, 0, 0)
+      pull.name = 'carrier-pull'
+      negativeCarrier.add(pull)
+      // the aperture, facing down the optical axis
+      const window = mesh(new THREE.PlaneGeometry(0.075, 0.05), new THREE.MeshBasicMaterial({ color: 0x000000 }), {
         cast: false,
         receive: false,
       })
-      window.rotation.x = -Math.PI / 2
-      window.position.y = 0.009
+      window.position.z = 0.008
       window.name = 'carrier-window'
       negativeCarrier.add(window)
       negativeCarrier.position.set(0, 0, 0.02)
@@ -830,6 +874,7 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
     developerLiquid,
     enlarger,
     enlargerHead,
+    enlargerLamp,
     enlargerLampGlow,
     projectionScreen,
     negativeCarrier,
