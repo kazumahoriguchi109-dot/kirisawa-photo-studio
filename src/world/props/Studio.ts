@@ -869,9 +869,16 @@ export function buildStudio(mats: MaterialLibrary): StudioProps {
   }
 
   // ============================================== phosphorescent mark + dust
+  // Brought in off the edge of its own view.
+  //
+  // At z 0.9 it projected to NDC x -0.94 from studio_w - hard against the left
+  // rim, underneath the edge turn zone. It could still be clicked, because an
+  // edge click re-picks what is under it, but it read as a target you had to
+  // fight for, and a tester called the hit box vicious. The darkroom door takes
+  // z -1.85..-0.95 of this wall, so the mark sits south of it with room to spare.
   const phosphor = phosphorMark('を', 0.26)
   phosphor.rotation.y = Math.PI / 2
-  phosphor.position.set(S.x0 + 0.085, 1.42, 0.9)
+  phosphor.position.set(S.x0 + 0.085, 1.42, -0.35)
   group.add(phosphor)
 
   const dust = dustMotes(240, new THREE.Vector3(5.6, 3.2, 4.6), 17)

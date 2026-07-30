@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { lathe, mesh, roundedBox, texturedBox } from '../../world/Geo'
 import type { MaterialLibrary } from '../../world/Materials'
-import { ctx2d, makeCanvas } from '../../world/Textures'
+import { ctx2d, makeCanvas, processMarks } from '../../world/Textures'
 import {
   lastFrameCanvas,
   negativeCanvas,
@@ -686,7 +686,7 @@ export const ITEMS: Record<string, ItemDef> = {
     category: 'record',
     viewRadius: 0.2,
     build: () => {
-      const front = photoTexture('item-print-last', () => lastFrameCanvas({ width: 460, height: 340 }))
+      const front = photoTexture('item-print-last', () => lastFrameCanvas({ width: 460, height: 340, marks: processMarks() }))
       const back = photoTexture('item-print-last-back', () => makeBackCanvas('', ''))
       return card(front, back, 0.24, 0.18)
     },

@@ -15,7 +15,8 @@ import type { HallProps } from '../world/props/Hall'
 import type { StudioProps } from '../world/props/Studio'
 import type { DarkroomProps } from '../world/props/Darkroom'
 import type { OfficeProps } from '../world/props/Office'
-import { processIconCanvas, OPEN_TILT } from '../world/props/Hall'
+import { OPEN_TILT } from '../world/props/Hall'
+import { processIconCanvas, processMarks } from '../world/Textures'
 import type { LightingRig } from '../world/Lighting'
 import type { MaterialLibrary } from '../world/Materials'
 import {
@@ -101,6 +102,19 @@ export class Chapter01 {
   private phosphorMeshes: THREE.Mesh[] = []
   private ringIcons: THREE.Texture[] = []
   private backdropHeight = 0
+  /**
+   * The bench.
+   *
+   * `trayOrder[position]` is the tray that currently stands at that position,
+   * left to right. The trays are built shuffled and the manual gives the order
+   * they belong in; getting them into it is the puzzle, and the last negative
+   * will not develop until they are. `trayHomeX` is captured from the props so
+   * the positions are the bench's, not a second copy of them here.
+   */
+  private trayOrder: number[] = [0, 1, 2, 3]
+  private trayHomeX: number[] = []
+  /** A tray lifted and waiting to be swapped with another. */
+  private heldTray: number | null = null
   private groundGlassTex: THREE.CanvasTexture | null = null
   private projectionOffTimer = 0
   private secondHand: THREE.Object3D | null = null
@@ -121,6 +135,9 @@ export class Chapter01 {
       t.colorSpace = THREE.SRGBColorSpace
       this.ringIcons.push(t)
     }
+
+    // The bench's own x positions, read from the props rather than restated.
+    this.trayHomeX = darkroom.trays.map((t) => t.position.x)
 
     this.phosphorMeshes = [hall.phosphor, studio.phosphor, office.phosphor, darkroom.phosphor]
 
@@ -170,7 +187,7 @@ export class Chapter01 {
     darkroom.developedPrint.visible = s.flag('last_developed')
     if (s.flag('last_developed')) {
       const pm = darkroom.developedPrint.material as THREE.MeshStandardMaterial
-      pm.map = photoTexture('last-frame-final', () => lastFrameCanvas({ width: 460, height: 340 }))
+      pm.map = photoTexture('last-frame-final', () => lastFrameCanvas({ width: 460, height: 340, marks: processMarks() }))
       pm.needsUpdate = true
     }
     // Things the player is carrying must not also still be sitting in the room.
@@ -255,6 +272,14 @@ export class Chapter01 {
         slot.add(m)
       }
     })
+
+    // bench order
+    const savedTrays = s.puzzle('p5_trays').work.order as number[] | undefined
+    if (savedTrays && savedTrays.length === 4) this.trayOrder = [...savedTrays]
+    this.trayOrder.forEach((tray, p) => {
+      darkroom.trays[tray].position.x = this.trayHomeX[p]
+    })
+    this.heldTray = null
 
     // ring positions
     const rings = (s.puzzle('p9_lock').work.rings as number[] | undefined) ?? [2, 0, 3, 1]
@@ -877,7 +902,11 @@ export class Chapter01 {
           this.d.state.setFlag('mount_lifted')
           this.d.audio.play('paper')
           hall.mountPrint.visible = true
-          this.say('台紙が一度剥がされている。裏板を起こすと、あいだに写真がもう一枚挟まっていた。')
+          // Says to take it. Every one of these containers hands its photograph
+          // over on a SECOND click, and blind testers repeatedly opened one,
+          // read the line, and walked away believing they had seen everything
+          // it held - one finished a whole run three photographs short.
+          this.say('台紙が一度剥がされている。裏板を起こすと、あいだに写真がもう一枚挟まっていた。手に取れる。')
           this.d.save.save()
           return
         }
@@ -1748,15 +1777,24 @@ export class Chapter01 {
         verb: 'examine',
         scope: 'cu_trays',
         verbFor: (ctx) => (ctx.selectedItem ? 'use' : 'examine'),
-        onActivate: (ctx) => void this.useOnTray(i, ctx.selectedItem),
+        onActivate: (ctx) => {
+          // With nothing in hand, a tray is a thing you pick up and put down:
+          // one click lifts it and describes it, the next lands it somewhere.
+          // Binding the lift to the drag alone left it unreachable by clicking,
+          // which is how this game is played everywhere else.
+          if (!ctx.selectedItem) {
+            this.handleTray(i)
+            return
+          }
+          void this.useOnTray(i, ctx.selectedItem)
+        },
         // Trying to drag a tray into the manual's order is the right instinct
         // and the wrong answer - 「順は台に非ず　書に在り」 - but a drag nothing
         // has captured is completely silent, so the attempt read as a dead
         // mechanic rather than as a wrong idea. Say so instead.
-        onGrab: () => {
-          if (this.busy) return
-          this.say('並べ替えようとしても、バットは重い。直すのは並びではない。どれに液を張るかだ。')
-        },
+        // Dragging a tray lifts it, which is the gesture everyone tries; the
+        // hotspot below carries the same action for anyone who only clicks.
+        onGrab: () => this.handleTray(i),
       })
     })
 
@@ -1959,7 +1997,7 @@ export class Chapter01 {
           this.d.state.setFlag('understore_open')
           this.d.audio.play('drawer')
           darkroom.understorePrint.visible = true
-          this.say('薬品の空き箱と、丸めた新聞。奥に、写真が一枚だけ伏せて挟んである。')
+          this.say('薬品の空き箱と、丸めた新聞。奥に、写真が一枚だけ伏せて挟んである。手に取れる。')
           this.d.save.save()
           return
         }
@@ -2034,13 +2072,13 @@ export class Chapter01 {
           this.d.audio.play('shimmer')
           this.clue(
             'clue_tray_warning',
-            '順は台に非ず',
-            '暗室の壁に、赤の下でだけ読める字。「順は台に非ず　書に在り」。台のバットの並びは当てにならない、という意味だ。赤の下に浮かぶ三つの書き付けとは、別のものらしい。',
+            '順は書に在り',
+            '暗室の壁に、赤の下でだけ読める字。「順は書に在り　台をこれに合わせよ」。台のバットの並びは当てにならないから、書いてあるほうに合わせて並べ替えろ、という意味だ。赤の下に浮かぶ三つの書き付けとは、別のものらしい。',
             '安全灯の下　暗室',
           )
           this.d.save.save()
         }
-        this.say('赤の下に、館主の字が浮く。——順は台に非ず、書に在り。三つの書き付けとは、別のものだ。')
+        this.say('赤の下に、館主の字が浮く。——順は書に在り、台をこれに合わせよ。三つの書き付けとは、別のものだ。')
       },
     })
 
@@ -2286,28 +2324,118 @@ export class Chapter01 {
     this.say('環は二十七を指したままだ。')
   }
 
+  // ---------------------------------------------------------------- the bench
+
+  /** Labels as the trays were built, indexed by tray, not by position. */
+  private static readonly TRAY_LABELS = ['現像', '定着', '水洗', '停止']
+  /** What the manual asks for, left to right - and so which tray goes where. */
+  private static readonly TRAY_TARGET = [0, 3, 1, 2]
+
+  /** Where on the bench a given tray currently stands. */
+  private trayPos(tray: number): number {
+    return this.trayOrder.indexOf(tray)
+  }
+
+  /**
+   * What a tray is, what it is for, and where it currently stands.
+   *
+   * Keyed to its position on the bench rather than the order it was built in,
+   * because the developer is in whichever tray is leftmost and that tray moves.
+   */
+  private describeTray(tray: number): string {
+    const purpose = [
+      '像を出す液を張るほうだ',
+      '像を消えなくする液のほうだ',
+      '最後に水で流すほうだ',
+      '像の出るのを止める液のほうだ',
+    ][tray]
+    const p = this.trayPos(tray)
+    const state =
+      p === 0
+        ? this.flag('developer_poured')
+          ? '底に琥珀色の液が張ってある'
+          : '底は乾いている'
+        : '底に、乾いた液の輪が残っている'
+    const nth = ['いちばん左', '左から二番目', '左から三番目', 'いちばん右'][p]
+    return `琺瑯のバット。縁のラベルには「${Chapter01.TRAY_LABELS[tray]}」。${purpose}。いまは${nth}にあって、${state}。`
+  }
+
+  private traysInOrder(): boolean {
+    return this.trayOrder.every((t, p) => t === Chapter01.TRAY_TARGET[p])
+  }
+
+  /**
+   * Lift a tray, or set it down against another and swap the two.
+   *
+   * Bound to the drag as well as the click, because dragging a tray into place
+   * is what everyone tries first - it used to be met with silence, and then
+   * with a line saying the bench could not be rearranged at all.
+   */
+  private handleTray(tray: number): void {
+    if (this.busy) return
+    if (this.flag('last_developed')) {
+      this.say('もう終わった仕事だ。並びを崩すことはない。')
+      return
+    }
+    if (this.heldTray === null) {
+      this.heldTray = tray
+      this.d.audio.play('select')
+      this.say(`${this.describeTray(tray)} 持ち上げた。置きたい場所のバットを選べば、入れ替わる。`)
+      return
+    }
+    if (this.heldTray === tray) {
+      this.heldTray = null
+      this.d.audio.play('select')
+      this.say('もとの位置に戻す。')
+      return
+    }
+    const a = this.heldTray
+    const b = tray
+    this.heldTray = null
+    const pa = this.trayPos(a)
+    const pb = this.trayPos(b)
+    this.trayOrder[pa] = b
+    this.trayOrder[pb] = a
+    this.d.state.setPuzzleWork('p5_trays', { order: [...this.trayOrder] })
+    this.d.audio.play('drawer')
+    void this.slideTrays()
+    const done = this.traysInOrder()
+    this.say(
+      done
+        ? `${Chapter01.TRAY_LABELS[a]}と${Chapter01.TRAY_LABELS[b]}を入れ替える。左から、現像、停止、定着、水洗。書いてあるとおりの並びになった。`
+        : `${Chapter01.TRAY_LABELS[a]}と${Chapter01.TRAY_LABELS[b]}を入れ替える。`,
+    )
+    if (done && !this.flag('trays_ordered')) {
+      this.d.state.setFlag('trays_ordered')
+      this.d.audio.play('discovery')
+      this.solve('p5_trays')
+    } else if (!done) {
+      this.d.state.setFlag('trays_ordered', false)
+    }
+    this.d.save.save()
+  }
+
+  /** Slide every tray to the x its current position owns. */
+  private async slideTrays(): Promise<void> {
+    const { trays } = this.d.darkroom
+    const from = trays.map((t) => t.position.x)
+    const to = this.trayOrder.map((tray, p) => ({ tray, x: this.trayHomeX[p] }))
+    await this.d.timeline.to(0.42, (k) => {
+      for (const { tray, x } of to) {
+        trays[tray].position.x = from[tray] + (x - from[tray]) * k
+      }
+    }, { ease: Ease.outCubic }).promise
+  }
+
   private async useOnTray(index: number, selected: string | null): Promise<void> {
     const { darkroom } = this.d
-    const labels = ['現像', '定着', '水洗', '停止']
     if (!selected) {
       // Each tray says what it is FOR, not only what is written on it. A player
       // who has never developed a film has no reason to know that 現像 is the
       // step where the picture appears - which is the one fact the whole room
       // is built on. The state of the tray is reported too, so the pour is
       // legible after a reload.
-      const purpose = [
-        '像を出す液を張るほうだ',
-        '像を消えなくする液のほうだ',
-        '最後に水で流すほうだ',
-        '像の出るのを止める液のほうだ',
-      ][index]
-      const state =
-        index === 0
-          ? this.flag('developer_poured')
-            ? '底に琥珀色の液が張ってある'
-            : '底は乾いている'
-          : '底に、乾いた液の輪が残っている'
-      this.say(`琺瑯のバット。縁のラベルには「${labels[index]}」。${purpose}。いまは${state}。`)
+      this.say(this.describeTray(index))
       this.d.audio.play('select')
       return
     }
@@ -2329,7 +2457,9 @@ export class Chapter01 {
       this.wrong('こちらのネガはもう像が出ている。現像しても何も変わらない。液に浸すのは、まだ像の出ていないほうだ。')
       return
     }
-    if (selected === 'developer' && index === 0) {
+    // Into whichever tray is leftmost, which is where the manual puts the
+    // developer - not into whichever tray happens to have been built first.
+    if (selected === 'developer' && this.trayPos(index) === 0) {
       if (this.flag('developer_poured')) {
         this.say(FEEDBACK.alreadyDone)
         return
@@ -2444,6 +2574,15 @@ export class Chapter01 {
       this.wrong(FEEDBACK.needSafelight)
       return
     }
+    // The bench has to be in the order the manual gives before the run can be
+    // made. Stop and fix travel with the print; out of order they are in the
+    // wrong places when it needs them, and the sheet would be ruined.
+    if (!this.traysInOrder()) {
+      this.wrong(
+        'この並びでは通せない。現像のあと、停止、定着、水洗と続けて移すことになる。台の上を、書いてある順に直してからだ。',
+      )
+      return
+    }
     if (this.flag('last_developed')) {
       this.say(FEEDBACK.alreadyDone)
       return
@@ -2472,7 +2611,7 @@ export class Chapter01 {
     // hang it on the line
     const print = this.d.darkroom.developedPrint
     const mat = print.material as THREE.MeshStandardMaterial
-    mat.map = photoTexture('last-frame-final', () => lastFrameCanvas({ width: 460, height: 340 }))
+    mat.map = photoTexture('last-frame-final', () => lastFrameCanvas({ width: 460, height: 340, marks: processMarks() }))
     mat.needsUpdate = true
     print.visible = true
     // Named as it is taken. The print appeared on the drying line and arrived
@@ -2610,7 +2749,7 @@ export class Chapter01 {
           office.deskPrint.visible = true
           // The drawer does not slide, so the print comes out onto the desk
           // where it can be seen and then taken.
-          this.say('文具と、使いかけの帳簿。いちばん下に伏せてあった一枚を、机の上に出す。')
+          this.say('文具と、使いかけの帳簿。いちばん下に伏せてあった一枚を、机の上に出す。手に取れる。')
           this.d.save.save()
           return
         }
@@ -2853,6 +2992,9 @@ export class Chapter01 {
       if (s.hasItem('loupe') && !s.flag('safe_number_known') && !s.flag('safe_open')) add('p6_enlarger')
     }
     if (s.flag('office_open') && !s.flag('safe_open') && s.flag('safe_number_known')) add('p8_safe')
+    // The bench matters from the moment the developer is mixed: nothing can be
+    // run through it until it is in the manual's order.
+    if (s.flag('developer_poured') && !s.flag('trays_ordered')) add('p5_trays')
     if (s.flag('safe_open') && !s.flag('last_developed')) add('true_develop')
     if ((s.flag('read_manual') || s.flag('read_timer')) && !s.flag('exit_open')) add('p9_lock')
     if (s.flag('safe_open') && !s.isSolved('hidden_restore')) add('hidden_restore')

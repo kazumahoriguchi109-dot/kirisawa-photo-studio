@@ -1560,8 +1560,8 @@ input[type="range"]::-moz-range-thumb {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2.4em;
-  padding: 6vh 8vw;
+  gap: 1.6em;
+  padding: 4vh 8vw;
   background: radial-gradient(120% 100% at 50% 40%, #14100c, #060505);
   opacity: 0;
   pointer-events: none;
@@ -1584,12 +1584,20 @@ input[type="range"]::-moz-range-thumb {
 #ending .e-body {
   max-width: 40em;
   font-family: var(--f-mincho);
-  font-size: clamp(15px, 1.12vw, 19px);
-  line-height: 2.5;
+  font-size: clamp(14px, 1.05vw, 18px);
+  /* Was 2.5. Twenty lines of body at that leading came to some 950px before
+     the title, the card, the tally and the buttons were counted, and #ending
+     centres its column without scrolling - so on anything shorter than a
+     desktop the ending overflowed both ways and 「タイトルへ戻る」 could not be
+     reached at all. The bodies are shorter now and this is the rest of it. */
+  line-height: 2.05;
   letter-spacing: 0.09em;
   color: #ded2ba;
   white-space: pre-wrap;
   text-align: left;
+  /* Insurance for a very short window: the body gives way, never the buttons. */
+  min-height: 0;
+  overflow-y: auto;
 }
 #ending .e-card {
   font-family: var(--f-mincho);
@@ -1756,4 +1764,41 @@ body[data-reduced-motion="1"] * {
   margin: 0;
   color: #d9a48a;
   border: 1px solid rgba(196, 120, 92, 0.5);
+}
+
+/* Each ending lit its own way. The plain one keeps the cold blue of the street
+   coming in; the true one warms to the safelight the print was made under; the
+   hidden one is the only screen in the game that is properly lit. */
+#ending[data-ending="normal"] {
+  background: radial-gradient(120% 100% at 50% 40%, #121620, #050607);
+}
+#ending[data-ending="true"] {
+  background: radial-gradient(120% 100% at 50% 40%, #1d120e, #070404);
+}
+#ending[data-ending="true"] .e-title {
+  text-shadow: 0 0 46px rgba(226, 132, 88, 0.28);
+}
+#ending[data-ending="hidden"] {
+  background: radial-gradient(120% 100% at 50% 40%, #1b1710, #070605);
+}
+#ending[data-ending="hidden"] .e-title {
+  color: #f6e7c4;
+  text-shadow: 0 0 54px rgba(240, 202, 132, 0.4);
+}
+#ending[data-ending="hidden"] .e-card {
+  color: #edcf92;
+  border-color: rgba(240, 202, 132, 0.42);
+}
+
+/* Short windows: the ending must read in one screenful, because the way out of
+   it is the button underneath. Leading and type give first, in that order. */
+@media (max-height: 820px) {
+  #ending { gap: 1.1em; padding: 3vh 6vw; }
+  #ending .e-body { line-height: 1.85; font-size: clamp(13px, 1vw, 16px); }
+  #ending .e-title { font-size: clamp(22px, 2.8vw, 40px); letter-spacing: 0.36em; }
+  #ending .e-card { padding: 0.6em 1.2em; }
+}
+@media (max-height: 660px) {
+  #ending { gap: 0.8em; }
+  #ending .e-body { line-height: 1.6; font-size: clamp(12px, 0.95vw, 15px); }
 }

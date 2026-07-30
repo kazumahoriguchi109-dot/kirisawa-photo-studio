@@ -858,7 +858,7 @@ export function buildDarkroom(mats: MaterialLibrary): DarkroomProps {
 
   // Not part of the three-mark sequence: this one is Kyoichi warning himself
   // that the trays on the bench are no longer in working order.
-  const phosphor = phosphorMark('順は台に非ず　書に在り', 0.16, 5.5)
+  const phosphor = phosphorMark('順は書に在り　台をこれに合わせよ', 0.15, 6.6)
   // Clear of the timer.
   //
   // The text is 0.88 wide, so at x = -5.3 it ran from -5.74 to -4.86 - straight

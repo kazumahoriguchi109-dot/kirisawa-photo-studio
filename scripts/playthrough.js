@@ -301,6 +301,16 @@ window.__playthrough = async function playthrough(route) {
     // ------------------------------------------------------ TRUE: develop it
     d.go('darkroom_n')
     await act('dark:trays')
+    // The bench has to be in the manual's order first. Built shuffled as
+    // 現像/定着/水洗/停止, it wants 現像/停止/定着/水洗, which is two swaps: lift
+    // the 定着 tray onto the 停止 one, then the 水洗 tray onto the 定着 one.
+    // The null selection matters - with an item in hand a tray click uses the
+    // item instead of lifting the tray.
+    await act('cu:trays:1', null)
+    await act('cu:trays:3', null)
+    await act('cu:trays:2', null)
+    await act('cu:trays:1', null)
+    expect(d.flags().trays_ordered, '台のバットを書いてある順に並べ替えた')
     await act('cu:trays:0', 'negative_last', 14000)
     expect(d.flags().last_developed, '最後の一枚を現像した')
     expect(d.items().some((i) => i.startsWith('print_last')), '最後の一枚を手に入れた')

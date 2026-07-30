@@ -484,12 +484,23 @@ export function studioRecordCanvas(opts: StudioRecordOptions): HTMLCanvasElement
   })
 }
 
-/** The final negative, developed: the darkroom bench with the tipped bottle. */
-export function lastFrameCanvas(opts: PhotoOptions = {}): HTMLCanvasElement {
+/**
+ * The final negative, developed: the darkroom bench with the tipped bottle.
+ *
+ * `marks` are the four process glyphs, in the order the lock wants them. They
+ * are the enamel plates screwed to the wall over the bench, and the photograph
+ * happens to have caught them - which is the only place in the building that
+ * says which glyph means which step, and in what order. Without it the entrance
+ * lock asks the player to invent the mapping.
+ */
+export function lastFrameCanvas(
+  opts: PhotoOptions & { marks?: HTMLCanvasElement[] } = {},
+): HTMLCanvasElement {
   const w = opts.width ?? 460
   const h = opts.height ?? 340
   const border = opts.border ?? 14
   const seed = opts.seed ?? 5501
+  const marks = opts.marks ?? []
   return withBorder(w, h, border, (g, iw, ih) => {
     const wall = g.createLinearGradient(0, 0, 0, ih)
     wall.addColorStop(0, '#4c4640')
@@ -504,6 +515,26 @@ export function lastFrameCanvas(opts: PhotoOptions = {}): HTMLCanvasElement {
     lamp.addColorStop(1, 'rgba(0,0,0,0)')
     g.fillStyle = lamp
     g.fillRect(0, 0, iw, ih)
+
+    // The four enamel process plates, screwed to the wall over the bench in the
+    // order the work is done. Drawn before the bench so the bench edge can crop
+    // them the way a real frame would.
+    if (marks.length) {
+      const size = ih * 0.185
+      const gap = size * 0.34
+      const total = marks.length * size + (marks.length - 1) * gap
+      const x0 = iw * 0.5 - total / 2
+      const y = ih * 0.31
+      g.save()
+      // a dark board they are mounted on
+      g.fillStyle = 'rgba(20,18,15,0.55)'
+      g.fillRect(x0 - gap, y - gap * 0.8, total + gap * 2, size + gap * 1.6)
+      marks.forEach((m, i) => {
+        g.globalAlpha = 0.94
+        g.drawImage(m, x0 + i * (size + gap), y, size, size)
+      })
+      g.restore()
+    }
 
     // bench
     g.fillStyle = '#5b5148'

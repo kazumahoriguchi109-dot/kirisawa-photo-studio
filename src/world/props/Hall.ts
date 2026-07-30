@@ -18,7 +18,7 @@ import {
   studioRecordCanvas,
   unexposedPrintCanvas,
 } from '../Photographs'
-import { ctx2d, makeCanvas, normalFromCanvas } from '../Textures'
+import { ctx2d, makeCanvas, normalFromCanvas, processIconCanvas } from '../Textures'
 
 /**
  * 玄関ホール - reception, the fuse box, and the way out.
@@ -1293,73 +1293,3 @@ export function makeProcessIconMesh(index: number): THREE.Mesh {
  * 3 定着 (a sealed square). Icons, not text, so the lock reads as hardware -
  * but each one is also captioned in the close-up UI so nothing is a guess.
  */
-export function processIconCanvas(index: number): HTMLCanvasElement {
-  const px = 192
-  const c = makeCanvas(px, px)
-  const g = ctx2d(c)
-  g.fillStyle = '#b79a58'
-  g.beginPath()
-  g.arc(px / 2, px / 2, px / 2, 0, Math.PI * 2)
-  g.fill()
-  g.strokeStyle = '#3a2e18'
-  g.fillStyle = '#3a2e18'
-  g.lineWidth = 7
-  g.lineCap = 'round'
-  const cx = px / 2
-  const cy = px / 2
-  const r = px * 0.28
-  switch (index) {
-    case 0: {
-      // shutter iris: six overlapping blades
-      for (let i = 0; i < 6; i++) {
-        const a = (i / 6) * Math.PI * 2
-        g.beginPath()
-        g.moveTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r)
-        g.lineTo(cx + Math.cos(a + 1.05) * r, cy + Math.sin(a + 1.05) * r)
-        g.stroke()
-      }
-      g.beginPath()
-      g.arc(cx, cy, r * 0.3, 0, Math.PI * 2)
-      g.fill()
-      break
-    }
-    case 1: {
-      // an image emerging: three tonal bars rising out of a tray line
-      g.beginPath()
-      g.moveTo(cx - r, cy + r * 0.72)
-      g.lineTo(cx + r, cy + r * 0.72)
-      g.stroke()
-      for (let i = 0; i < 3; i++) {
-        g.globalAlpha = 0.35 + i * 0.3
-        g.fillRect(cx - r * 0.66 + i * r * 0.52, cy + r * 0.5 - (i + 1) * r * 0.34, r * 0.34, (i + 1) * r * 0.34)
-      }
-      g.globalAlpha = 1
-      break
-    }
-    case 2: {
-      // stop: a single heavy bar across a circle
-      g.beginPath()
-      g.arc(cx, cy, r, 0, Math.PI * 2)
-      g.stroke()
-      g.lineWidth = 13
-      g.beginPath()
-      g.moveTo(cx - r * 0.72, cy)
-      g.lineTo(cx + r * 0.72, cy)
-      g.stroke()
-      break
-    }
-    default: {
-      // fix: a square sealed with a cross-hatched corner
-      g.strokeRect(cx - r * 0.82, cy - r * 0.82, r * 1.64, r * 1.64)
-      g.lineWidth = 5
-      for (let i = 0; i < 4; i++) {
-        g.beginPath()
-        g.moveTo(cx - r * 0.82 + i * r * 0.42, cy + r * 0.82)
-        g.lineTo(cx + r * 0.82, cy - r * 0.82 + i * r * 0.42)
-        g.stroke()
-      }
-      break
-    }
-  }
-  return c
-}

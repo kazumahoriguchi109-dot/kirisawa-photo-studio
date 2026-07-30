@@ -1303,6 +1303,9 @@ export class GameUI {
     const tally = this.el('div', 'panel-sub e-line', `見届けた結末　${kanjiNum(seenCount)} ／ ${kanjiNum(total)}`)
     tally.style.animationDelay = '3.0s'
     this.endingEl.append(title, body, card, tally, foot)
+    // Which ending this is, so the screen can carry its own colour: the plain
+    // one cold, the true one warm, the hidden one lit like the safelight.
+    this.endingEl.dataset.ending = ending.id
     this.endingEl.dataset.open = '1'
     await wait(400)
   }
