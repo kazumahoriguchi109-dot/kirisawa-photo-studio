@@ -312,13 +312,32 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
     const w = 0.62
     const h = 0.78
     const d = 0.52
-    const bodyM = mesh(roundedBox(w, h, d, 0.014, 2, 1.4), new THREE.MeshStandardMaterial({
+    const safeSteel = new THREE.MeshStandardMaterial({
       color: 0x2f342f,
       roughness: 0.52,
       metalness: 0.5,
-    }))
-    bodyM.position.y = h / 2 + 0.06
-    safe.add(bodyM)
+    })
+    // The carcase is a shell, not a solid.
+    //
+    // It was one closed roundedBox with the cavity as a smaller box inside it,
+    // so the safe had no opening: swinging the door revealed the front wall of
+    // the carcase, and no camera angle could reach the interior at all. The four
+    // things in there - one of which the hidden ending turns on entirely - were
+    // behind 60 mm of steel. Five slabs leave the front open, which is what a
+    // safe is. The front faces local +z, and the safe is turned a quarter left,
+    // so that is west: into the room.
+    const WALL = 0.06
+    const bodyY = h / 2 + 0.06
+    const slab = (sw: number, sh: number, sd: number, x: number, y: number, z: number): void => {
+      const m = mesh(roundedBox(sw, sh, sd, 0.01, 2, 1.4), safeSteel)
+      m.position.set(x, y, z)
+      safe.add(m)
+    }
+    slab(w, h, WALL, 0, bodyY, -d / 2 + WALL / 2)
+    for (const s of [-1, 1]) slab(WALL, h, d - WALL, (s * (w - WALL)) / 2, bodyY, WALL / 2)
+    for (const s of [-1, 1]) {
+      slab(w - WALL * 2, WALL, d - WALL, 0, bodyY + (s * (h - WALL)) / 2, WALL / 2)
+    }
     // cast plinth
     const plinth = mesh(texturedBox(w + 0.04, 0.06, d + 0.03, 2), mats.steelDark)
     plinth.position.y = 0.03
@@ -359,8 +378,14 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
           g.font = '500 22px "Hiragino Sans", sans-serif'
           g.textAlign = 'center'
           g.textBaseline = 'middle'
+          // Engraved counterclockwise, which is how a combination dial is
+          // marked - and what makes the face agree with the number the lock
+          // checks. Clockwise, the disc turning clockwise under a fixed index
+          // brought 50 - n to the mark instead of n: set to 27 the face read 23,
+          // and the safe only ever opened because the old toast printed the
+          // internal value and the player matched that instead of the dial.
           for (let i = 0; i < 50; i++) {
-            const a = (i / 50) * Math.PI * 2 - Math.PI / 2
+            const a = -(i / 50) * Math.PI * 2 - Math.PI / 2
             const long = i % 5 === 0
             g.lineWidth = long ? 2.4 : 1.2
             g.beginPath()
@@ -415,12 +440,18 @@ export function buildOffice(mats: MaterialLibrary): OfficeProps {
 
     // interior, revealed when the door swings
     {
+      // Japanned metal, not a void. At 0x17130f under a 0.95 roughness the
+      // cavity returned almost nothing to the inspection lamp, so an open safe
+      // read as a black rectangle and the papers in it could not be made out at
+      // any exposure. Still the darkest surface in the room, but a surface.
       const cavity = mesh(texturedBox(w - 0.12, h - 0.16, d - 0.12, 2), new THREE.MeshStandardMaterial({
-        color: 0x17130f,
-        roughness: 0.95,
+        color: 0x5a5044,
+        roughness: 0.68,
         side: THREE.BackSide,
       }), { cast: false })
-      cavity.position.set(0, h / 2 + 0.06, -0.02)
+      // Flush with the inside of the shell's back wall, so the lining meets the
+      // steel instead of standing 20 mm behind it.
+      cavity.position.set(0, h / 2 + 0.06, 0)
       safeContents.add(cavity)
       const shelf = mesh(texturedBox(w - 0.14, 0.012, d - 0.14, 2), mats.steelDark, { cast: false })
       shelf.position.set(0, h / 2 + 0.06, -0.02)

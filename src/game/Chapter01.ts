@@ -2503,12 +2503,20 @@ export class Chapter01 {
       label: '金庫',
       verb: 'examine',
       scope: ['office_n', 'office_e'],
-      onActivate: () => void this.closeupOn('cu_safe', office.safeDial, [-1, 0.2, 0.05], {
+      // An open safe is a container, not a lock: coming back to it frames what
+      // is inside rather than the dial that is no longer in the way.
+      onActivate: () => {
+        if (this.flag('safe_open')) {
+          void this.frameSafeInterior()
+          return
+        }
+        void this.closeupOn('cu_safe', office.safeDial, [-1, 0.2, 0.05], {
           fov: 40,
           // Generous: the whole dial has to be on screen, and the bottom of the
           // frame is under the action bar.
           margin: 2.6,
-        }),
+        })
+      },
     })
     this.hs({
       id: 'cu:safe:dial',
@@ -2734,6 +2742,28 @@ export class Chapter01 {
     this.say('環が最後まで落ちる。扉は、思ったよりも軽い。')
     this.busy = false
     this.d.save.save()
+    // Look inside. The close-up is framed on the dial, which is the right frame
+    // for working the lock and the wrong one for reading what the lock was
+    // protecting: with the door open the camera still held the dial and the
+    // cavity was an unlit corner of the shot, so the four things in there - one
+    // of which the hidden ending turns on entirely - were a black rectangle
+    // with a hotspot in it. Same scope id, so every cu_safe hotspot stays live.
+    await this.frameSafeInterior()
+  }
+
+  /**
+   * The open safe's interior.
+   *
+   * From the front and a little to the right of it. The safe is turned a quarter
+   * left, so its front is world -x, and the door swings out to the front-left -
+   * which is why the view leans the other way: square-on, the open leaf is
+   * between the camera and the cavity.
+   */
+  private async frameSafeInterior(): Promise<void> {
+    await this.closeupOn('cu_safe', this.d.office.safeContents, [-1, 0.4, 0.7], {
+      fov: 42,
+      margin: 1.6,
+    })
   }
 
   private takeSafeContents(): void {
