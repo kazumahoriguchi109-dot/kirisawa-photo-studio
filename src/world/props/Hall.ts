@@ -18,7 +18,7 @@ import {
   studioRecordCanvas,
   unexposedPrintCanvas,
 } from '../Photographs'
-import { ctx2d, makeCanvas } from '../Textures'
+import { ctx2d, makeCanvas, normalFromCanvas } from '../Textures'
 
 /**
  * 玄関ホール - reception, the fuse box, and the way out.
@@ -599,39 +599,191 @@ export function buildHall(mats: MaterialLibrary): HallProps {
       coatRack.add(screw)
     }
 
-    // The one remaining overcoat. Built from a shoulder yoke, a tapering body
-    // and a collar rather than a lathe: a solid of revolution reads as a sack,
-    // and a hanging coat is the most human object in the hall.
+    // The one remaining overcoat.
+    //
+    // It used to be three rounded boxes of almost the same width stacked on top
+    // of one another, which from across the hall read as a single flat slab -
+    // a cardboard silhouette of a coat rather than cloth. Wool hanging off a
+    // hook has a shape and a surface: it narrows at the yoke, flares to the
+    // hem, and falls in vertical folds that a raking lamp finds. So the body is
+    // a tapered elliptical tube with its vertices pushed in and out around the
+    // circumference, and it carries a woven texture and a normal map rather
+    // than one flat colour.
     {
-      const cloth = new THREE.MeshStandardMaterial({ color: 0x3a352d, roughness: 0.95 })
+      // --- cloth: a coarse wool weave, with slubs and a wiped nap
+      const cw = makeCanvas(256, 256)
+      {
+        const g = ctx2d(cw)
+        g.fillStyle = '#3d372e'
+        g.fillRect(0, 0, 256, 256)
+        // warp and weft, one pixel apart, so it reads as cloth up close and as
+        // tone at a distance
+        for (let i = 0; i < 256; i += 2) {
+          g.strokeStyle = i % 4 ? 'rgba(28,25,20,0.30)' : 'rgba(84,76,63,0.22)'
+          g.lineWidth = 1
+          g.beginPath()
+          g.moveTo(i + 0.5, 0)
+          g.lineTo(i + 0.5, 256)
+          g.stroke()
+          g.beginPath()
+          g.moveTo(0, i + 0.5)
+          g.lineTo(256, i + 0.5)
+          g.stroke()
+        }
+        // slubs: the thick bits in a cheap wool
+        let seed = 91
+        const rnd = (): number => {
+          seed = (seed * 1103515245 + 12345) & 0x7fffffff
+          return seed / 0x7fffffff
+        }
+        for (let i = 0; i < 320; i++) {
+          const x = rnd() * 256
+          const y = rnd() * 256
+          const len = 2 + rnd() * 7
+          g.strokeStyle = rnd() > 0.5 ? 'rgba(96,88,72,0.30)' : 'rgba(24,21,17,0.34)'
+          g.lineWidth = 1 + rnd()
+          g.beginPath()
+          g.moveTo(x, y)
+          g.lineTo(x + len * (rnd() - 0.5), y + len)
+          g.stroke()
+        }
+        // forty years of dust settling on the shoulders and along the folds
+        const dust = g.createLinearGradient(0, 0, 0, 256)
+        dust.addColorStop(0, 'rgba(148,138,116,0.16)')
+        dust.addColorStop(0.35, 'rgba(148,138,116,0.03)')
+        dust.addColorStop(1, 'rgba(20,18,14,0.14)')
+        g.fillStyle = dust
+        g.fillRect(0, 0, 256, 256)
+      }
+      const clothMap = new THREE.CanvasTexture(cw)
+      clothMap.colorSpace = THREE.SRGBColorSpace
+      clothMap.wrapS = clothMap.wrapT = THREE.RepeatWrapping
+      clothMap.repeat.set(2, 2)
+      const clothNormal = new THREE.CanvasTexture(normalFromCanvas(cw, 1.1))
+      clothNormal.wrapS = clothNormal.wrapT = THREE.RepeatWrapping
+      clothNormal.repeat.set(2, 2)
+      const cloth = new THREE.MeshStandardMaterial({
+        map: clothMap,
+        normalMap: clothNormal,
+        normalScale: new THREE.Vector2(0.8, 0.8),
+        roughness: 0.96,
+        metalness: 0,
+        side: THREE.DoubleSide,
+      })
+
+      /**
+       * A hanging length of cloth: a tapered tube, squashed front-to-back, with
+       * its circumference pushed in and out so the surface falls in folds. The
+       * hem is left uneven, because a coat that has hung for forty years is.
+       */
+      const drape = (
+        rTop: number,
+        rBottom: number,
+        height: number,
+        fold: number,
+        seed: number,
+      ): THREE.CylinderGeometry => {
+        const geo = new THREE.CylinderGeometry(rTop, rBottom, height, 18, 6, true)
+        const pos = geo.attributes.position as THREE.BufferAttribute
+        const yMin = -height / 2
+        for (let i = 0; i < pos.count; i++) {
+          const x = pos.getX(i)
+          const y = pos.getY(i)
+          const z = pos.getZ(i)
+          const th = Math.atan2(z, x)
+          const down = (y - yMin) / height
+          // folds deepen toward the hem, where there is more cloth than body
+          const k =
+            1 +
+            fold * Math.sin(th * 4 + seed) * (0.45 + 0.55 * (1 - down)) +
+            fold * 0.55 * Math.sin(th * 7 - seed * 1.7) * (1 - down)
+          pos.setX(i, x * k)
+          pos.setZ(i, z * k)
+          if (y < yMin + 1e-4) {
+            pos.setY(i, y + Math.sin(th * 3 + seed) * height * 0.022)
+          }
+        }
+        pos.needsUpdate = true
+        geo.computeVertexNormals()
+        return geo
+      }
+
       const coat = new THREE.Group()
-      // shoulders: a shallow wedge, wider than it is deep
-      const shoulder = mesh(roundedBox(0.34, 0.1, 0.14, 0.04, 3, 2.4), cloth)
-      shoulder.position.set(0, -0.09, 0)
-      coat.add(shoulder)
-      // body: three tapering blocks so the drape narrows toward the hem
-      const seg: Array<[number, number, number, number]> = [
-        [0.33, 0.3, 0.13, -0.27],
-        [0.3, 0.3, 0.115, -0.55],
-        [0.26, 0.24, 0.1, -0.82],
-      ]
-      for (const [w, h, dz, y] of seg) {
-        const b = mesh(roundedBox(w, h, dz, 0.03, 2, 2), cloth)
-        b.position.set(0, y, 0)
-        coat.add(b)
-      }
-      // sleeves, hanging slightly away from the body
+
+      // --- shoulders: a short barrel, the widest part of the garment
+      const yoke = mesh(drape(0.168, 0.196, 0.13, 0.045, 1.2), cloth, { cast: true })
+      yoke.position.set(0, -0.085, 0)
+      yoke.scale.set(1, 1, 0.62)
+      coat.add(yoke)
+      // the cap over the shoulders, so the tube is not open at the top
+      // Closes the top of the tube and carries the shoulder line. Kept just
+      // inside the yoke's widest fold so it reads as the shoulder under the
+      // cloth rather than as a shelf laid across it.
+      const shoulderCap = mesh(roundedBox(0.33, 0.055, 0.155, 0.026, 3, 2.4), cloth)
+      shoulderCap.position.set(0, -0.038, 0)
+      shoulderCap.rotation.z = 0.025
+      coat.add(shoulderCap)
+
+      // --- body: from the yoke to the hem, flaring as it falls
+      const body = mesh(drape(0.192, 0.212, 0.78, 0.07, 2.6), cloth, { cast: true })
+      body.position.set(0, -0.53, 0)
+      body.scale.set(1, 1, 0.55)
+      coat.add(body)
+
+      // --- collar, turned down
       for (const sx of [-1, 1]) {
-        const sleeve = mesh(roundedBox(0.085, 0.46, 0.1, 0.035, 2, 2.4), cloth)
-        sleeve.position.set(sx * 0.185, -0.36, 0.005)
-        sleeve.rotation.z = sx * 0.05
-        coat.add(sleeve)
+        const wing = mesh(roundedBox(0.115, 0.055, 0.035, 0.014, 2, 2.4), cloth)
+        wing.position.set(sx * 0.062, -0.022, 0.052)
+        wing.rotation.set(-0.45, sx * 0.18, sx * -0.12)
+        coat.add(wing)
       }
-      // collar
-      const collar = mesh(roundedBox(0.2, 0.07, 0.13, 0.03, 2, 3), cloth)
-      collar.position.set(0, -0.03, 0.012)
-      coat.add(collar)
-      // the hanger hook it is on
+      const collarBack = mesh(roundedBox(0.14, 0.05, 0.03, 0.012, 2, 2.4), cloth)
+      collarBack.position.set(0, -0.012, -0.045)
+      collarBack.rotation.x = 0.4
+      coat.add(collarBack)
+
+      // --- lapels and the closing edge: the line that says "coat" at a glance
+      for (const sx of [-1, 1]) {
+        const lapel = mesh(roundedBox(0.075, 0.24, 0.014, 0.008, 2, 2.4), cloth)
+        lapel.position.set(sx * 0.045, -0.19, 0.093)
+        lapel.rotation.set(0.06, 0, sx * 0.16)
+        coat.add(lapel)
+      }
+      const placket = mesh(
+        texturedBox(0.02, 0.62, 0.012, 2),
+        new THREE.MeshStandardMaterial({ color: 0x322d26, roughness: 0.95 }),
+        { cast: false },
+      )
+      placket.position.set(0, -0.5, 0.108)
+      coat.add(placket)
+      // three horn buttons down it
+      for (let i = 0; i < 3; i++) {
+        const btn = mesh(
+          new THREE.CylinderGeometry(0.011, 0.011, 0.005, 10),
+          new THREE.MeshStandardMaterial({ color: 0x241d15, roughness: 0.55 }),
+          { cast: false },
+        )
+        btn.rotation.x = Math.PI / 2
+        btn.position.set(0.016, -0.27 - i * 0.15, 0.115)
+        coat.add(btn)
+      }
+
+      // --- sleeves, hanging a little away from the body and turning in
+      for (const sx of [-1, 1]) {
+        const sleeve = mesh(drape(0.052, 0.042, 0.42, 0.06, 4.1 + sx), cloth, { cast: true })
+        sleeve.position.set(sx * 0.163, -0.325, 0.012)
+        sleeve.rotation.set(0.05, 0, sx * 0.055)
+        sleeve.scale.set(1, 1, 0.86)
+        coat.add(sleeve)
+        // the cuff, folded back
+        const cuff = mesh(new THREE.CylinderGeometry(0.046, 0.046, 0.045, 12, 1, true), cloth)
+        cuff.position.set(sx * 0.174, -0.523, 0.014)
+        cuff.rotation.z = sx * 0.055
+        cuff.scale.set(1, 1, 0.86)
+        coat.add(cuff)
+      }
+
+      // --- the wire hanger it is on
       const hookWire = mesh(new THREE.TorusGeometry(0.018, 0.0028, 6, 14, Math.PI), mats.brassDull, {
         cast: false,
       })
