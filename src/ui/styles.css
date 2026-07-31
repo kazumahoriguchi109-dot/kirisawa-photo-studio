@@ -1802,3 +1802,13 @@ body[data-reduced-motion="1"] * {
   #ending { gap: 0.8em; }
   #ending .e-body { line-height: 1.6; font-size: clamp(12px, 0.95vw, 15px); }
 }
+
+/* The locked-hint status, kept visibly apart from the tier label. Joined to it
+   by an em-dash the note read as the hint's own text, and two blind testers
+   took it that way for a whole session. */
+.hint-locked-note {
+  font-size: 0.78em;
+  letter-spacing: 0.08em;
+  color: var(--on-dark-3);
+  margin-left: 0.8em;
+}

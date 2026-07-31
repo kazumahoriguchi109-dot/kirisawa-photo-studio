@@ -941,7 +941,7 @@ export class GameUI {
    */
   private renderHints(opening = false): void {
     const active = this.cb.activeHints()
-    this.showPanel(UI_TEXT.hints, active.length ? `${kanjiNum(active.length)} 件` : '')
+    this.showPanel(UI_TEXT.hints, active.length ? `${kanjiNum(active.length)} 件　${UI_TEXT.hintPanelNote}` : '')
     if (active.length === 0) {
       this.panelBody.innerHTML = `<div class="inv-empty">${UI_TEXT.hintNothingActive}</div>`
     }
@@ -995,13 +995,10 @@ export class GameUI {
       // counter in the header already reads 三／三.
       if (h.taken < h.steps.length) {
         const row = this.el('div', 'hint-locked')
-        row.appendChild(
-          this.el(
-            'span',
-            'hint-tier jp',
-            `${UI_TEXT.hintTierLabels[h.taken]}　—　${UI_TEXT.hintLockedNote}`,
-          ),
-        )
+        // Tier and status as two separate marks, so neither can be mistaken
+        // for the hint's text.
+        row.appendChild(this.el('span', 'hint-tier jp', UI_TEXT.hintTierLabels[h.taken]))
+        row.appendChild(this.el('span', 'hint-locked-note jp', UI_TEXT.hintLockedNote))
         const b = this.el('button', 'btn ghost clickable', UI_TEXT.hintReveal)
         b.addEventListener('click', (e) => {
           e.stopPropagation()

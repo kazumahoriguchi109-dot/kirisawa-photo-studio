@@ -1152,7 +1152,21 @@ export class Chapter01 {
       scope: 'cu_clock',
       priority: -1,
       onActivate: () => {
-        this.markDifference('clock', '壁紙が丸く一段明るい。長いあいだ、ここに丸いものが掛かっていた。釘が一本残っている。')
+        // Names what is hanging there.
+        //
+        // It said only 「釘が一本残っている」, and the brass crank hangs on that
+        // nail against a wall stain of much the same colour: a beginner and an
+        // intermediate tester both burned all three hints here, and both gave
+        // the same reason - the crank read as part of the mark, not as a
+        // separate thing that could be taken. Saying it costs the puzzle
+        // nothing, because knowing a crank is there is not knowing what it
+        // winds or where.
+        this.markDifference(
+          'clock',
+          studio.crankOnNail.visible
+            ? '壁紙が丸く一段明るい。長いあいだ、ここに丸いものが掛かっていた。釘が一本残っていて、真鍮の金具が下がったままだ。'
+            : '壁紙が丸く一段明るい。長いあいだ、ここに丸いものが掛かっていた。釘が一本残っている。',
+        )
       },
     })
     this.hs({

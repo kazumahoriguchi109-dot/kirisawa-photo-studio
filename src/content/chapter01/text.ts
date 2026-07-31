@@ -53,7 +53,13 @@ export const UI_TEXT = {
   // Numbered, because a player asking for help wants to know how much help is
   // left, not to decode 「そっと示す」 against 「つながりを示す」.
   hintTierLabels: ['ヒント1', 'ヒント2', 'ヒント3'],
-  hintLockedNote: 'これを開くまえに、もう少し部屋を歩いてもいい',
+  // Never a sentence that could pass for the hint itself. Joined to the tier
+  // label by an em-dash, the old wording read as 「ヒント1 — これを開くまえに…」,
+  // and two blind testers took that FOR hint one: both finished their sessions
+  // believing every first hint in the game was the same content-free line. The
+  // encouragement it carried now lives in the panel's own subtitle, once.
+  hintLockedNote: 'まだ開いていない',
+  hintPanelNote: 'ヒントは一段ずつ開く。開くまえに、もう少し部屋を歩いてもいい。',
   hintReveal: 'ヒントを見る',
   /** Prefix for the fixed puzzle number: 謎一, 謎二 ... */
   puzzleNo: '謎',
