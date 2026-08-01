@@ -291,6 +291,9 @@ export class Chapter01 {
     if (s.flag('enlarger_on') && s.flag('neg_loaded')) this.startProjection(true)
 
     this.updatePhosphor(true)
+    // The tally is derived state: recomputed here so a loaded save shows the
+    // count its flags actually imply rather than whatever text was last written.
+    this.refreshPhotoTally()
     this.d.lighting.snapTo(s.lighting)
   }
 
@@ -892,9 +895,27 @@ export class Chapter01 {
       scope: 'cu_record',
       priority: 2,
       labelFor: () => (this.flag('mount_lifted') ? '台紙の裏の写真' : '額の台紙'),
-      verbFor: () => (this.flag('mount_lifted') ? 'take' : 'pull'),
-      visible: () => this.d.state.isSolved('p2_observe') && !this.d.state.hasItem('print_1'),
+      verbFor: () => (this.flag('mount_lifted') ? 'take' : 'examine'),
+      // Present as soon as the frame has been looked at, not only once the
+      // observation puzzle is solved.
+      //
+      // The gate itself is deliberate - the backing is a thing you notice
+      // BECAUSE you have been comparing the photograph to the room - but it used
+      // to be enforced by hiding the hotspot outright, so a player following the
+      // hint to 受付の額 found nothing there: no label, no ring, no refusal. The
+      // one photograph with a prerequisite was also the only one that said
+      // nothing about having one. It is visible now and explains itself; the
+      // prerequisite is unchanged and still governs whether it opens.
+      visible: () => this.flag('saw_1985') && !this.d.state.hasItem('print_1'),
       onActivate: () => {
+        if (!this.d.state.isSolved('p2_observe')) {
+          this.say(
+            '台紙の裏に、剥がされた跡がある。いま無理に開けば、写真まで傷めそうだ。' +
+              'この額が何を隠しているのか、先に確かめたほうがいい。',
+          )
+          this.d.audio.play('select')
+          return
+        }
         // Lift the board first, take what is under it second. Every other
         // photograph is a thing you can see before you pick it up; this one
         // went straight from a flat frame into the inventory.
@@ -2550,19 +2571,48 @@ export class Chapter01 {
    */
   private refreshPhotoTally(): void {
     const s = this.d.state
-    if (!s.flag('chronicle_open')) return
-    const have = CHRONICLE_PRINT_IDS.filter((id) => s.hasItem(id)).length
+    // Counted as taken, not as still-held: a photograph pinned back onto the
+    // wall is spent and leaves the bag, so counting hasItem alone made the
+    // number fall as the player made progress.
+    const have = CHRONICLE_PRINT_IDS.filter(
+      (id) => s.hasItem(id) || s.flag(`restored_${id}`),
+    ).length
     const placed = CHRONICLE_PRINT_IDS.filter((id) => s.flag(`restored_${id}`)).length
-    const body =
-      placed === 4
+    // Nothing to report until the player has either found one or been told to
+    // look. Writing the entry earlier would put a 〇／四 objective in the notes
+    // before anything in the game had mentioned photographs at all.
+    //
+    // 「told to look」 is either wall: the chronicle wall itself, or the safe,
+    // which is what makes the 壁の四つの空白 hint available - so the objective
+    // can be on offer with nothing found yet, and the count has to exist to
+    // answer it.
+    const objectiveKnown = s.flag('chronicle_open') || s.flag('safe_open')
+    if (!objectiveKnown && have === 0) return
+
+    // Before the wall is uncovered the number that matters is how many have been
+    // found; afterwards it is how many are back in their frames. The wall is
+    // what turns a pile of photographs into a task, and until it is found the
+    // player has no frames to fill - so 「集めた写真」 is the honest count, and
+    // 「年代記に戻した写真」 replaces it once the frames exist.
+    //
+    // One entry either way: upsertClue keys on the id, so the same row is
+    // rewritten rather than a second one appended.
+    const beforeWall = !s.flag('chronicle_open')
+    const title = beforeWall
+      ? `集めた写真　${kansuji(have)}／四`
+      : `年代記に戻した写真　${kansuji(placed)}／四`
+    const body = beforeWall
+      ? `どこかから抜き取られた古い写真が、${kansuji(have)}枚。` +
+        'どれも子供の年齢が書いてある。戻す場所が、この館のどこかにあるはずだ。'
+      : placed === 4
         ? '四枚とも枠に戻した。壁は揃っている。'
-        : `抜き取られた四枚のうち、${kansuji(have)}枚が手元にある。枠に戻したのは${kansuji(placed)}枚。` +
-          '館のどこかに、まだ残りがある。'
+        : `抜き取られた四枚のうち、${kansuji(have)}枚は見つけた。枠に戻したのは${kansuji(placed)}枚。` +
+          (have === 4 ? 'あとは戻すだけだ。' : '館のどこかに、まだ残りがある。')
     s.upsertClue({
       id: 'clue_photo_tally',
-      title: `年代記の写真を集める　${kansuji(have)}／四`,
+      title,
       body,
-      source: '撮影室　年代記の壁',
+      source: beforeWall ? '持ち物' : '撮影室　年代記の壁',
       solvedBy: 'hidden_restore',
     })
   }
