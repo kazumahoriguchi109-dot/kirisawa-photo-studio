@@ -1080,13 +1080,13 @@ export class GameUI {
 
     const pct = (v: number) => `${Math.round(v * 100)}％`
 
-    slider('全体の音量', 'すべての音量を調整します', s.masterVolume, 0, 1, 0.01, pct, (v) =>
+    slider('全体の音量', 'すべての音量', s.masterVolume, 0, 1, 0.01, pct, (v) =>
       this.cb.onSettingChanged('masterVolume', v),
     )
     slider('環境音', '雨、室内の低い音、建物のきしみ', s.ambienceVolume, 0, 1, 0.01, pct, (v) =>
       this.cb.onSettingChanged('ambienceVolume', v),
     )
-    slider('効果音', '操作音や仕掛けの音を調整します', s.sfxVolume, 0, 1, 0.01, pct, (v) =>
+    slider('効果音', '操作音と仕掛けの音', s.sfxVolume, 0, 1, 0.01, pct, (v) =>
       this.cb.onSettingChanged('sfxVolume', v),
     )
     seg('消音', '音をすべて止める', [
@@ -1114,7 +1114,7 @@ export class GameUI {
       // Says what it actually does. Texture resolution is baked when the world
       // is built, so that part of the profile only takes effect on a reload -
       // claiming otherwise would be a setting that lies about itself.
-      '重いときは下げる。影・解像度・後処理がすぐ変わる。一部の画質設定は、次回起動時に反映されます',
+      '重いときは下げる。影・解像度・後処理はすぐに変わり、質感は次回起動時から変わる。',
       [
         ['low', '軽量'],
         ['medium', '標準'],
@@ -1158,13 +1158,13 @@ export class GameUI {
     save.addEventListener('click', () => this.openSlots('save'))
     const restart = this.el('button', 'btn ghost clickable', 'この章をやり直す')
     restart.addEventListener('click', () => {
-      this.confirm('章をはじめからやり直す', 'この章の進行を開始時点まで戻します。', () =>
+      this.confirm('章をはじめからやり直す', 'この章の進行を、開始時点まで戻す。', () =>
         this.cb.onRestartChapter(),
       )
     })
     const wipe = this.el('button', 'btn danger clickable', 'すべての進行を消去')
     wipe.addEventListener('click', () => {
-      this.confirm('進行データを消す', 'セーブデータと覚え書きをすべて消去します。見届けたエンディングの記録は残ります。', () =>
+      this.confirm('進行データを消す', 'セーブデータと覚え書きをすべて消去する。見届けたエンディングの記録は残る。', () =>
         this.cb.onResetProgress(),
       )
     })
@@ -1199,7 +1199,7 @@ export class GameUI {
     // screen. Setting the title alone left the scrim up over an invisible panel.
     this.showPanel(
       mode === 'new' ? '新しく始める' : mode === 'load' ? 'つづきから' : '現在の進行を記録',
-      '記録できる枠は三つです',
+      '記録枠は三つまで',
     )
 
     const metas = this.cb.slotMetas()
@@ -1213,13 +1213,13 @@ export class GameUI {
         row.disabled = true
         row.classList.add('slot-empty')
       }
-      const name = this.el('div', 'slot-name', `記録 ${['一', '二', '三'][i]}`)
+      const name = this.el('div', 'slot-name', `記録枠 ${['一', '二', '三'][i]}`)
       const body = this.el('div', 'slot-body')
       if (m?.exists) {
         body.textContent = `${m.areaLabel}　謎 ${m.solvedCount}　${formatPlaytime(m.playtimeMs)}`
         const when = this.el('div', 'slot-when', formatSavedAt(m.savedAt))
         body.appendChild(when)
-        if (m.endingId) name.appendChild(this.el('span', 'slot-tag', 'クリア済み'))
+        if (m.endingId) name.appendChild(this.el('span', 'slot-tag', '見届けた'))
       } else {
         body.textContent = '空'
       }
@@ -1246,12 +1246,12 @@ export class GameUI {
   }
 
   private confirmSlot(mode: SlotMode, slot: number): void {
-    const which = `記録 ${['一', '二', '三'][slot]}`
+    const which = `記録枠 ${['一', '二', '三'][slot]}`
     this.confirm(
       `${which}に上書きする`,
       mode === 'new'
-        ? `${which}の記録を上書きします。元の記録は戻せません。`
-        : `${which}を現在の進行で上書きします。`,
+        ? `${which}の記録を上書きする。元の記録は戻せない。`
+        : `${which}を現在の進行で上書きする。`,
       () => this.cb.onSlotChosen(mode, slot),
       () => this.renderSlots(),
     )

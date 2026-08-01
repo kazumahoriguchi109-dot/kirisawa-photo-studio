@@ -2476,7 +2476,7 @@ export class Chapter01 {
       return
     }
     if (selected === 'distilled_water') {
-      this.wrong('水だけ張っても像は出ない。粉と合わせて現像液にするのが先だ。')
+      this.wrong('水だけ張っても像は出ない。粉と組み合わせて現像液にするのが先だ。')
       return
     }
     // The two negatives are the one thing in this room a player genuinely

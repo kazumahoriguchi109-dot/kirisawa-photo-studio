@@ -39,31 +39,31 @@ export const UI_TEXT = {
   cancel: 'やめる',
   confirm: '実行する',
 
-  itemStateNew: '新規',
-  itemStateExamined: '確認済み',
-  itemStateTransformed: '変化あり',
-  itemStateSpent: '使用済み',
+  itemStateNew: '新しい',
+  itemStateExamined: '確認した',
+  itemStateTransformed: '変わった',
+  itemStateSpent: '使い終えた',
 
-  inventoryEmpty: '持ち物はまだありません',
-  cluesEmpty: '覚え書きはまだありません',
+  inventoryEmpty: '持ち物はまだない',
+  cluesEmpty: '覚え書きはまだない',
   selectedPrefix: '選択中',
   saved: '記録した',
   autoSaved: '自動で記録した',
 
   // Numbered, because a player asking for help wants to know how much help is
   // left, not to decode 「そっと示す」 against 「つながりを示す」.
-  hintTierLabels: ['手がかり', '考え方', '次の操作'],
+  hintTierLabels: ['着眼点', 'つながり', '次の操作'],
   // Never a sentence that could pass for the hint itself. Joined to the tier
   // label by an em-dash, the old wording read as 「ヒント1 — これを開くまえに…」,
   // and two blind testers took that FOR hint one: both finished their sessions
   // believing every first hint in the game was the same content-free line. The
   // encouragement it carried now lives in the panel's own subtitle, once.
   hintLockedNote: '未開放',
-  hintPanelNote: 'ヒントは一段ずつ開放されます。まずは、まだ調べていない場所を探してみてください。',
-  hintReveal: 'ヒントを見る',
+  hintPanelNote: 'ヒントは一段ずつ開く。まずは、まだ調べていない場所を探してみるといい。',
+  hintReveal: '一段開く',
   /** Prefix for the fixed puzzle number: 謎一, 謎二 ... */
   puzzleNo: '謎',
-  hintNothingActive: '現在、表示できるヒントはありません',
+  hintNothingActive: 'いま表示できるヒントはない',
 
   survey: '見渡す',
   surveyKey: 'Q',
@@ -104,7 +104,7 @@ export const FEEDBACK = {
   takeImmovable: '明日には無くなるものだ。今日、動かす理由がない。',
   darkroomLocked: '把手は回る。しかし、内側の錠が落ちたままだ。',
   officeLocked: 'すりガラスの向こうは暗い。扉には鍵が掛かっている。',
-  needDeveloper: 'まだ現像液を作っていない。粉と水を合わせて、いちばん左のバットに張るところからだ。',
+  needDeveloper: 'まだ現像液を作っていない。粉と水を組み合わせて、いちばん左のバットに張るところからだ。',
   needSafelight: '白い光の下では、像の出るまえに焼けてしまう。赤の下でする仕事だ。',
   alreadyDone: 'もう済んでいる。',
   nothingHere: '手の届くところに、いま用のあるものはない。',
@@ -388,9 +388,7 @@ export const CREDITS = `　　　　　　　　霧沢写真館　　最後の�
 
 　　　　　　　　　　　　　—`
 
-export const HOW_TO_PLAY = `　　　　　　　　　あそびかた
-
-向きを変える
+export const HOW_TO_PLAY = `向きを変える
 画面の左右端をクリックする　／　← → キー
 
 調べる

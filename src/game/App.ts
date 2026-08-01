@@ -533,7 +533,7 @@ export class App {
   private async onSlotChosen(mode: SlotMode, slot: number): Promise<void> {
     if (mode === 'save') {
       const ok = this.save.save(slot)
-      this.ui.toast(ok ? UI_TEXT.saved : '記録に失敗しました')
+      this.ui.toast(ok ? UI_TEXT.saved : '記録できなかった')
       this.refreshTitle()
       return
     }
@@ -611,7 +611,7 @@ export class App {
     this.save.clearProgress()
     this.state.resetProgress(true)
     this.chapter.syncWorldToState()
-    this.ui.toast('進行データを消去しました')
+    this.ui.toast('進行データを消去した')
     this.returnToTitle()
   }
 
