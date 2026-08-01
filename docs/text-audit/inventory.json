@@ -1,0 +1,6602 @@
+[
+ {
+  "file": "index.html",
+  "line": 7,
+  "quote": "\"",
+  "text": "霧沢写真館 ― 最後の一枚。取り壊し前夜の写真館を舞台にした、一人称視点の3D脱出アドベンチャー。",
+  "len": 49,
+  "cat": "system-ui"
+ },
+ {
+  "file": "index.html",
+  "line": 8,
+  "quote": "node",
+  "text": "霧沢写真館 ― 最後の一枚",
+  "len": 13,
+  "cat": "system-ui"
+ },
+ {
+  "file": "index.html",
+  "line": 16,
+  "quote": "node",
+  "text": "このゲームを遊ぶには JavaScript を有効にしてください。",
+  "len": 33,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 29,
+  "quote": "'",
+  "text": "玄関ホール",
+  "len": 5,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 30,
+  "quote": "'",
+  "text": "明かりが点かない",
+  "len": 8,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 32,
+  "quote": "'",
+  "text": "玄関ホール。暦の掛かっている壁に、鉄の箱が据えつけてある。蓋に「配電盤」と書いてある。",
+  "len": 43,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 33,
+  "quote": "'",
+  "text": "三つ並んだ受け金のうち、真ん中だけが空で、その後ろの板が焦げている。同じものが、受付のどこかに仕舞われているはずだ。",
+  "len": 58,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 34,
+  "quote": "'",
+  "text": "受付の抽斗を開ける。予備を真ん中の受け金に差し、それから箱の下のレバーを上げる。順番が逆では上がらない。",
+  "len": 52,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 40,
+  "quote": "'",
+  "text": "玄関ホール／撮影室",
+  "len": 9,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 41,
+  "quote": "'",
+  "text": "四十年前の一枚",
+  "len": 7,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 43,
+  "quote": "'",
+  "text": "受付の壁に、この撮影室を写した古い額がある。撮られたのは昭和六十年。",
+  "len": 34,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 44,
+  "quote": "'",
+  "text": "違いは三か所ある。どれも、写真の中で人が座っていた側が変えられている。",
+  "len": 35,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 45,
+  "quote": "'",
+  "text": "壁の上のほう、幕の柄、椅子の向き。写真ではなく部屋のほうを調べる。三か所とも、何かが置き去りになっている。",
+  "len": 53,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 51,
+  "quote": "'",
+  "text": "撮影室",
+  "len": 3,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 52,
+  "quote": "'",
+  "text": "幕が下りたまま",
+  "len": 7,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 54,
+  "quote": "'",
+  "text": "撮影室。背景幕を吊っている軸の、右の端を見る。金具が出ている。",
+  "len": 31,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 55,
+  "quote": "'",
+  "text": "軸の端は六角の穴になっている。差し込める柄のものが、壁のどこかに掛かっていたはずだ。",
+  "len": 42,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 56,
+  "quote": "'",
+  "text": "時計の跡の釘から真鍮のクランクを取り、軸の穴に差して回す。巻き上がるまで手を止めないこと。",
+  "len": 45,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 62,
+  "quote": "'",
+  "text": "撮影室",
+  "len": 3,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 63,
+  "quote": "'",
+  "text": "読めない字",
+  "len": 5,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 65,
+  "quote": "'",
+  "text": "撮影室。巻き上げた幕の裏、壁ぎわの板に鉛筆の字がある。読もうとすると天地が逆だ。",
+  "len": 40,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 66,
+  "quote": "'",
+  "text": "この部屋には、像を天地ひっくり返して見せる道具が一つだけある。据えつけの、いちばん大きなものだ。",
+  "len": 48,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 67,
+  "quote": "'",
+  "text": "大判カメラのピントグラスを覗く。あの板が枠に入るように見れば、逆さの字はそのまま読める。",
+  "len": 44,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 73,
+  "quote": "'",
+  "text": "撮影室",
+  "len": 3,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 74,
+  "quote": "'",
+  "text": "灯の下",
+  "len": 3,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 76,
+  "quote": "'",
+  "text": "撮影室。ピントグラス越しに読んだ「鍵は灯の下に」が、まだ使われていない。",
+  "len": 36,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 77,
+  "quote": "'",
+  "text": "この館で灯といえば、娘の名でもあり、撮影灯でもある。三脚の立った大きな笠のことだ。",
+  "len": 41,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 78,
+  "quote": "'",
+  "text": "撮影室の撮影灯、いちばん背景幕寄りの一本の台座を調べる。床すれすれのところだ。",
+  "len": 39,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 84,
+  "quote": "'",
+  "text": "玄関ホール／撮影室／事務室",
+  "len": 13,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 85,
+  "quote": "'",
+  "text": "赤の下の三つの書き付け",
+  "len": 11,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 87,
+  "quote": "'",
+  "text": "安全灯を点けたまま暗室を出る。玄関ホール、撮影室、事務室。その三部屋の壁を、赤の下で見る。",
+  "len": 45,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 88,
+  "quote": "'",
+  "text": "胸より少し上、目の高さの壁に、塗料で書いた字がある。白い明かりの下では塗り跡すら見えない。三部屋に一つずつ、合わせて三つ。",
+  "len": 61,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 89,
+  "quote": "'",
+  "text": "玄関ホール、撮影室の西の壁、事務室。三つ揃えると、ひと続きの言葉になる。",
+  "len": 36,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 95,
+  "quote": "'",
+  "text": "暗室",
+  "len": 2,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 96,
+  "quote": "'",
+  "text": "現像液がない",
+  "len": 6,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 98,
+  "quote": "'",
+  "text": "暗室。南の壁の薬品棚に、粉末現像剤の缶と、蒸留水の瓶がある。要るのはこの二つだ。",
+  "len": 40,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 99,
+  "quote": "'",
+  "text": "現像液は出来合いでは置いていない。粉を水に溶いて作る。粉のままでも、水だけでも像は出ない。持ち物で二つを合わせる。",
+  "len": 57,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 100,
+  "quote": "'",
+  "text": "持ち物で粉末現像剤を選び、蒸留水と「合わせる」。できた現像液を選んで、作業台のいちばん左、縁に「現像」と書いてあるバットに注ぐ。液を張ったら、次はそこに浸すネガを探す。",
+  "len": 84,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 106,
+  "quote": "'",
+  "text": "暗室",
+  "len": 2,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 107,
+  "quote": "'",
+  "text": "台の上の並び",
+  "len": 6,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 109,
+  "quote": "'",
+  "text": "暗室。作業台に琺瑯のバットが四つ。縁のラベルは左から現像、定着、水洗、停止。工程の順とは違う。",
+  "len": 47,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 110,
+  "quote": "'",
+  "text": "バットは動かせる。一つ持ち上げて、別の一つを選べば入れ替わる。正しい順は台の上ではなく、書いたものに残っている。",
+  "len": 56,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 111,
+  "quote": "'",
+  "text": "事務室の貼り紙のとおり、左から現像、停止、定着、水洗に並べ替える。現像と停止のあいだの二つを入れ替え、残る二つも入れ替えれば揃う。",
+  "len": 65,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 117,
+  "quote": "'",
+  "text": "撮影室",
+  "len": 3,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 118,
+  "quote": "'",
+  "text": "細かすぎて読めない",
+  "len": 9,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 120,
+  "quote": "'",
+  "text": "撮影室。壁を向いた撮影椅子の座面に、糸のほつれた裂け目がある。",
+  "len": 31,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 121,
+  "quote": "'",
+  "text": "座面から出るのは枠だけで、玉が入っていない。玉のほうは大判カメラの三脚、柱に付いた小抽斗に仕舞ってある。二つは元は同じものだった。",
+  "len": 65,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 122,
+  "quote": "'",
+  "text": "三脚の柱の小抽斗から玉を取り、枠と合わせる。締め輪は指で回るところまで回せばいい。",
+  "len": 41,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 128,
+  "quote": "'",
+  "text": "暗室",
+  "len": 2,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 129,
+  "quote": "'",
+  "text": "金庫の番号",
+  "len": 5,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 131,
+  "quote": "'",
+  "text": "暗室。西側の乾燥ロープに、ネガが一枚だけ挟まったまま残っている。",
+  "len": 32,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 132,
+  "quote": "'",
+  "text": "引き伸ばし機はネガを壁に大きく映す機械だ。ただし、白い明かりの下では像が見えない。映したあと、細かいところを読むにはルーペが要る。",
+  "len": 65,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 133,
+  "quote": "'",
+  "text": "安全灯を点け、ネガを引き伸ばし機の枠に入れて灯を入れる。壁に出た像に、ルーペを当てる。",
+  "len": 43,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 139,
+  "quote": "'",
+  "text": "暗室",
+  "len": 2,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 140,
+  "quote": "'",
+  "text": "赤い明かり",
+  "len": 5,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 142,
+  "quote": "'",
+  "text": "暗室。戸口の脇の壁に、赤い柄のレバーが一つ下がっている。札に「安全灯」とある。",
+  "len": 39,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 143,
+  "quote": "'",
+  "text": "ネガも印画紙も、白い光に当てると像が焼けて駄目になる。赤い光だけは像を壊さない。だから暗室の仕事は赤の下でする。",
+  "len": 56,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 144,
+  "quote": "'",
+  "text": "レバーを引いて安全灯を点ける。引き伸ばし機で壁に像を映すときも、ネガを現像液に浸すときも、この赤が点いていないとできない。",
+  "len": 61,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 150,
+  "quote": "'",
+  "text": "事務室",
+  "len": 3,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 151,
+  "quote": "'",
+  "text": "金庫の環",
+  "len": 4,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 153,
+  "quote": "'",
+  "text": "事務室。据えつけの金庫は、環を一つ回すだけの古い型だ。",
+  "len": 27,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 154,
+  "quote": "'",
+  "text": "番号は書き残されていない。ただし、四十年前の写真には、この金庫が写り込んでいる。",
+  "len": 40,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 155,
+  "quote": "'",
+  "text": "壁に映したネガをルーペで読む。環の指していた目盛まで回して、把手を引く。",
+  "len": 36,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 161,
+  "quote": "'",
+  "text": "玄関ホール",
+  "len": 5,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 162,
+  "quote": "'",
+  "text": "玄関の四つの環",
+  "len": 7,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 164,
+  "quote": "'",
+  "text": "玄関ホール。入ってきた引き戸の錠を調べる。環が四つ並び、それぞれに写真の工程の印が打ってある。",
+  "len": 47,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 165,
+  "quote": "'",
+  "text": "印がどの工程を指すのかは、最後に現像した一枚に写っている。暗室の壁に、琺瑯の板が使う順に四つ並んでいた。事務室の貼り紙と暗室時計でも裏が取れる。",
+  "len": 72,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 166,
+  "quote": "'",
+  "text": "事務室の貼り紙を一から四まで読み、暗室時計の三つで裏を取る。その順に、左から印を合わせる。印の意味は、最後に現像した一枚に写っている。",
+  "len": 67,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 172,
+  "quote": "'",
+  "text": "暗室",
+  "len": 2,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 173,
+  "quote": "'",
+  "text": "まだ現像していない一枚",
+  "len": 11,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 175,
+  "quote": "'",
+  "text": "事務室の金庫から出た未現像のネガは、まだ像が出ていない。現像は暗室でしかできない。",
+  "len": 41,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 176,
+  "quote": "'",
+  "text": "像を出すには、液と、赤い明かりと、その二つが同時に要る。",
+  "len": 28,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 177,
+  "quote": "'",
+  "text": "安全灯を点けたまま、現像液を張ったバットに未現像のネガを浸す。",
+  "len": 31,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 183,
+  "quote": "'",
+  "text": "撮影室",
+  "len": 3,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 184,
+  "quote": "'",
+  "text": "壁の四つの空白",
+  "len": 7,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 186,
+  "quote": "'",
+  "text": "撮影室。幕の裏の年代記の壁に、抜き取られた四つの枠がある。留めた画鋲だけが残っている。四枚とも館の中に残っているはずだ。",
+  "len": 60,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 187,
+  "quote": "'",
+  "text": "一枚は受付の額の台紙の裏。もう一枚は暗室、作業台の下の棚。どちらも、一度しまわれたものが伏せて置いてある。",
+  "len": 53,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/hints.ts",
+  "line": 188,
+  "quote": "'",
+  "text": "残りの二枚は事務室にある。事務机の抽斗の底と、金庫の中。四枚が揃ったら年代記の壁の空白を調べる。年の順に、左から一歳、四歳、七歳、そして空欄の分。",
+  "len": 73,
+  "cat": "hints"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 220,
+  "quote": "'",
+  "text": "予備のヒューズ",
+  "len": 7,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 221,
+  "quote": "'",
+  "text": "磁器の胴に金属の帽子。受付の抽斗に、紙の袋ごと仕舞ってあった。中の細い線は、まだ切れていない。",
+  "len": 47,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 236,
+  "quote": "'",
+  "text": "胴の刻印",
+  "len": 4,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 237,
+  "quote": "'",
+  "text": "磁器の腹に「一五アンペア」と焼き付けてある。配電盤の切れたものと同じ数字だ。",
+  "len": 38,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 244,
+  "quote": "'",
+  "text": "真鍮のクランク",
+  "len": 7,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 245,
+  "quote": "'",
+  "text": "六角の軸に木の握り。撮影室の壁、時計のあった跡の釘に掛かっていた。握りの塗りだけが、手のかたちに剥げている。",
+  "len": 54,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 274,
+  "quote": "'",
+  "text": "霧沢",
+  "len": 2,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 293,
+  "quote": "'",
+  "text": "腕の裏の刻印",
+  "len": 6,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 294,
+  "quote": "'",
+  "text": "腕の裏側に「霧沢」と刻んである。買ったものではなく、この館のために作らせたものだ。",
+  "len": 41,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 301,
+  "quote": "'",
+  "text": "暗室の鍵",
+  "len": 4,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 302,
+  "quote": "'",
+  "text": "古い真鍮の鍵。撮影灯の台座の脇、床すれすれのところに落ちていた。紙の札が一枚、糸で結んである。",
+  "len": 47,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 324,
+  "quote": "'",
+  "text": "暗",
+  "len": 1,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 340,
+  "quote": "'",
+  "text": "紙の札",
+  "len": 3,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 341,
+  "quote": "'",
+  "text": "札に「暗」の一字。裏は白紙のまま。鍵と札を結ぶ糸の色だけが、まだ褪せていない。",
+  "len": 39,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 348,
+  "quote": "'",
+  "text": "事務室の鍵",
+  "len": 5,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 349,
+  "quote": "'",
+  "text": "暗室の鍵板に一本だけ掛かっていた。歯の減り方が浅い。あまり使われないまま四十年が経っている。",
+  "len": 46,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 369,
+  "quote": "'",
+  "text": "壊れたルーペの枠",
+  "len": 8,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 370,
+  "quote": "'",
+  "text": "真鍮の枠だけが残っている。玉の入っていた溝に、埃がきれいに一周ぶん積もっている。椅子の座面の裂け目から出てきた。",
+  "len": 56,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 380,
+  "quote": "'",
+  "text": "ルーペの玉",
+  "len": 5,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 381,
+  "quote": "'",
+  "text": "三脚の柱の小抽斗に、布に包まれて入っていた。片面だけ強く膨らんでいる。指で押さえた跡が、油のかたちで残っている。",
+  "len": 56,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 418,
+  "quote": "'",
+  "text": "ルーペ",
+  "len": 3,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 419,
+  "quote": "'",
+  "text": "枠に玉を落とし込んで、締め輪で留めた。覗くと、細かい字が三倍になる。ネガを見るには、これがいる。",
+  "len": 48,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 431,
+  "quote": "'",
+  "text": "枠の裏",
+  "len": 3,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 432,
+  "quote": "'",
+  "text": "枠の裏に「×3」。三倍。ネガの粒まで見るには足りるが、それ以上には向かない。",
+  "len": 38,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 439,
+  "quote": "'",
+  "text": "粉末現像剤",
+  "len": 5,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 440,
+  "quote": "'",
+  "text": "一リットル用と印刷された缶。振ると、乾いた音が中で移動する。封は切ってあるが、湿気は入っていない。",
+  "len": 49,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 463,
+  "quote": "'",
+  "text": "現像剤",
+  "len": 3,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 466,
+  "quote": "'",
+  "text": "粉末　一リットル用",
+  "len": 9,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 484,
+  "quote": "'",
+  "text": "缶の底",
+  "len": 3,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 485,
+  "quote": "'",
+  "text": "底に小さく「水一リットルに全量。二十度。撹拌のこと」。粉のままでは何もできない、という意味でもある。",
+  "len": 50,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 492,
+  "quote": "'",
+  "text": "蒸留水",
+  "len": 3,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 493,
+  "quote": "'",
+  "text": "薬品棚の一本。栓はまだ固く、中身は減っていない。ラベルの角が、湿気で一度ふくらんで、そのまま乾いている。",
+  "len": 52,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 541,
+  "quote": "'",
+  "text": "蒸留水",
+  "len": 3,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 544,
+  "quote": "'",
+  "text": "霧沢写真館",
+  "len": 5,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 559,
+  "quote": "'",
+  "text": "現像液",
+  "len": 3,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 560,
+  "quote": "'",
+  "text": "粉を蒸留水で溶いた。琥珀色。瓶の腹を透かすと、まだ細かい粒が回っている。バットに移せば使える。",
+  "len": 47,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 605,
+  "quote": "'",
+  "text": "現像液",
+  "len": 3,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 621,
+  "quote": "'",
+  "text": "古いネガ",
+  "len": 4,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 622,
+  "quote": "'",
+  "text": "乾燥ロープに挟まれたまま残っていた一枚。すでに像が出ている。透かすと、撮影室らしい部屋が明暗の逆で写っている。細かいところは肉眼では読めないので、引き伸ばし機で壁に映すか、ルーペを当てる。現像液に浸すものではない。",
+  "len": 107,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 641,
+  "quote": "'",
+  "text": "ネガの左下",
+  "len": 5,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 642,
+  "quote": "'",
+  "text": "ルーペを当てる。事務室の金庫が写り込んでいる。環の指す位置が読める——二十七。",
+  "len": 39,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 649,
+  "quote": "'",
+  "text": "未現像のネガ",
+  "len": 6,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 650,
+  "quote": "'",
+  "text": "金庫の底に、包んだまま入っていた。まだ像が出ていない。光に透かしても何も見えない。像を出すには、現像液を張ったバットに浸すしかない。引き伸ばし機に入れても壁には何も映らない。",
+  "len": 87,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 658,
+  "quote": "'",
+  "text": "袋の隅",
+  "len": 3,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 659,
+  "quote": "'",
+  "text": "袋の隅に鉛筆。六〇・一一・二三　二二時四〇分。予約の十時から、半日以上あとの時刻だ。",
+  "len": 42,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 684,
+  "quote": "'",
+  "text": "最後の一枚",
+  "len": 5,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 685,
+  "quote": "'",
+  "text": "今夜、現像した。暗室の作業台と、倒れた薬品の瓶と、床に広がっていく液。端に石油ストーブの脚。人は写っていない。",
+  "len": 55,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 698,
+  "quote": "'",
+  "text": "写真の裏",
+  "len": 4,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 699,
+  "quote": "'",
+  "text": "裏はまだ白い。日付を書く者が、四十年いなかった。",
+  "len": 24,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 705,
+  "quote": "'",
+  "text": "写真　一歳",
+  "len": 5,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 705,
+  "quote": "'",
+  "text": "一歳の誕生日。抱かれているので、顔は半分だけ写っている。裏に「五四・七・一」。",
+  "len": 39,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 705,
+  "quote": "'",
+  "text": "五四・七・一",
+  "len": 6,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 706,
+  "quote": "'",
+  "text": "写真　四歳",
+  "len": 5,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 706,
+  "quote": "'",
+  "text": "椅子には座らず、椅子の脚につかまって立っている。裏に「五七・七・三」。",
+  "len": 35,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 706,
+  "quote": "'",
+  "text": "五七・七・三",
+  "len": 6,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 707,
+  "quote": "'",
+  "text": "写真　七歳",
+  "len": 5,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 707,
+  "quote": "'",
+  "text": "正面。背景幕は絵のほう。笑うのが早すぎて、目がすこし閉じかけている。裏に「六〇・七・二」。",
+  "len": 45,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 707,
+  "quote": "'",
+  "text": "六〇・七・二",
+  "len": 6,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 714,
+  "quote": "'",
+  "text": "写真　四枚目",
+  "len": 6,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 715,
+  "quote": "'",
+  "text": "金庫の底に、包んで仕舞ってあった。台紙は切って日付まで入っているのに、像が出ていない。焼かれないまま四十年、ここにいた。",
+  "len": 60,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 724,
+  "quote": "'",
+  "text": "六〇・一一・二三",
+  "len": 8,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 733,
+  "quote": "'",
+  "text": "写真の裏",
+  "len": 4,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 734,
+  "quote": "'",
+  "text": "裏に鉛筆で日付だけ。「六〇・一一・二三」。名前は書いていない。撮る前に、書いてあったのだ。",
+  "len": 45,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 742,
+  "quote": "'",
+  "text": "手記",
+  "len": 2,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 743,
+  "quote": "'",
+  "text": "金庫の中にあった。日付は昭和六十年十一月二十三日、夜。折り目に、一度も開かれた形跡がない。",
+  "len": 45,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 766,
+  "quote": "'",
+  "text": "出されなかった手紙",
+  "len": 9,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 767,
+  "quote": "'",
+  "text": "表に「灯へ」とだけ。宛先も切手もない。封をされないまま、四十年、金庫の底にあった。",
+  "len": 41,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 775,
+  "quote": "'",
+  "text": "灯　へ",
+  "len": 3,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 828,
+  "quote": "'",
+  "text": "写真の裏",
+  "len": 4,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 829,
+  "quote": "`",
+  "text": "裏に鉛筆で日付だけ。「${backDate}」。名前は書いていない。",
+  "len": 34,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 852,
+  "quote": "'",
+  "text": "粉を蒸留水に落として、瓶ごと回す。琥珀色になるまで、思ったより時間がかかる。",
+  "len": 38,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/items.ts",
+  "line": 859,
+  "quote": "'",
+  "text": "玉を溝に落として、締め輪を指で回す。最後の四半回転だけ、指の腹に手応えがある。",
+  "len": 39,
+  "cat": "items"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 77,
+  "quote": "'",
+  "text": "受付と通路",
+  "len": 5,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 81,
+  "quote": "'",
+  "text": "階段",
+  "len": 2,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 82,
+  "quote": "'",
+  "text": "玄関の引き戸",
+  "len": 6,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 83,
+  "quote": "'",
+  "text": "配電盤の壁",
+  "len": 5,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 88,
+  "quote": "'",
+  "text": "背景幕",
+  "len": 3,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 91,
+  "quote": "'",
+  "text": "大判カメラと肖像の壁",
+  "len": 10,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 96,
+  "quote": "'",
+  "text": "撮影灯と通路",
+  "len": 6,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 97,
+  "quote": "'",
+  "text": "暗室の扉",
+  "len": 4,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 103,
+  "quote": "'",
+  "text": "作業台",
+  "len": 3,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 104,
+  "quote": "'",
+  "text": "扉と鍵板",
+  "len": 4,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 108,
+  "quote": "'",
+  "text": "薬品棚",
+  "len": 3,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 109,
+  "quote": "'",
+  "text": "引き伸ばし機と乾燥ロープ",
+  "len": 12,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 119,
+  "quote": "'",
+  "text": "事務机",
+  "len": 3,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 120,
+  "quote": "'",
+  "text": "金庫",
+  "len": 2,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 121,
+  "quote": "'",
+  "text": "壁の貼り紙",
+  "len": 5,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 122,
+  "quote": "'",
+  "text": "撮影室へ",
+  "len": 4,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 135,
+  "quote": "'",
+  "text": "撮影室への通路",
+  "len": 7,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 137,
+  "quote": "'",
+  "text": "奥は暗い。足元が見えない。",
+  "len": 13,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 139,
+  "quote": "'",
+  "text": "玄関ホールへの通路",
+  "len": 9,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 142,
+  "quote": "'",
+  "text": "暗室の扉",
+  "len": 4,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 144,
+  "quote": "'",
+  "text": "把手は回るが、錠が落ちたままだ。",
+  "len": 16,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 146,
+  "quote": "'",
+  "text": "撮影室へ戻る扉",
+  "len": 7,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 149,
+  "quote": "'",
+  "text": "事務室の扉",
+  "len": 5,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 151,
+  "quote": "'",
+  "text": "すりガラスの向こうは暗い。錠がかかっている。",
+  "len": 22,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/nodes.ts",
+  "line": 153,
+  "quote": "'",
+  "text": "撮影室へ戻る扉",
+  "len": 7,
+  "cat": "movement"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 12,
+  "quote": "'",
+  "text": "霧沢写真館",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 13,
+  "quote": "'",
+  "text": "はじめから",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 14,
+  "quote": "'",
+  "text": "つづきから",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 15,
+  "quote": "'",
+  "text": "設定",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 16,
+  "quote": "'",
+  "text": "あそびかた",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 17,
+  "quote": "'",
+  "text": "制作について",
+  "len": 6,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 19,
+  "quote": "'",
+  "text": "持ち物",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 22,
+  "quote": "'",
+  "text": "覚え書き",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 23,
+  "quote": "'",
+  "text": "手がかり",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 24,
+  "quote": "'",
+  "text": "設定",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 25,
+  "quote": "'",
+  "text": "閉じる",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 26,
+  "quote": "'",
+  "text": "戻る",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 27,
+  "quote": "'",
+  "text": "使う",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 28,
+  "quote": "'",
+  "text": "合わせる",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 29,
+  "quote": "'",
+  "text": "調べる",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 30,
+  "quote": "'",
+  "text": "手に取る",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 31,
+  "quote": "'",
+  "text": "読む",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 32,
+  "quote": "'",
+  "text": "進む",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 33,
+  "quote": "'",
+  "text": "開ける",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 34,
+  "quote": "'",
+  "text": "回す",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 35,
+  "quote": "'",
+  "text": "引く",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 36,
+  "quote": "'",
+  "text": "押す",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 37,
+  "quote": "'",
+  "text": "選ぶ",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 38,
+  "quote": "'",
+  "text": "選択をやめる",
+  "len": 6,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 39,
+  "quote": "'",
+  "text": "やめる",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 40,
+  "quote": "'",
+  "text": "そうする",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 42,
+  "quote": "'",
+  "text": "新しい",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 43,
+  "quote": "'",
+  "text": "調べた",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 44,
+  "quote": "'",
+  "text": "形が変わった",
+  "len": 6,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 45,
+  "quote": "'",
+  "text": "役目を終えた",
+  "len": 6,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 47,
+  "quote": "'",
+  "text": "持ち物はまだ何もない",
+  "len": 10,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 48,
+  "quote": "'",
+  "text": "書き留めたことはまだない",
+  "len": 12,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 49,
+  "quote": "'",
+  "text": "選択中",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 50,
+  "quote": "'",
+  "text": "記録した",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 51,
+  "quote": "'",
+  "text": "自動で記録した",
+  "len": 7,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 55,
+  "quote": "'",
+  "text": "ヒント1",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 55,
+  "quote": "'",
+  "text": "ヒント2",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 55,
+  "quote": "'",
+  "text": "ヒント3",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 61,
+  "quote": "'",
+  "text": "まだ開いていない",
+  "len": 8,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 62,
+  "quote": "'",
+  "text": "ヒントは一段ずつ開く。開くまえに、もう少し部屋を歩いてもいい。",
+  "len": 31,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 63,
+  "quote": "'",
+  "text": "ヒントを見る",
+  "len": 6,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 65,
+  "quote": "'",
+  "text": "謎",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 66,
+  "quote": "'",
+  "text": "いま行き詰まっているものはない",
+  "len": 15,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 68,
+  "quote": "'",
+  "text": "見渡す",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 71,
+  "quote": "'",
+  "text": "一　／　玄関ホール",
+  "len": 9,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 75,
+  "quote": "'",
+  "text": "雨。取り壊しは明日の朝九時。",
+  "len": 14,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 76,
+  "quote": "'",
+  "text": "霧沢写真館。四十年前に店を閉めて、それきり誰も住んでいない。",
+  "len": 30,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 77,
+  "quote": "'",
+  "text": "鍵を預かった。中のものは、持ち出すものと、そうでないものに分ければいい。",
+  "len": 36,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 78,
+  "quote": "'",
+  "text": "引き戸が背中で鳴る。",
+  "len": 10,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 79,
+  "quote": "'",
+  "text": "錠が落ちる音。四つ。",
+  "len": 10,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 80,
+  "quote": "'",
+  "text": "——外は、まだ夜。",
+  "len": 9,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 85,
+  "quote": "'",
+  "text": "四つの環が、まだ揃っていない。",
+  "len": 15,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 86,
+  "quote": "'",
+  "text": "それはここに使うものではない。",
+  "len": 15,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 87,
+  "quote": "'",
+  "text": "この機械は、当てて壊すためのものではない。",
+  "len": 21,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 88,
+  "quote": "'",
+  "text": "底に、四十年ぶんの埃が平らに積もっている。",
+  "len": 21,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 89,
+  "quote": "'",
+  "text": "壁。日に焼けた色が均一に古い。",
+  "len": 15,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 90,
+  "quote": "'",
+  "text": "板が鳴る。それだけ。",
+  "len": 10,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 91,
+  "quote": "'",
+  "text": "電気が来ていない。",
+  "len": 9,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 92,
+  "quote": "'",
+  "text": "環が最後まで回りきらない。",
+  "len": 13,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 93,
+  "quote": "'",
+  "text": "軸に、六角の穴が開いている。",
+  "len": 14,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 94,
+  "quote": "'",
+  "text": "逆だ。巻き取りの音がしない。",
+  "len": 14,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 95,
+  "quote": "'",
+  "text": "白い光が壁に落ちるだけ。",
+  "len": 12,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 96,
+  "quote": "'",
+  "text": "枠だけでは、何も大きくならない。",
+  "len": 16,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 97,
+  "quote": "'",
+  "text": "粉のままでは何も起きない。",
+  "len": 13,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 98,
+  "quote": "'",
+  "text": "この順では、像が止まらない。",
+  "len": 14,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 99,
+  "quote": "'",
+  "text": "赤を消せば、出かかった像が消える。",
+  "len": 17,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 100,
+  "quote": "'",
+  "text": "明るすぎて、何も光らない。",
+  "len": 13,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 101,
+  "quote": "'",
+  "text": "枠の大きさが合わない。年がずれている。",
+  "len": 19,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 102,
+  "quote": "'",
+  "text": "線は壁の途中で切られている。切ったのは素人の手つきだ。",
+  "len": 27,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 103,
+  "quote": "'",
+  "text": "内側から釘が打ってある。外側からではない。",
+  "len": 21,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 104,
+  "quote": "'",
+  "text": "明日には無くなるものだ。今日、動かす理由がない。",
+  "len": 24,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 105,
+  "quote": "'",
+  "text": "把手は回るが、錠が落ちたままだ。",
+  "len": 16,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 106,
+  "quote": "'",
+  "text": "すりガラスの向こうは暗い。錠がかかっている。",
+  "len": 22,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 107,
+  "quote": "'",
+  "text": "まだ現像液を作っていない。粉と水を合わせて、いちばん左のバットに張るところからだ。",
+  "len": 41,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 108,
+  "quote": "'",
+  "text": "白い光の下では、像の出るまえに焼けてしまう。赤の下でする仕事だ。",
+  "len": 32,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 109,
+  "quote": "'",
+  "text": "もう済んでいる。",
+  "len": 8,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 110,
+  "quote": "'",
+  "text": "手の届くところに、いま用のあるものはない。",
+  "len": 21,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 116,
+  "quote": "'",
+  "text": "見合い、七五三、卒業。知らない町の知らない顔が、みな同じ椅子に座っている。四十年ぶんの他人が、まだきちんと笑っている。",
+  "len": 59,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 118,
+  "quote": "'",
+  "text": "昭和六十年十一月。めくられないまま、右下がわずかに反っている。二十三日に丸がついている。誰かの写真の予定だったのだろう。",
+  "len": 60,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 120,
+  "quote": "'",
+  "text": "大人用の外套が一着。その下に、届くはずのない高さに小さな木のフックが後から打ち足してある。何もかかっていない。",
+  "len": 55,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 121,
+  "quote": "'",
+  "text": "押すと、澄んだ音がひとつ。四十年経っても狂っていない。返事はない。",
+  "len": 33,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 123,
+  "quote": "'",
+  "text": "受話器を上げても、音はしない。線は壁の途中で切られている。切ったのは業者ではなく、素人の手つきだ。",
+  "len": 49,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 125,
+  "quote": "'",
+  "text": "背表紙に年号が並ぶ。昭和五十四、五十五、五十六——六十で途切れる。六十一年の分は、買われてもいない。",
+  "len": 50,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 127,
+  "quote": "'",
+  "text": "戸口の柱に、鉛筆の横線が四本。いちばん上でも、胸より低い。日付だけが書いてあって、名前がない。",
+  "len": 47,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 129,
+  "quote": "'",
+  "text": "洗濯挟みが六つ、等間隔で並んでいる。印画紙は一枚も残っていない。挟まっているのは、ネガが一枚きり。挟み口の内側だけ、二つが黄ばんでいる。",
+  "len": 68,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 131,
+  "quote": "'",
+  "text": "茶色の瓶が並ぶ。ラベルは館主の字で、どれも同じ大きさ、同じ高さに貼ってある。右端に一本ぶんの空きがある。",
+  "len": 52,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 133,
+  "quote": "'",
+  "text": "すりガラスの向こうで、雨が街灯を溶かしている。外から見れば、この明かりは四十年ぶりということになる。",
+  "len": 50,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 135,
+  "quote": "'",
+  "text": "座面の中央だけ、布の毛が寝ている。何千人がここに座って、正面を向いた。いまは壁を向いている。",
+  "len": 46,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 137,
+  "quote": "'",
+  "text": "大きな傘が三つ、天井を向いたまま。フィラメントは切れていない。この明かりで人を綺麗にするのが仕事だった。",
+  "len": 52,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 139,
+  "quote": "'",
+  "text": "傘立てに、骨の折れた子供用の傘。赤。折れた骨だけが、ていねいに糸で束ねてある。直そうとして、途中でやめたらしい。",
+  "len": 56,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 141,
+  "quote": "'",
+  "text": "五段上がったところで、板が五枚、内側から打ちつけてある。釘の頭がまだ新しい。",
+  "len": 38,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 142,
+  "quote": "'",
+  "text": "ここから上へは行けない。上に何かあったことだけが、手すりの磨り減り方でわかる。",
+  "len": 39,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 144,
+  "quote": "'",
+  "text": "秒針だけが動いている。電気が戻ってから数えはじめた秒だ。四十年ぶんの遅れは、誰も直さない。律儀な話だ。",
+  "len": 51,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 145,
+  "quote": "'",
+  "text": "石油ストーブの上に、蓋のずれたやかん。底に白い輪。最後に沸かした水が、そのまま乾ききっている。",
+  "len": 47,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 146,
+  "quote": "'",
+  "text": "傘のついた事務用の灯。首の関節だけ、油の色が濃い。何度も同じ角度に戻された跡だ。",
+  "len": 40,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 147,
+  "quote": "'",
+  "text": "作業台の脚が、片側だけ継いである。継いだ木の色が新しい。焼けた分を切って、同じ寸法に戻したらしい。",
+  "len": 49,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 148,
+  "quote": "'",
+  "text": "営業許可証。昭和三十九年開業。判子の朱肉が、紙の繊維の間で少し滲んでいる。",
+  "len": 37,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 149,
+  "quote": "'",
+  "text": "床に据えつけの金庫。塗装は厚く、角だけが下地の鉄を見せている。環はまだ滑らかに回る。",
+  "len": 42,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 150,
+  "quote": "'",
+  "text": "深い流し。栓の周りだけ、水垢の輪が四十年ぶん重なっている。",
+  "len": 29,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 151,
+  "quote": "'",
+  "text": "反射板。片面が白く、片面が銀。持ち手のところだけ、布地がすり切れている。",
+  "len": 36,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 152,
+  "quote": "'",
+  "text": "すりガラスに、外向きの字。内側からは、いつも逆さに読むことになっていた。",
+  "len": 36,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 153,
+  "quote": "'",
+  "text": "印画紙の箱。未開封が一つ。使用期限は昭和六十二年まで、と印刷してある。",
+  "len": 35,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 154,
+  "quote": "'",
+  "text": "壁のこの一画だけ、塗りが新しい。何かを繰り返し映していた場所だ。",
+  "len": 32,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 155,
+  "quote": "'",
+  "text": "屑籠。丸めた紙が三つ。どれも書き出しの二行で止まっている。",
+  "len": 29,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 161,
+  "quote": "'",
+  "text": "手記",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 162,
+  "quote": "`",
+  "text": "　　　　　　　　　　　　昭和六十年十一月二十三日　夜\n\n一枚だけ、まだ現像していない。\n\n撮るつもりのない一枚だった。倒したのは私だ。棚に肘が当たった。\n瓶が落ちて、栓が飛んで、ストーブの脚元まで走った。\n拾おうとして、蛇腹の脇に手をついた。シャッターが落ちた。\n\nあのフィルムには、床が写っている。広がっていくところが写っている。\n現像すれば、何が起きたかがそのまま出る。\n\n出したところで、火は消えない。\n出さなければ、この家は「原因の分からない火事の家」で済む。\n出せば、この家は「父親が焼いた家」になる。灯はその家の子になる。\n\n私はここを畳む。写真の中からもあの子を外す。\n切るのは惜しいが、惜しいで済む話ではない。\nあの子には、写真館の娘でない場所で大きくなってもらう。\n\n壁の一面だけは残す。あそこだけは切らない。\nいつか誰かが、抜いたところを埋めてくれればいい。\n埋まらなければ、それでいい。空いているという事実だけ残る。\n\n　　　　　　　　　　　　　　　　　　　　　　霧沢響一",
+  "len": 447,
+  "cat": "documents"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 188,
+  "quote": "'",
+  "text": "暗室作業手順",
+  "len": 6,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 189,
+  "quote": "`",
+  "text": "　　　　暗室作業手順　　霧沢写真館\n\n一、撮影　露光を終えたフィルムは暗袋に入れ、そのまま暗室へ運ぶこと。\n　　　　　途中で明かりのある場所を通らないこと。\n\n二、現像　現像液に浸す。液温二十度、時間は指定に従うこと。\n　　　　　ここで像が出る。出た像はまだ生きている。\n\n三、停止　停止液に移す。ここを飛ばすと像は止まらず、そのまま潰れる。\n　　　　　短くてよい。短くなければならない。\n\n四、定着　定着液によく浸す。ここまで来て初めて、\n　　　　　光に当てても消えなくなる。その後、水洗。\n\n＊　バットは作業台の左から、現像、停止、定着、水洗の順に並べておくこと。\n　　撮影は暗室の外の仕事だから、台には載らない。\n　　順が入れ替わっていると、暗い中では必ず取り違える。\n　　並べ直したときは、必ずラベルも確かめること。\n　　ラベルだけを信じないこと。\n\n　　　　　　　　　　　　　　　　　　　　　　霧沢",
+  "len": 404,
+  "cat": "documents"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 212,
+  "quote": "'",
+  "text": "予約控",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 213,
+  "quote": "`",
+  "text": "　昭和六十年　十一月　　　　　　　　霧沢写真館　予約控\n\n　三日（日）　　十時　　　佐久間様　　七五三　　三名　　済\n　　　　　　　　十三時　　東様　　　　見合写真　一名　　済\n　九日（土）　　十一時　　小田様　　　結婚記念　二名　　済\n　十日（日）　　九時　　　町立第二小学校　六年一組　前撮　済\n　十六日（土）　十四時　　橋本様　　　遺影　　　一名　　済\n　　　　　　　　（お渡し急ぎ。額は黒でなく茶で、とのこと）\n　二十日（水）　—　　　　休館　　　薬品入替\n　二十三日（土）十時　　　灯　七歳　　　　　　　　　　—\n　　　　　　　　（七五三　着付けは母の分を直して使う）\n\n　二十四日以降　　白紙",
+  "len": 302,
+  "cat": "documents"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 228,
+  "quote": "'",
+  "text": "灯へ",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 229,
+  "quote": "`",
+  "text": "　灯へ\n\nこれを読む頃には、お前はもう大人になっている。\n\n父さんは写真の人間だから、言葉で書くのは下手だ。\n撮ったものは山ほどあるのに、渡せるものが一枚もない。\n\n家の写真を全部やり直した。お前の写っているところを外した。\n理由は書かない。書けば言い訳になる。\nただ、お前が悪いことは一つもない。\nそれだけは、順番として先に書いておく。\n\n七五三の日に撮るつもりだった。着物はもう直してある。\n二十三日の十時に、椅子を正面に向けて、待っている。\n\nこちらを見て、と言ったら、お前はいつも先に笑う。\n笑うのは押したあとでいい、と何度言っても、先に笑う。\n\n　　　　どこにいてもいい。写らなくてもいい。\n　　　　明るいところにいてくれれば、それでいい。\n\n　　　　　　　　　　　　　　　　　　　　　　　　父",
+  "len": 352,
+  "cat": "documents"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 264,
+  "quote": "'",
+  "text": "夜明けの扉",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 265,
+  "quote": "`",
+  "text": "四つの環が揃う。錠が外れる音は、落ちたときと同じ音がする。\n\n引き戸を開ける。雨は上がりかけている。\n背後で、館はさっきまでと何も変わらない顔をしている。\n\n荷台に積むものは、結局ほとんどなかった。\n持ち出すものと、そうでないもの。\nここにあったものは、たぶん、そのどちらでもない。\n\n九時にはここは無くなる。\n何があったのかは、分からないままだ。\n\n戸を閉める。今度は、外から。",
+  "len": 190,
+  "cat": "documents"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 278,
+  "quote": "'",
+  "text": "——霧沢写真館　解体　午前九時十二分　立会人なし",
+  "len": 24,
+  "cat": "endings"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 282,
+  "quote": "'",
+  "text": "最後の一枚",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 283,
+  "quote": "`",
+  "text": "液の中で、像が出てくる。\n床。木目。倒れた茶色の瓶。栓が転がっている。\n広がっていく液の縁が、そこで止まったまま、\n四十年ぶんの静けさになっている。\n\n人は写っていない。写真は誰も責めない。\nただ、肘が当たったのだと、この一枚だけが知っている。\n\n光に当てても、もう消えない。\n四十年遅れて、最後の一枚が干される。\n\n消えた人が何を守ろうとしたのかは、分かった。\nそれが正しかったかどうかは、分からない。",
+  "len": 202,
+  "cat": "endings"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 296,
+  "quote": "'",
+  "text": "——最後の一枚は、四十年後に定着した",
+  "len": 18,
+  "cat": "feedback"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 300,
+  "quote": "'",
+  "text": "灯をかえす",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 301,
+  "quote": "`",
+  "text": "四つの空白に、四枚を戻す。\n一歳。四歳。七歳。そして、椅子が正面を向いていた日のために\n用意だけされていた、四枚目。\n\n安全灯を落とす。赤が引いて、字は壁に戻る。\n散らばっていた三つが、写真の真ん中でひと続きになる。\n——灯を、かえす。\n\n家じゅうから外された名前が、家に一つだけ戻った。\n\n九時に壊れるとしても、それまでこの壁は揃っている。\n揃っていたという事実は、壊しても消えない。",
+  "len": 193,
+  "cat": "documents"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 313,
+  "quote": "'",
+  "text": "——解体は延期された。理由：屋内に、記録すべきものがあるため",
+  "len": 30,
+  "cat": "endings"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 317,
+  "quote": "`",
+  "text": "　　　　　　　　霧沢写真館　　最後の一枚\n\n\n　　　　企画・脚本・演出・美術・造形・効果音・実装\n\n　　　　　　　　　　（個人制作）\n\n\n　　　　　　　　　　　　　—\n\n\n　この作品に登場する写真館、人物、町はすべて架空のものです。\n　現実の写真館、写真技術者、および出来事とは関係がありません。\n\n　劇中の暗室作業手順は、昭和期の一般的な白黒写真処理を\n　物語のために簡略化したものです。\n\n　本作の三次元形状、質感、音は、すべて実行時に生成されています。\n　外部の画像、音声、モデルは一切使用していません。\n\n\n　　　　　　　　　　　　　—\n\n\n　　　　　撮影　現像　停止　定着\n　　　　　　　　　水洗\n\n\n　　　　　　ご来館ありがとうございました\n\n\n　　　　　　　　　　　　　—",
+  "len": 343,
+  "cat": "endings"
+ },
+ {
+  "file": "src/content/chapter01/text.ts",
+  "line": 350,
+  "quote": "`",
+  "text": "　　　　　あそびかた\n\n\n　向き直る　　　　　画面の左右の端を押す　／　←　→\n\n　調べる　　　　　　触れると名前が出る。出たら押す\n\n　部屋を移る　　　　戸口や扉そのものを押す\n\n　近くで見るのをやめる　　右上の　×　戻る　／　右クリック か Esc\n\n　持ち物　　　　　　画面下の 持ち物　／　I キー\n\n　道具を使う　　　　持ち物で道具を選び、対象を押す\n\n　道具を合わせる　　持ち物で道具を選び、もう一方を押して 合わせる\n\n　覚え書き　　　　　気づいたことは自動で書き留められる　／　J キー\n\n　手がかり　　　　　行き詰まったときに　／　H キー\n\n　見渡す　　　　　　Q キー　調べられる場所が一度だけ光る\n\n　記録　　　　　　　節目ごとに自動で記録される\n\n\n　　急がなくてもいい。\n　　部屋のほうは、四十年待っている。",
+  "len": 368,
+  "cat": "documents"
+ },
+ {
+  "file": "src/game/App.ts",
+  "line": 120,
+  "quote": "'",
+  "text": "気づいた",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/game/App.ts",
+  "line": 536,
+  "quote": "'",
+  "text": "記録できなかった",
+  "len": 8,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/game/App.ts",
+  "line": 614,
+  "quote": "'",
+  "text": "進行データを消した",
+  "len": 9,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/game/App.ts",
+  "line": 779,
+  "quote": "`",
+  "text": "${h}時間${m}分",
+  "len": 11,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/game/App.ts",
+  "line": 779,
+  "quote": "`",
+  "text": "${m}分",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 63,
+  "quote": "'",
+  "text": "一",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 63,
+  "quote": "'",
+  "text": "二",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 63,
+  "quote": "'",
+  "text": "三",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 63,
+  "quote": "'",
+  "text": "四",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 63,
+  "quote": "'",
+  "text": "五",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 63,
+  "quote": "'",
+  "text": "六",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 63,
+  "quote": "'",
+  "text": "七",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 63,
+  "quote": "'",
+  "text": "八",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 63,
+  "quote": "'",
+  "text": "九",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 63,
+  "quote": "'",
+  "text": "十",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 67,
+  "quote": "'",
+  "text": "受付の抽斗",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 68,
+  "quote": "'",
+  "text": "配電盤",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 69,
+  "quote": "'",
+  "text": "昭和六十年の写真",
+  "len": 8,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 70,
+  "quote": "'",
+  "text": "玄関の錠",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 71,
+  "quote": "'",
+  "text": "時計の跡",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 72,
+  "quote": "'",
+  "text": "写場の椅子",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 73,
+  "quote": "'",
+  "text": "巻き上げ軸",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 74,
+  "quote": "'",
+  "text": "年代記の壁",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 75,
+  "quote": "'",
+  "text": "大判カメラ",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 76,
+  "quote": "'",
+  "text": "ピントグラス",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 77,
+  "quote": "'",
+  "text": "撮影灯の台座",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 78,
+  "quote": "'",
+  "text": "作業台のバット",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 79,
+  "quote": "'",
+  "text": "薬品棚",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 80,
+  "quote": "'",
+  "text": "引き伸ばし機",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 81,
+  "quote": "'",
+  "text": "乾燥ロープ",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 82,
+  "quote": "'",
+  "text": "鍵板",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 83,
+  "quote": "'",
+  "text": "金庫",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 312,
+  "quote": "'",
+  "text": "手に取った",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 327,
+  "quote": "'",
+  "text": "覚え書き",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 695,
+  "quote": "'",
+  "text": "受付の抽斗",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 703,
+  "quote": "'",
+  "text": "抽斗",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 706,
+  "quote": "'",
+  "text": "抽斗の中",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 706,
+  "quote": "'",
+  "text": "抽斗",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 716,
+  "quote": "'",
+  "text": "紙の袋に、磁器のヒューズが一本。鉛筆の折れたのと、名刺が一枚。",
+  "len": 31,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 742,
+  "quote": "'",
+  "text": "配電盤",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 766,
+  "quote": "'",
+  "text": "配電盤の蓋",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 776,
+  "quote": "'",
+  "text": "受け金が三つ。両端には磁器の筒が入っている。真ん中だけが空で、その後ろの板が黒く焦げている。",
+  "len": 46,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 784,
+  "quote": "'",
+  "text": "空の受け金",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 784,
+  "quote": "'",
+  "text": "受け金",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 796,
+  "quote": "'",
+  "text": "そこは、まだ生きている。",
+  "len": 12,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 811,
+  "quote": "'",
+  "text": "筒を受け金に落とす。かちりと座って、それきり動かなくなる。",
+  "len": 29,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 818,
+  "quote": "'",
+  "text": "新しい筒が座っている。",
+  "len": 11,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 819,
+  "quote": "'",
+  "text": "空の受け金。奥の板が、丸く焦げている。同じ形のものが、この館のどこかにあるはずだ。",
+  "len": 41,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 822,
+  "quote": "'",
+  "text": "磁器の筒。中の線は繋がっている。触る理由がない。",
+  "len": 24,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 831,
+  "quote": "'",
+  "text": "主レバー",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 842,
+  "quote": "'",
+  "text": "額入りの写真",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 850,
+  "quote": "'",
+  "text": "昭和六十年の撮影室",
+  "len": 9,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 858,
+  "quote": "'",
+  "text": "昭和六十年の撮影室",
+  "len": 9,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 859,
+  "quote": "'",
+  "text": "受付に、当時の撮影室を写した額がある。いまの撮影室と見比べれば、変わったところがあるはずだ。",
+  "len": 46,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 860,
+  "quote": "'",
+  "text": "受付の額",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 862,
+  "quote": "'",
+  "text": "撮影室。背景幕の前に椅子が一脚。壁の上のほうに何かが掛かっている。撮られたのは、この館が閉まる年だ。",
+  "len": 50,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 876,
+  "quote": "'",
+  "text": "写真の幕には絵が描いてある。さっき巻き上げたのは、無地の天鵞絨だった。",
+  "len": 35,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 880,
+  "quote": "'",
+  "text": "額の台紙が、後ろで一度剥がされている。",
+  "len": 19,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 882,
+  "quote": "'",
+  "text": "同じ部屋が、まだ生きている顔で写っている。",
+  "len": 21,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 890,
+  "quote": "'",
+  "text": "額の台紙",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 894,
+  "quote": "'",
+  "text": "台紙の裏の写真",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 894,
+  "quote": "'",
+  "text": "額の台紙",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 909,
+  "quote": "'",
+  "text": "台紙が一度剥がされている。裏板を起こすと、あいだに写真がもう一枚挟まっていた。手に取れる。",
+  "len": 45,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 915,
+  "quote": "'",
+  "text": "挟まっていた一枚を抜き取る。子供が一人。抱かれていて、顔は半分だけ写っている。",
+  "len": 39,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 925,
+  "quote": "'",
+  "text": "玄関の引き戸",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 934,
+  "quote": "'",
+  "text": "入ってきた引き戸。内側から錠が下りている。環が四つ、横に並んでいる。",
+  "len": 34,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 945,
+  "quote": "'",
+  "text": "引き戸",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 956,
+  "quote": "`",
+  "text": "${KANJI_ORDINAL[i]}つめの環",
+  "len": 23,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 965,
+  "quote": "'",
+  "text": "錠前",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 970,
+  "quote": "'",
+  "text": "環が四つ。それぞれに印が打ってある。絞り、浮かぶ像、横一文字、四角。写真の工程だ。",
+  "len": 41,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 976,
+  "quote": "'",
+  "text": "玄関の錠前",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 977,
+  "quote": "'",
+  "text": "玄関の錠には環が四つ。左から、絞り、浮かぶ像、横一文字、四角の印。いずれも写真の工程を表す印だ。順番は、工程の順に合わせるものらしい。",
+  "len": 67,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 978,
+  "quote": "'",
+  "text": "玄関ホール　引き戸の錠",
+  "len": 11,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 985,
+  "quote": "'",
+  "text": "呼び鈴",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 986,
+  "quote": "'",
+  "text": "黒電話",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 987,
+  "quote": "'",
+  "text": "暦",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 988,
+  "quote": "'",
+  "text": "外套掛け",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 989,
+  "quote": "'",
+  "text": "傘立て",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 992,
+  "quote": "'",
+  "text": "階段",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 993,
+  "quote": "'",
+  "text": "柱の線",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 999,
+  "quote": "'",
+  "text": "壁に浮かぶ字",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1004,
+  "quote": "'",
+  "text": "灯",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1011,
+  "quote": "'",
+  "text": "レバーは動くが、途中で戻る。受け金が一つ空のままだ。",
+  "len": 26,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1031,
+  "quote": "'",
+  "text": "通電",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1032,
+  "quote": "'",
+  "text": "配電盤のヒューズを替えて、主レバーを上げた。館じゅうの明かりが戻った。奥の部屋も見えるようになった。",
+  "len": 50,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1033,
+  "quote": "'",
+  "text": "玄関ホール　配電盤",
+  "len": 9,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1036,
+  "quote": "'",
+  "text": "明かりが順に点いていく。撮影室のほうが、いちばん遅れて明るくなる。",
+  "len": 33,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1061,
+  "quote": "'",
+  "text": "環は揃った。歯は動く。ただ、なぜこの順なのかが分からないままだ。手が止まる。",
+  "len": 38,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1069,
+  "quote": "'",
+  "text": "環が四つとも止まる。錠が外れる音は、落ちたときと同じ音がする。",
+  "len": 31,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1100,
+  "quote": "'",
+  "text": "同じ字が、赤の下でだけ浮いている。",
+  "len": 17,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1105,
+  "quote": "`",
+  "text": "塗料で書かれた字が、赤い明かりの下だけで浮かび上がる。「${glyph}」。",
+  "len": 38,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1109,
+  "quote": "`",
+  "text": "赤の下の字（${['一', '二', '三'][found - 1]}／三）",
+  "len": 38,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1110,
+  "quote": "`",
+  "text": "赤い明かりの下で、壁に「${glyph}」が浮かんだ。同じものが、ほかの部屋にもあるかもしれない。",
+  "len": 49,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1111,
+  "quote": "'",
+  "text": "安全灯の下",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1117,
+  "quote": "'",
+  "text": "三つの書き付け",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1118,
+  "quote": "'",
+  "text": "玄関ホールに「灯」、撮影室に「を」、事務室に「かえす」。三つ揃えて、ひと続きの言葉になる。",
+  "len": 45,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1119,
+  "quote": "'",
+  "text": "安全灯の下",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1121,
+  "quote": "'",
+  "text": "三つ揃う。灯を、かえす。",
+  "len": 12,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1135,
+  "quote": "'",
+  "text": "壁の丸い跡",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1150,
+  "quote": "'",
+  "text": "日に焼けていない丸",
+  "len": 9,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1167,
+  "quote": "'",
+  "text": "壁紙が丸く一段明るい。長いあいだ、ここに丸いものが掛かっていた。釘が一本残っていて、真鍮の金具が下がったままだ。",
+  "len": 56,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1168,
+  "quote": "'",
+  "text": "壁紙が丸く一段明るい。長いあいだ、ここに丸いものが掛かっていた。釘が一本残っている。",
+  "len": 42,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1175,
+  "quote": "'",
+  "text": "釘に掛かった金具",
+  "len": 8,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1183,
+  "quote": "'",
+  "text": "真鍮のクランク。握りの塗りだけが、手のかたちに剥げている。",
+  "len": 29,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1192,
+  "quote": "'",
+  "text": "背景幕",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1198,
+  "quote": "'",
+  "text": "無地の天鵞絨。写真では、ここに絵が描いてあった。別の幕が、この裏に巻かれたままなのかもしれない。",
+  "len": 48,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1206,
+  "quote": "'",
+  "text": "写場の椅子",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1214,
+  "quote": "'",
+  "text": "座面",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1218,
+  "quote": "'",
+  "text": "写真では正面を向いていた椅子が、壁を向いている。座面の中央だけ、布の毛が寝ている。",
+  "len": 41,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1224,
+  "quote": "'",
+  "text": "座面の裂け目",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1232,
+  "quote": "'",
+  "text": "糸のほつれたところに指が入る。中から、玉の抜けたルーペの枠が出てきた。",
+  "len": 35,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1242,
+  "quote": "'",
+  "text": "巻き上げ軸",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1252,
+  "quote": "'",
+  "text": "幕を吊る軸の端に、真鍮の座金が出ている。中心は六角に彫ってある。",
+  "len": 32,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1263,
+  "quote": "'",
+  "text": "六角の穴",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1267,
+  "quote": "'",
+  "text": "クランク",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1267,
+  "quote": "'",
+  "text": "六角の穴",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1270,
+  "quote": "'",
+  "text": "軸はもう空回りしている。幕は上がりきっている。",
+  "len": 23,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1282,
+  "quote": "'",
+  "text": "六角がぴたりと噛む。少し力を入れれば回りそうだ。",
+  "len": 24,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1295,
+  "quote": "'",
+  "text": "壁一面の写真",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1304,
+  "quote": "'",
+  "text": "霧沢家の記録",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1309,
+  "quote": "'",
+  "text": "同じ子供が、少しずつ大きくなりながら並んでいる。途中に四つ、抜き取られた四角がある。画鋲だけが残っている。",
+  "len": 53,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1316,
+  "quote": "'",
+  "text": "鉛筆の走り書き",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1321,
+  "quote": "'",
+  "text": "鍵は灯の下に。読めてしまえば、それだけの文だ。",
+  "len": 23,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1324,
+  "quote": "'",
+  "text": "鉛筆の字。読もうとすると、字のほうが天地逆になっている。上下をひっくり返して書いてある。",
+  "len": 44,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1328,
+  "quote": "'",
+  "text": "裏返しの字",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1329,
+  "quote": "'",
+  "text": "年代記の壁に、天地の逆さまな鉛筆書きがある。そのままでは読めない。像をひっくり返して見せる道具が要る。",
+  "len": 51,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1330,
+  "quote": "'",
+  "text": "撮影室　年代記の壁",
+  "len": 9,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1339,
+  "quote": "'",
+  "text": "一歳の枠",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1339,
+  "quote": "'",
+  "text": "四歳の枠",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1339,
+  "quote": "'",
+  "text": "七歳の枠",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1339,
+  "quote": "'",
+  "text": "四枚目の枠",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1345,
+  "quote": "'",
+  "text": "戻っている。四十年ぶんの日焼けの差が、縁のところに出ている。",
+  "len": 30,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1349,
+  "quote": "'",
+  "text": "画鋲が四つ残っている。ここにあった一枚は、まっすぐに切り取られている。",
+  "len": 35,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1364,
+  "quote": "`",
+  "text": "枠に収まる。四つのうち、${['一つ', '二つ', '三つ', '四つ'][n - 1]}が埋まった。",
+  "len": 52,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1367,
+  "quote": "'",
+  "text": "壁が揃う",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1367,
+  "quote": "'",
+  "text": "抜き取られた四枚を、年代記の壁に戻した。四十年ぶりに、この壁は揃っている。",
+  "len": 37,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1367,
+  "quote": "'",
+  "text": "撮影室　年代記の壁",
+  "len": 9,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1378,
+  "quote": "'",
+  "text": "大判カメラ",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1397,
+  "quote": "'",
+  "text": "ピントグラス",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1405,
+  "quote": "'",
+  "text": "三脚の小抽斗",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1417,
+  "quote": "'",
+  "text": "付属品の抽斗。布に包まれた玉が一つ、転がっている。",
+  "len": 25,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1438,
+  "quote": "'",
+  "text": "撮影灯の台座",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1450,
+  "quote": "'",
+  "text": "台座の脇",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1456,
+  "quote": "'",
+  "text": "三本脚の台座。埃が、脚の形に避けて積もっている。",
+  "len": 24,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1461,
+  "quote": "'",
+  "text": "灯の下。撮影灯の台座の脇、床すれすれのところに、真鍮の鍵が落ちている。",
+  "len": 35,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1464,
+  "quote": "'",
+  "text": "埃の積もり方が、ここだけ一度崩れている。",
+  "len": 20,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1472,
+  "quote": "'",
+  "text": "真鍮の鍵",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1486,
+  "quote": "'",
+  "text": "暗室の扉",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1496,
+  "quote": "'",
+  "text": "事務室の扉",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1504,
+  "quote": "'",
+  "text": "肖像写真の壁",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1505,
+  "quote": "'",
+  "text": "撮影灯",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1510,
+  "quote": "'",
+  "text": "壁に浮かぶ字",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1514,
+  "quote": "'",
+  "text": "を",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1527,
+  "quote": "'",
+  "text": "何かが違う気がする。見比べるものが要る。受付の壁に、この部屋を写した古い額が掛かっていた。",
+  "len": 45,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1535,
+  "quote": "`",
+  "text": "${KANJI_ORDINAL[n - 1]}／三",
+  "len": 25,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1535,
+  "quote": "'",
+  "text": "写真との違い",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1538,
+  "quote": "`",
+  "text": "写真との違い（${['一', '二', '三'][n - 1]}／三）",
+  "len": 35,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1539,
+  "quote": "'",
+  "text": "写真では壁の上のほうに丸い時計が掛かっていた。いまは跡と釘だけが残っている。",
+  "len": 38,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1540,
+  "quote": "'",
+  "text": "写真の背景幕には絵が描かれていた。いま下がっているのは無地の天鵞絨だ。",
+  "len": 35,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1541,
+  "quote": "'",
+  "text": "写真では椅子が正面を向いていた。いまは壁を向いている。",
+  "len": 27,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1542,
+  "quote": "'",
+  "text": "受付の額／撮影室",
+  "len": 8,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1547,
+  "quote": "'",
+  "text": "三つの違い",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1548,
+  "quote": "'",
+  "text": "写真といまの部屋の違いは三つ。掛かっていた時計、絵の描かれた幕、正面を向いた椅子。三つとも、人がいた側が変えられている。",
+  "len": 60,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1549,
+  "quote": "'",
+  "text": "受付の額／撮影室",
+  "len": 8,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1551,
+  "quote": "'",
+  "text": "三つとも見つけた。変わっているのは、どれも人が座っていたほうの側だ。",
+  "len": 34,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1569,
+  "quote": "'",
+  "text": "巻き上がっていくのは無地の天鵞絨だ。写真の幕には、絵が描いてあった。",
+  "len": 34,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1594,
+  "quote": "'",
+  "text": "年代記の壁",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1595,
+  "quote": "'",
+  "text": "幕の裏に、写真を貼り並べた壁が一面あった。同じ子供が年ごとに並び、四つだけ抜き取られている。鉛筆の走り書きも見える。",
+  "len": 58,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1596,
+  "quote": "'",
+  "text": "撮影室　背景幕の裏",
+  "len": 9,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1599,
+  "quote": "'",
+  "text": "幕が上がりきる。裏の壁一面に、写真が貼り並べてある。",
+  "len": 26,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1614,
+  "quote": "'",
+  "text": "すりガラスに映るのは、天鵞絨の暗い面だけだ。この幕を巻き上げれば、裏にあるものがここに映る。",
+  "len": 46,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1634,
+  "quote": "'",
+  "text": "鍵は灯の下に",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1635,
+  "quote": "'",
+  "text": "ピントグラス越しに、天地の逆さまな字が読めた。「この壁だけは残す」「鍵は灯の下に」。灯。この館で灯といえば、撮影灯だ。",
+  "len": 59,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1636,
+  "quote": "'",
+  "text": "撮影室　ピントグラス",
+  "len": 10,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1638,
+  "quote": "'",
+  "text": "像が天地ひっくり返る。逆さまの字が、そのまま読める。——この壁だけは残す。鍵は灯の下に。",
+  "len": 44,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1641,
+  "quote": "'",
+  "text": "同じ字が、同じように読める。鍵は灯の下に。",
+  "len": 21,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1696,
+  "quote": "'",
+  "text": "この壁だけは残す",
+  "len": 8,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1698,
+  "quote": "'",
+  "text": "鍵は灯の下に",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1746,
+  "quote": "'",
+  "text": "錠が外れる。中は、黒い布の匂いがする。",
+  "len": 19,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1746,
+  "quote": "'",
+  "text": "錠が外れる。紙と、埃と、煙草の残り香。",
+  "len": 19,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1760,
+  "quote": "'",
+  "text": "安全灯のレバー",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1770,
+  "quote": "'",
+  "text": "作業台のバット",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1790,
+  "quote": "'",
+  "text": "一つめのバット",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1790,
+  "quote": "'",
+  "text": "二つめのバット",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1790,
+  "quote": "'",
+  "text": "三つめのバット",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1790,
+  "quote": "'",
+  "text": "四つめのバット",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1798,
+  "quote": "'",
+  "text": "一つめのバット",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1798,
+  "quote": "'",
+  "text": "二つめのバット",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1798,
+  "quote": "'",
+  "text": "三つめのバット",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1798,
+  "quote": "'",
+  "text": "四つめのバット",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1799,
+  "quote": "`",
+  "text": "${names[i]}（持っている）",
+  "len": 18,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1800,
+  "quote": "`",
+  "text": "ここへ置く",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1833,
+  "quote": "'",
+  "text": "薬品棚",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1846,
+  "quote": "'",
+  "text": "現像剤の缶",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1860,
+  "quote": "'",
+  "text": "粉末の現像剤。封は切ってある。粉のままでは何も起きない。水に溶いてはじめて液になる。",
+  "len": 42,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1866,
+  "quote": "'",
+  "text": "蒸留水",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1878,
+  "quote": "'",
+  "text": "茶色の瓶",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1892,
+  "quote": "'",
+  "text": "引き伸ばし機",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1913,
+  "quote": "'",
+  "text": "ネガの枠",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1919,
+  "quote": "'",
+  "text": "ネガはもう枠に入っている。",
+  "len": 13,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1926,
+  "quote": "'",
+  "text": "枠にネガを落とし込む。膜面を下に。",
+  "len": 17,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1934,
+  "quote": "'",
+  "text": "枠には入る。ただ、まだ像の出ていないネガだ。灯を当てても、壁には何も出ない。",
+  "len": 38,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1937,
+  "quote": "'",
+  "text": "空の枠。ここにネガを一枚入れると、下のレンズが壁に像を投げる。",
+  "len": 31,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1945,
+  "quote": "'",
+  "text": "灯のつまみ",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1955,
+  "quote": "'",
+  "text": "壁に映った像",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1966,
+  "quote": "'",
+  "text": "乾燥ロープ",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1976,
+  "quote": "'",
+  "text": "挟んだままのネガ",
+  "len": 8,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1982,
+  "quote": "'",
+  "text": "グラシン紙の袋ごと、一枚だけ挟まったまま残っていた。",
+  "len": 26,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1985,
+  "quote": "'",
+  "text": "残っていたネガ",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1986,
+  "quote": "'",
+  "text": "乾燥ロープに、ネガが一枚だけ挟まったまま残っていた。透かすと部屋が写っているが、細かいところまでは読めない。",
+  "len": 54,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1987,
+  "quote": "'",
+  "text": "暗室　乾燥ロープ",
+  "len": 8,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 1994,
+  "quote": "'",
+  "text": "洗濯挟み",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2013,
+  "quote": "'",
+  "text": "作業台の下の棚",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2016,
+  "quote": "'",
+  "text": "棚の奥の写真",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2017,
+  "quote": "'",
+  "text": "作業台の下の棚",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2028,
+  "quote": "'",
+  "text": "薬品の空き箱と、丸めた新聞。奥に、写真が一枚だけ伏せて挟んである。手に取れる。",
+  "len": 39,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2034,
+  "quote": "'",
+  "text": "伏せてあった一枚を抜き取る。四歳。椅子には座らず、脚につかまって立っている。",
+  "len": 38,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2046,
+  "quote": "'",
+  "text": "鍵板",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2054,
+  "quote": "'",
+  "text": "真鍮の鍵",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2061,
+  "quote": "'",
+  "text": "三つの掛け金のうち、一つだけに鍵が残っている。",
+  "len": 23,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2069,
+  "quote": "'",
+  "text": "暗室時計",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2077,
+  "quote": "'",
+  "text": "暗室時計の文字盤",
+  "len": 8,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2078,
+  "quote": "'",
+  "text": "文字盤に、使う順で三つ刻んである。現像 九〇秒、停止 一〇秒、定着 三〇〇秒。撮影はここには無い。撮るのは暗室の外だからだ。",
+  "len": 62,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2079,
+  "quote": "'",
+  "text": "暗室　暗室時計",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2082,
+  "quote": "'",
+  "text": "文字盤に三つ。現像 九〇秒、停止 一〇秒、定着 三〇〇秒。上から使う順に彫ってある。撮影が無いのは、撮るのが暗室の外だからだ。",
+  "len": 63,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2086,
+  "quote": "'",
+  "text": "壁の時計",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2091,
+  "quote": "'",
+  "text": "壁に浮かぶ字",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2103,
+  "quote": "'",
+  "text": "順は書に在り",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2104,
+  "quote": "'",
+  "text": "暗室の壁に、赤の下でだけ読める字。「順は書に在り　台をこれに合わせよ」。台のバットの並びは当てにならないから、書いてあるほうに合わせて並べ替えろ、という意味だ。赤の下に浮かぶ三つの書き付けとは、別のものらしい。",
+  "len": 105,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2105,
+  "quote": "'",
+  "text": "安全灯の下　暗室",
+  "len": 8,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2109,
+  "quote": "'",
+  "text": "赤の下に、館主の字が浮く。——順は書に在り、台をこれに合わせよ。三つの書き付けとは、別のものだ。",
+  "len": 48,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2117,
+  "quote": "'",
+  "text": "干した一枚",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2122,
+  "quote": "'",
+  "text": "四十年遅れて干された一枚。もう光に当てても消えない。",
+  "len": 26,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2158,
+  "quote": "'",
+  "text": "白い明かりが落ちて、館じゅうが赤くなる。廊下の先にも、同じ赤が点いている。",
+  "len": 37,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2159,
+  "quote": "'",
+  "text": "ネガも印画紙も、白い光に当てれば像が焼けて駄目になる。赤い光だけは、その像を壊さない。",
+  "len": 43,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2160,
+  "quote": "'",
+  "text": "だからネガを扱う仕事は、この赤の下でする。引き伸ばし機も、現像も。",
+  "len": 33,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2166,
+  "quote": "'",
+  "text": "赤い明かり",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2173,
+  "quote": "'",
+  "text": "ネガも印画紙も白い光で像が焼けてしまう。赤い光だけは像を壊さないから、ネガを扱う仕事は赤の下でする。引き伸ばし機を点けるときも、ネガを現像液に浸すときも、この明かりが要る。",
+  "len": 86,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2174,
+  "quote": "'",
+  "text": "そのうえ安全灯は暗室だけのものではなかった。館じゅうに赤い灯が引いてあり、赤の下でしか読めない字が玄関ホール、撮影室、事務室の壁に一つずつあるらしい。",
+  "len": 75,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2175,
+  "quote": "'",
+  "text": "暗室　安全灯",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2208,
+  "quote": "'",
+  "text": "白い明かりの下では、壁の像が見えない。赤にしてからだ。",
+  "len": 27,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2216,
+  "quote": "'",
+  "text": "壁一面に、部屋がひとつ浮かび上がる。四十年前の撮影室だ。細かいところは、目では追えない。",
+  "len": 44,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2331,
+  "quote": "'",
+  "text": "金庫の環",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2333,
+  "quote": "'",
+  "text": "壁に映した像の左下に、事務室の金庫が写り込んでいた。ルーペで見ると、環の指す目盛が読める。二十七。",
+  "len": 49,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2334,
+  "quote": "'",
+  "text": "ネガの隅に、事務室の金庫が写り込んでいた。ルーペを当てると、環の指す目盛が読める。二十七。",
+  "len": 45,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2335,
+  "quote": "'",
+  "text": "暗室　引き伸ばし機／ルーペ",
+  "len": 13,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2335,
+  "quote": "'",
+  "text": "古いネガ／ルーペ",
+  "len": 8,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2342,
+  "quote": "'",
+  "text": "壁の像は大きいが、隅のものは粒に溶けている。もっと拡げて見る道具が要る。",
+  "len": 36,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2349,
+  "quote": "'",
+  "text": "ルーペを当てる。像の左下、事務室の金庫が写り込んでいる。環の目盛は——二十七。",
+  "len": 39,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2352,
+  "quote": "'",
+  "text": "環は二十七を指したままだ。",
+  "len": 13,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2358,
+  "quote": "'",
+  "text": "現像",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2358,
+  "quote": "'",
+  "text": "定着",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2358,
+  "quote": "'",
+  "text": "水洗",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2358,
+  "quote": "'",
+  "text": "停止",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2375,
+  "quote": "'",
+  "text": "像を出す液を張るほうだ",
+  "len": 11,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2376,
+  "quote": "'",
+  "text": "像を消えなくする液のほうだ",
+  "len": 13,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2377,
+  "quote": "'",
+  "text": "最後に水で流すほうだ",
+  "len": 10,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2378,
+  "quote": "'",
+  "text": "像の出るのを止める液のほうだ",
+  "len": 14,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2384,
+  "quote": "'",
+  "text": "底に琥珀色の液が張ってある",
+  "len": 13,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2385,
+  "quote": "'",
+  "text": "底は乾いている",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2386,
+  "quote": "'",
+  "text": "底に、乾いた液の輪が残っている",
+  "len": 15,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2387,
+  "quote": "'",
+  "text": "いちばん左",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2387,
+  "quote": "'",
+  "text": "左から二番目",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2387,
+  "quote": "'",
+  "text": "左から三番目",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2387,
+  "quote": "'",
+  "text": "いちばん右",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2388,
+  "quote": "`",
+  "text": "琺瑯のバット。縁のラベルには「${Chapter01.TRAY_LABELS[tray]}」。${purpose}。いまは${nth}にあって、${state}。",
+  "len": 81,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2405,
+  "quote": "'",
+  "text": "もう終わった仕事だ。並びを崩すことはない。",
+  "len": 21,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2411,
+  "quote": "`",
+  "text": "${this.describeTray(tray)} 持ち上げた。置きたい場所のバットを選べば、入れ替わる。",
+  "len": 54,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2417,
+  "quote": "'",
+  "text": "もとの位置に戻す。",
+  "len": 9,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2433,
+  "quote": "`",
+  "text": "${Chapter01.TRAY_LABELS[a]}と${Chapter01.TRAY_LABELS[b]}を入れ替える。左から、現像、停止、定着、水洗。書いてあるとおりの並びになった。",
+  "len": 94,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2434,
+  "quote": "`",
+  "text": "${Chapter01.TRAY_LABELS[a]}と${Chapter01.TRAY_LABELS[b]}を入れ替える。",
+  "len": 62,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2479,
+  "quote": "'",
+  "text": "水だけ張っても像は出ない。粉と合わせて現像液にするのが先だ。",
+  "len": 30,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2485,
+  "quote": "'",
+  "text": "こちらのネガはもう像が出ている。現像しても何も変わらない。液に浸すのは、まだ像の出ていないほうだ。",
+  "len": 49,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2508,
+  "quote": "'",
+  "text": "現像液",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2509,
+  "quote": "'",
+  "text": "粉末現像剤を蒸留水に溶いて現像液を作り、作業台のいちばん左、縁に「現像」と書いてあるバットに張った。像を出すのはこの液で、この一枚だけだ。",
+  "len": 69,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2510,
+  "quote": "'",
+  "text": "暗室　作業台",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2515,
+  "quote": "'",
+  "text": "琥珀色がバットの底に広がる。液面が落ち着くまで、少し待つ。",
+  "len": 29,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2516,
+  "quote": "'",
+  "text": "現像液の準備ができた。現像するネガを探そう。",
+  "len": 22,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2528,
+  "quote": "'",
+  "text": "現像液を入れるのは、縁に現像と書いてあるバットだ。ここではない。",
+  "len": 32,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2558,
+  "quote": "'",
+  "text": "四枚とも枠に戻した。壁は揃っている。",
+  "len": 18,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2559,
+  "quote": "`",
+  "text": "抜き取られた四枚のうち、${kansuji(have)}枚が手元にある。枠に戻したのは${kansuji(placed)}枚。",
+  "len": 63,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2560,
+  "quote": "'",
+  "text": "館のどこかに、まだ残りがある。",
+  "len": 15,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2563,
+  "quote": "`",
+  "text": "年代記の写真を集める　${kansuji(have)}／四",
+  "len": 29,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2565,
+  "quote": "'",
+  "text": "撮影室　年代記の壁",
+  "len": 9,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2575,
+  "quote": "'",
+  "text": "現像液はいちばん左のバットに張ってある。未現像のネガはもう現像した。",
+  "len": 34,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2577,
+  "quote": "'",
+  "text": "現像液はいちばん左のバットに張ってある。まだ像の出ていない未現像のネガも手元にある。あとは安全灯を点けて、そのネガをいちばん左のバットに浸すだけだ。",
+  "len": 74,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2578,
+  "quote": "'",
+  "text": "現像液はいちばん左のバットに張ってある。あとは、まだ像の出ていないネガが要る。乾燥ロープの古いネガはもう像が出ているから、これではない。",
+  "len": 68,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2581,
+  "quote": "'",
+  "text": "作業台のようす",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2583,
+  "quote": "'",
+  "text": "暗室　作業台",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2594,
+  "quote": "'",
+  "text": "このバットは乾いている。液を張ったのは、いちばん左の一つだけだ。",
+  "len": 32,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2610,
+  "quote": "'",
+  "text": "この並びでは通せない。現像のあと、停止、定着、水洗と続けて移すことになる。台の上を、書いてある順に直してからだ。",
+  "len": 56,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2625,
+  "quote": "'",
+  "text": "液に沈める。しばらく、何も起きない。",
+  "len": 18,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2626,
+  "quote": "'",
+  "text": "縁のほうから、灰色が滲みはじめる。",
+  "len": 17,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2627,
+  "quote": "'",
+  "text": "床。木目。倒れた茶色の瓶。広がっていく液の縁。",
+  "len": 23,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2628,
+  "quote": "'",
+  "text": "人は写っていない。",
+  "len": 9,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2634,
+  "quote": "'",
+  "text": "停止に移し、定着に移し、水で流す。順は、書いてあるとおりにやる。",
+  "len": 32,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2649,
+  "quote": "'",
+  "text": "水を切って、洗濯挟みに吊る。乾いたところで外す。四十年遅れて、一枚できた。",
+  "len": 37,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2654,
+  "quote": "'",
+  "text": "最後の一枚",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2655,
+  "quote": "'",
+  "text": "最後のネガを現像した。写っていたのは倒れた薬品の瓶と、床に広がっていく液。人は写っていない。火は、この家の主人の手から出ている。",
+  "len": 64,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2656,
+  "quote": "'",
+  "text": "暗室",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2670,
+  "quote": "'",
+  "text": "金庫",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2691,
+  "quote": "'",
+  "text": "環",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2700,
+  "quote": "'",
+  "text": "把手",
+  "len": 2,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2709,
+  "quote": "'",
+  "text": "金庫の中",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2719,
+  "quote": "'",
+  "text": "暗室作業手順",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2730,
+  "quote": "'",
+  "text": "工程の順",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2731,
+  "quote": "'",
+  "text": "暗室作業手順。一、撮影。二、現像。三、停止。四、定着。末尾に「バットは作業台の左から、現像、停止、定着、水洗の順」「撮影は暗室の外の仕事だから、台には載らない」「ラベルだけを信じないこと」。",
+  "len": 95,
+  "cat": "clues"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2732,
+  "quote": "'",
+  "text": "事務室　壁の貼り紙",
+  "len": 9,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2743,
+  "quote": "'",
+  "text": "予約控",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2754,
+  "quote": "'",
+  "text": "二十三日の予約",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2755,
+  "quote": "'",
+  "text": "昭和六十年十一月の予約控。二十三日十時、灯、七歳、七五三。この一件だけ姓がなく、済の印もない。二十四日から先は白紙。",
+  "len": 58,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2756,
+  "quote": "'",
+  "text": "事務室　予約控",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2766,
+  "quote": "'",
+  "text": "事務机の抽斗",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2768,
+  "quote": "'",
+  "text": "抽斗の底の写真",
+  "len": 7,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2768,
+  "quote": "'",
+  "text": "事務机の抽斗",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2780,
+  "quote": "'",
+  "text": "文具と、使いかけの帳簿。いちばん下に伏せてあった一枚を、机の上に出す。手に取れる。",
+  "len": 41,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2786,
+  "quote": "'",
+  "text": "底の一枚を抜き取る。七歳。背景幕は絵のほうだ。",
+  "len": 23,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2794,
+  "quote": "'",
+  "text": "卓上の灯",
+  "len": 4,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2799,
+  "quote": "'",
+  "text": "壁に浮かぶ字",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2803,
+  "quote": "'",
+  "text": "かえす",
+  "len": 3,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2819,
+  "quote": "'",
+  "text": "環は空回りする。もう開いている。",
+  "len": 16,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2836,
+  "quote": "'",
+  "text": "環が一つ動く。右を押せば進み、左を押せば戻る。合わせたら把手を引く。",
+  "len": 34,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2858,
+  "quote": "'",
+  "text": "環は空回りする。もう開いている。",
+  "len": 16,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2864,
+  "quote": "'",
+  "text": "手を離す。",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2868,
+  "quote": "`",
+  "text": "環に手を掛ける。左右に引けば回る。いまは ${this.dialNumber()}。",
+  "len": 42,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2890,
+  "quote": "'",
+  "text": "扉はもう開いている。中のものは、まだ底に残っている。",
+  "len": 26,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2909,
+  "quote": "'",
+  "text": "環が最後まで落ちる。扉は、思ったよりも軽い。",
+  "len": 22,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2948,
+  "quote": "'",
+  "text": "折り畳んだ紙が一通。館主の字だ。",
+  "len": 16,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2949,
+  "quote": "'",
+  "text": "封をしていない手紙が一通。宛名だけが書いてある。",
+  "len": 24,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2950,
+  "quote": "'",
+  "text": "グラシン紙の袋に、ネガが一枚。まだ像が出ていない。",
+  "len": 25,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2951,
+  "quote": "'",
+  "text": "印画紙が一枚。四つ目の枠に合わせて切って、日付まで入れてある。像だけが出ていない。",
+  "len": 41,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2965,
+  "quote": "'",
+  "text": "金庫の中身",
+  "len": 5,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2966,
+  "quote": "'",
+  "text": "手記が一通。宛名だけの手紙が一通。まだ現像されていないネガが一枚。それに、日付だけ入れて像の出ていない台紙が一枚。",
+  "len": 57,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2967,
+  "quote": "'",
+  "text": "事務室　金庫",
+  "len": 6,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2973,
+  "quote": "'",
+  "text": "あとは、鉄の底が見えているだけだ。埃も入っていない。",
+  "len": 26,
+  "cat": "narration"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 2983,
+  "quote": "'",
+  "text": "この二つは合わない",
+  "len": 9,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 3063,
+  "quote": "'",
+  "text": "一",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 3063,
+  "quote": "'",
+  "text": "二",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 3063,
+  "quote": "'",
+  "text": "三",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 3063,
+  "quote": "'",
+  "text": "四",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 3063,
+  "quote": "'",
+  "text": "五",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 3063,
+  "quote": "'",
+  "text": "六",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 3063,
+  "quote": "'",
+  "text": "七",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 3063,
+  "quote": "'",
+  "text": "八",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 3063,
+  "quote": "'",
+  "text": "九",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 3064,
+  "quote": "'",
+  "text": "零",
+  "len": 1,
+  "cat": "labels"
+ },
+ {
+  "file": "src/game/Chapter01.ts",
+  "line": 3068,
+  "quote": "`",
+  "text": "${tens > 1 ? d[tens] : ''}十${ones ? d[ones] : ''}",
+  "len": 49,
+  "cat": "narration"
+ },
+ {
+  "file": "src/main.ts",
+  "line": 14,
+  "quote": "'",
+  "text": "[霧沢写真館] failed to start",
+  "len": 23,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/main.ts",
+  "line": 17,
+  "quote": "`",
+  "text": "\n        <div style=\"position:absolute;inset:0;display:flex;align-items:center;justify-content:center;\n                    padding:8vw;text-align:center;font-family:'Hiragino Sans','Yu Gothic',sans-serif;\n                    color:#ded2ba;line-height:2;letter-spacing:.08em;pointer-events:auto\">\n          <div>\n            <p style=\"font-size:1.1em\">この環境では館に入れませんでした。</p>\n            <p style=\"font-size:.86em;color:#a2957e\">\n              WebGL を使えるブラウザで開き直してください。<br>\n              別のタブを閉じてから、もう一度お試しください。\n            </p>\n          </div>\n        </div>",
+  "len": 557,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/systems/Inspector.ts",
+  "line": 217,
+  "quote": "'",
+  "text": "近づいて見る",
+  "len": 6,
+  "cat": "items"
+ },
+ {
+  "file": "src/systems/Inspector.ts",
+  "line": 218,
+  "quote": "'",
+  "text": "向きを変えてみる",
+  "len": 8,
+  "cat": "items"
+ },
+ {
+  "file": "src/systems/Interaction.ts",
+  "line": 25,
+  "quote": "'",
+  "text": "調べる",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/systems/Interaction.ts",
+  "line": 26,
+  "quote": "'",
+  "text": "手に取る",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/systems/Interaction.ts",
+  "line": 27,
+  "quote": "'",
+  "text": "開ける",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/systems/Interaction.ts",
+  "line": 28,
+  "quote": "'",
+  "text": "回す",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/systems/Interaction.ts",
+  "line": 29,
+  "quote": "'",
+  "text": "引く",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/systems/Interaction.ts",
+  "line": 30,
+  "quote": "'",
+  "text": "押す",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/systems/Interaction.ts",
+  "line": 31,
+  "quote": "'",
+  "text": "読む",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/systems/Interaction.ts",
+  "line": 32,
+  "quote": "'",
+  "text": "進む",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/systems/Interaction.ts",
+  "line": 33,
+  "quote": "'",
+  "text": "使う",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/systems/Interaction.ts",
+  "line": 34,
+  "quote": "'",
+  "text": "戻る",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 16,
+  "quote": "`",
+  "text": "${h}時間${m}分",
+  "len": 11,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 16,
+  "quote": "`",
+  "text": "${m}分",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 170,
+  "quote": "'",
+  "text": "左を向く",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 170,
+  "quote": "'",
+  "text": "右を向く",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 626,
+  "quote": "'",
+  "text": "制作について",
+  "len": 6,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 629,
+  "quote": "'",
+  "text": "あそびかた",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 711,
+  "quote": "`",
+  "text": "${kanjiNum(this.state.inventory.length)} 点",
+  "len": 42,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 770,
+  "quote": "'",
+  "text": "ドラッグで回す　／　ホイールで寄る　／　F で裏返す",
+  "len": 26,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 823,
+  "quote": "'",
+  "text": "合わせる相手を選ぶ",
+  "len": 9,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 907,
+  "quote": "`",
+  "text": "${kanjiNum(this.state.clues.length)} 件",
+  "len": 38,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 921,
+  "quote": "`",
+  "text": "<h4>${c.title}${done(c) ? '<span class=\"clue-done\">解決済み</span>' : ''}</h4>",
+  "len": 74,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 944,
+  "quote": "`",
+  "text": "${kanjiNum(active.length)} 件　${UI_TEXT.hintPanelNote}",
+  "len": 53,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1083,
+  "quote": "'",
+  "text": "全体の音量",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1083,
+  "quote": "'",
+  "text": "館の音すべてに掛かる",
+  "len": 10,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1086,
+  "quote": "'",
+  "text": "環境音",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1086,
+  "quote": "'",
+  "text": "雨、室内の低い音、建物のきしみ",
+  "len": 15,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1089,
+  "quote": "'",
+  "text": "効果音",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1089,
+  "quote": "'",
+  "text": "触れたもの、動いたものの音",
+  "len": 13,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1092,
+  "quote": "'",
+  "text": "消音",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1092,
+  "quote": "'",
+  "text": "音をすべて止める",
+  "len": 8,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1093,
+  "quote": "'",
+  "text": "鳴らす",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1094,
+  "quote": "'",
+  "text": "止める",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1099,
+  "quote": "'",
+  "text": "文字の速さ",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1100,
+  "quote": "'",
+  "text": "地の文が出る速さ",
+  "len": 8,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1102,
+  "quote": "'",
+  "text": "ゆっくり",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1103,
+  "quote": "'",
+  "text": "ふつう",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1104,
+  "quote": "'",
+  "text": "はやい",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1105,
+  "quote": "'",
+  "text": "一度に",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1113,
+  "quote": "'",
+  "text": "画質",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1117,
+  "quote": "'",
+  "text": "重いときは下げる。影・解像度・後処理がすぐ変わる。質感の細かさは次に開いたときから",
+  "len": 41,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1119,
+  "quote": "'",
+  "text": "軽い",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1120,
+  "quote": "'",
+  "text": "ふつう",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1121,
+  "quote": "'",
+  "text": "綺麗",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1126,
+  "quote": "'",
+  "text": "動きの軽減",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1126,
+  "quote": "'",
+  "text": "カメラの揺れと演出の時間を抑える",
+  "len": 16,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1127,
+  "quote": "'",
+  "text": "そのまま",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1128,
+  "quote": "'",
+  "text": "抑える",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1136,
+  "quote": "'",
+  "text": "見渡す（Ｑ）",
+  "len": 6,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1137,
+  "quote": "'",
+  "text": "調べられる場所を一度だけ光らせる",
+  "len": 16,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1139,
+  "quote": "'",
+  "text": "使う",
+  "len": 2,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1140,
+  "quote": "'",
+  "text": "使わない",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1145,
+  "quote": "'",
+  "text": "画面の文字の大きさ",
+  "len": 9,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1145,
+  "quote": "'",
+  "text": "持ち物や地の文の大きさ",
+  "len": 11,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1151,
+  "quote": "`",
+  "text": "<div><div class=\"set-label\">画面と記録</div><span class=\"set-help\">全画面表示、いま記録する、やり直す</span></div>",
+  "len": 92,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1153,
+  "quote": "'",
+  "text": "全画面",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1157,
+  "quote": "'",
+  "text": "記録する",
+  "len": 4,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1159,
+  "quote": "'",
+  "text": "章のやり直し",
+  "len": 6,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1161,
+  "quote": "'",
+  "text": "章をはじめからやり直す",
+  "len": 11,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1161,
+  "quote": "'",
+  "text": "いま館で起きたことは、すべて無かったことになる。",
+  "len": 24,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1165,
+  "quote": "'",
+  "text": "進行データの消去",
+  "len": 8,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1167,
+  "quote": "'",
+  "text": "進行データを消す",
+  "len": 8,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1167,
+  "quote": "'",
+  "text": "記録も、覚え書きも、すべて消える。見たエンディングの記録だけが残る。",
+  "len": 34,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1201,
+  "quote": "'",
+  "text": "新しく始める",
+  "len": 6,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1201,
+  "quote": "'",
+  "text": "つづきから",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1201,
+  "quote": "'",
+  "text": "この場面を記録する",
+  "len": 9,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1202,
+  "quote": "'",
+  "text": "記録は三つまで",
+  "len": 7,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1216,
+  "quote": "`",
+  "text": "記録 ${['一', '二', '三'][i]}",
+  "len": 24,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1219,
+  "quote": "`",
+  "text": "${m.areaLabel}　謎 ${m.solvedCount}　${formatPlaytime(m.playtimeMs)}",
+  "len": 65,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1222,
+  "quote": "'",
+  "text": "結末を見た",
+  "len": 5,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1224,
+  "quote": "'",
+  "text": "空",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1228,
+  "quote": "'",
+  "text": "上書き",
+  "len": 3,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1249,
+  "quote": "`",
+  "text": "記録 ${['一', '二', '三'][slot]}",
+  "len": 27,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1251,
+  "quote": "`",
+  "text": "${which}に上書きする",
+  "len": 14,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1253,
+  "quote": "`",
+  "text": "${which}に入っている進行は消える。",
+  "len": 21,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1254,
+  "quote": "`",
+  "text": "${which}に入っている進行を、いまの場面で置き換える。",
+  "len": 30,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1295,
+  "quote": "'",
+  "text": "タイトルへ戻る",
+  "len": 7,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1297,
+  "quote": "'",
+  "text": "制作について",
+  "len": 6,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1300,
+  "quote": "`",
+  "text": "見届けた結末　${kanjiNum(seenCount)} ／ ${kanjiNum(total)}",
+  "len": 50,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1367,
+  "quote": "'",
+  "text": "一",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1367,
+  "quote": "'",
+  "text": "二",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1367,
+  "quote": "'",
+  "text": "三",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1367,
+  "quote": "'",
+  "text": "四",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1367,
+  "quote": "'",
+  "text": "五",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1367,
+  "quote": "'",
+  "text": "六",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1367,
+  "quote": "'",
+  "text": "七",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1367,
+  "quote": "'",
+  "text": "八",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1367,
+  "quote": "'",
+  "text": "九",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1370,
+  "quote": "'",
+  "text": "十",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1370,
+  "quote": "`",
+  "text": "十${d[n % 10]}",
+  "len": 13,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/UI.ts",
+  "line": 1371,
+  "quote": "`",
+  "text": "${d[Math.floor(n / 10)]}十${n % 10 ? d[n % 10] : ''}",
+  "len": 51,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/styles.css",
+  "line": 760,
+  "quote": "\"",
+  "text": "新",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/styles.css",
+  "line": 772,
+  "quote": "\"",
+  "text": "変",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/ui/styles.css",
+  "line": 788,
+  "quote": "\"",
+  "text": "済",
+  "len": 1,
+  "cat": "system-ui"
+ },
+ {
+  "file": "src/world/Building.ts",
+  "line": 500,
+  "quote": "'",
+  "text": "霧沢写真館",
+  "len": 5,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/Layout.ts",
+  "line": 25,
+  "quote": "'",
+  "text": "撮影室",
+  "len": 3,
+  "cat": "movement"
+ },
+ {
+  "file": "src/world/Layout.ts",
+  "line": 26,
+  "quote": "'",
+  "text": "玄関ホール",
+  "len": 5,
+  "cat": "movement"
+ },
+ {
+  "file": "src/world/Layout.ts",
+  "line": 27,
+  "quote": "'",
+  "text": "暗室",
+  "len": 2,
+  "cat": "movement"
+ },
+ {
+  "file": "src/world/Layout.ts",
+  "line": 28,
+  "quote": "'",
+  "text": "事務室",
+  "len": 3,
+  "cat": "movement"
+ },
+ {
+  "file": "src/world/props/Common.ts",
+  "line": 253,
+  "quote": "'",
+  "text": "霧沢写真館",
+  "len": 5,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 120,
+  "quote": "'",
+  "text": "現像",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 120,
+  "quote": "'",
+  "text": "定着",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 120,
+  "quote": "'",
+  "text": "水洗",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 120,
+  "quote": "'",
+  "text": "停止",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 449,
+  "quote": "'",
+  "text": "安全灯",
+  "len": 3,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 479,
+  "quote": "'",
+  "text": "蒸留水",
+  "len": 3,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 482,
+  "quote": "'",
+  "text": "定着",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 482,
+  "quote": "'",
+  "text": "停止",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 482,
+  "quote": "'",
+  "text": "硬膜",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 482,
+  "quote": "'",
+  "text": "調色",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 482,
+  "quote": "'",
+  "text": "減力",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 511,
+  "quote": "'",
+  "text": "現像剤",
+  "len": 3,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 514,
+  "quote": "'",
+  "text": "粉末　一リットル用",
+  "len": 9,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 695,
+  "quote": "'",
+  "text": "現像 九〇秒",
+  "len": 6,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 696,
+  "quote": "'",
+  "text": "停止 一〇秒",
+  "len": 6,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 697,
+  "quote": "'",
+  "text": "定着 三〇〇秒",
+  "len": 7,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Darkroom.ts",
+  "line": 861,
+  "quote": "'",
+  "text": "順は書に在り　台をこれに合わせよ",
+  "len": 16,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 330,
+  "quote": "'",
+  "text": "撮影室　昭和六十年",
+  "len": 9,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 496,
+  "quote": "'",
+  "text": "入　切",
+  "len": 3,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 513,
+  "quote": "'",
+  "text": "配電盤",
+  "len": 3,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 569,
+  "quote": "'",
+  "text": "工程の順に",
+  "len": 5,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 884,
+  "quote": "'",
+  "text": "昭和六十年",
+  "len": 5,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 886,
+  "quote": "'",
+  "text": "十一月",
+  "len": 3,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 894,
+  "quote": "'",
+  "text": "日",
+  "len": 1,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 894,
+  "quote": "'",
+  "text": "月",
+  "len": 1,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 894,
+  "quote": "'",
+  "text": "火",
+  "len": 1,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 894,
+  "quote": "'",
+  "text": "水",
+  "len": 1,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 894,
+  "quote": "'",
+  "text": "木",
+  "len": 1,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 894,
+  "quote": "'",
+  "text": "金",
+  "len": 1,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 894,
+  "quote": "'",
+  "text": "土",
+  "len": 1,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 918,
+  "quote": "'",
+  "text": "霧沢写真館",
+  "len": 5,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 1082,
+  "quote": "'",
+  "text": "五五・七・二",
+  "len": 6,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 1083,
+  "quote": "'",
+  "text": "五七・七・三",
+  "len": 6,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 1084,
+  "quote": "'",
+  "text": "五九・七・一",
+  "len": 6,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 1085,
+  "quote": "'",
+  "text": "六〇・七・二",
+  "len": 6,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 1155,
+  "quote": "'",
+  "text": "灯",
+  "len": 1,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 1208,
+  "quote": "'",
+  "text": "定着",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Hall.ts",
+  "line": 1211,
+  "quote": "'",
+  "text": "停止",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 161,
+  "quote": "'",
+  "text": "昭和六十年　十一月",
+  "len": 9,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 164,
+  "quote": "'",
+  "text": "三日　十時　佐久間様　七五三　済",
+  "len": 16,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 165,
+  "quote": "'",
+  "text": "　　　十三時　東様　見合写真　済",
+  "len": 16,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 166,
+  "quote": "'",
+  "text": "九日　十一時　小田様　結婚記念　済",
+  "len": 17,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 167,
+  "quote": "'",
+  "text": "十日　九時　第二小学校　前撮　済",
+  "len": 16,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 168,
+  "quote": "'",
+  "text": "十六日　十四時　橋本様　遺影　済",
+  "len": 16,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 169,
+  "quote": "'",
+  "text": "二十日　休館　薬品入替",
+  "len": 11,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 170,
+  "quote": "'",
+  "text": "二十三日　十時　灯　七歳　—",
+  "len": 14,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 171,
+  "quote": "'",
+  "text": "二十四日以降　白紙",
+  "len": 9,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 251,
+  "quote": "'",
+  "text": "暗室作業手順",
+  "len": 6,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 255,
+  "quote": "'",
+  "text": "一、撮影　暗袋に入れ暗室へ運ぶ",
+  "len": 15,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 256,
+  "quote": "'",
+  "text": "　　　　　明かりのある所を通らぬこと",
+  "len": 18,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 258,
+  "quote": "'",
+  "text": "二、現像　現像液に浸す　液温二十度",
+  "len": 17,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 259,
+  "quote": "'",
+  "text": "　　　　　ここで像が出る",
+  "len": 12,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 261,
+  "quote": "'",
+  "text": "三、停止　停止液に移す　短く",
+  "len": 14,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 262,
+  "quote": "'",
+  "text": "　　　　　飛ばすと像は止まらぬ",
+  "len": 15,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 264,
+  "quote": "'",
+  "text": "四、定着　十分に浸す",
+  "len": 10,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 265,
+  "quote": "'",
+  "text": "　　　　　ここで初めて光に耐える",
+  "len": 16,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 267,
+  "quote": "'",
+  "text": "＊ バットは作業台の左から",
+  "len": 13,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 268,
+  "quote": "'",
+  "text": "　 この一二三四の順に並べること",
+  "len": 16,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 269,
+  "quote": "'",
+  "text": "　 並べ直したときはラベルも確かめよ",
+  "len": 18,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 270,
+  "quote": "'",
+  "text": "　 ラベルだけを信じないこと",
+  "len": 14,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 279,
+  "quote": "'",
+  "text": "霧沢",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 346,
+  "quote": "'",
+  "text": "金庫",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 545,
+  "quote": "'",
+  "text": "営業許可証",
+  "len": 5,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 547,
+  "quote": "'",
+  "text": "霧沢写真館",
+  "len": 5,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 548,
+  "quote": "'",
+  "text": "霧沢　響一",
+  "len": 5,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 549,
+  "quote": "'",
+  "text": "昭和三十九年　開業",
+  "len": 9,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 557,
+  "quote": "'",
+  "text": "霧沢",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Office.ts",
+  "line": 612,
+  "quote": "'",
+  "text": "かえす",
+  "len": 3,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Studio.ts",
+  "line": 112,
+  "quote": "'",
+  "text": "一歳",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Studio.ts",
+  "line": 112,
+  "quote": "'",
+  "text": "四歳",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Studio.ts",
+  "line": 112,
+  "quote": "'",
+  "text": "七歳",
+  "len": 2,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Studio.ts",
+  "line": 154,
+  "quote": "'",
+  "text": "この壁だけは残す",
+  "len": 8,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Studio.ts",
+  "line": 157,
+  "quote": "'",
+  "text": "鍵は灯の下に",
+  "len": 6,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Studio.ts",
+  "line": 172,
+  "quote": "'",
+  "text": "霧沢家　記録",
+  "len": 6,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Studio.ts",
+  "line": 678,
+  "quote": "'",
+  "text": "事務室",
+  "len": 3,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Studio.ts",
+  "line": 687,
+  "quote": "'",
+  "text": "暗室　開扉厳禁",
+  "len": 7,
+  "cat": "environment"
+ },
+ {
+  "file": "src/world/props/Studio.ts",
+  "line": 879,
+  "quote": "'",
+  "text": "を",
+  "len": 1,
+  "cat": "environment"
+ }
+]
