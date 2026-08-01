@@ -758,7 +758,7 @@ button {
   border-color: var(--brass-lit);
 }
 /* The destructive controls are the quietest at rest, not the loudest.
-   進行データの消去 was a plain `.btn` among three `.btn.ghost` neighbours, which
+   すべての進行を消去 was a plain `.btn` among three `.btn.ghost` neighbours, which
    made deleting the save the most prominent thing in the settings panel - and a
    keyboard user tabbing onto it got the same brass highlight the safe buttons
    get, because the only danger styling was a hover rule. */

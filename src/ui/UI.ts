@@ -820,10 +820,10 @@ export class GameUI {
     comBtn.addEventListener('click', () => {
       this.selectedForCombine = this.selectedForCombine === id ? null : id
       this.renderInventory()
-      if (this.selectedForCombine) this.toast('合わせる相手を選ぶ')
+      if (this.selectedForCombine) this.toast('組み合わせる相手を選ぶ')
     })
 
-    // Appended secondary-first, so the row reads 読む / 合わせる / 選ぶ and the
+    // Appended secondary-first, so the row reads 読む / 組み合わせる / 選ぶ and the
     // primary verb - the one carrying the highlight - is the rightmost button.
     if (def.document) {
       const readBtn = this.el('button', 'btn ghost clickable')
@@ -838,7 +838,7 @@ export class GameUI {
     this.inspector.show(def, entry.found)
     this.bindInspectorInput(stage)
 
-    // 選ぶ and 合わせる live in the footer, not at the bottom of the detail
+    // 選ぶ and 組み合わせる live in the footer, not at the bottom of the detail
     // column. The column scrolls, and on a short window the turntable and the
     // description filled it, so the two buttons that are the entire point of
     // opening an item sat below the fold with nothing on screen to say so - a
@@ -1080,13 +1080,13 @@ export class GameUI {
 
     const pct = (v: number) => `${Math.round(v * 100)}％`
 
-    slider('全体の音量', '館の音すべてに掛かる', s.masterVolume, 0, 1, 0.01, pct, (v) =>
+    slider('全体の音量', 'すべての音量を調整します', s.masterVolume, 0, 1, 0.01, pct, (v) =>
       this.cb.onSettingChanged('masterVolume', v),
     )
     slider('環境音', '雨、室内の低い音、建物のきしみ', s.ambienceVolume, 0, 1, 0.01, pct, (v) =>
       this.cb.onSettingChanged('ambienceVolume', v),
     )
-    slider('効果音', '触れたもの、動いたものの音', s.sfxVolume, 0, 1, 0.01, pct, (v) =>
+    slider('効果音', '操作音や仕掛けの音を調整します', s.sfxVolume, 0, 1, 0.01, pct, (v) =>
       this.cb.onSettingChanged('sfxVolume', v),
     )
     seg('消音', '音をすべて止める', [
@@ -1097,10 +1097,10 @@ export class GameUI {
     )
     seg(
       '文字の速さ',
-      '地の文が出る速さ',
+      'メッセージの表示速度',
       [
         ['slow', 'ゆっくり'],
-        ['normal', 'ふつう'],
+        ['normal', '標準'],
         ['fast', 'はやい'],
         ['instant', '一度に'],
       ] as Array<[GameSettings['textSpeed'], string]>,
@@ -1114,11 +1114,11 @@ export class GameUI {
       // Says what it actually does. Texture resolution is baked when the world
       // is built, so that part of the profile only takes effect on a reload -
       // claiming otherwise would be a setting that lies about itself.
-      '重いときは下げる。影・解像度・後処理がすぐ変わる。質感の細かさは次に開いたときから',
+      '重いときは下げる。影・解像度・後処理がすぐ変わる。一部の画質設定は、次回起動時に反映されます',
       [
-        ['low', '軽い'],
-        ['medium', 'ふつう'],
-        ['high', '綺麗'],
+        ['low', '軽量'],
+        ['medium', '標準'],
+        ['high', '高画質'],
       ] as Array<[GameSettings['quality'], string]>,
       s.quality,
       (v) => this.cb.onSettingChanged('quality', v),
@@ -1156,15 +1156,15 @@ export class GameUI {
     // which gave a player no way to keep one run while trying another ending.
     const save = this.el('button', 'btn ghost clickable', '記録する')
     save.addEventListener('click', () => this.openSlots('save'))
-    const restart = this.el('button', 'btn ghost clickable', '章のやり直し')
+    const restart = this.el('button', 'btn ghost clickable', 'この章をやり直す')
     restart.addEventListener('click', () => {
-      this.confirm('章をはじめからやり直す', 'いま館で起きたことは、すべて無かったことになる。', () =>
+      this.confirm('章をはじめからやり直す', 'この章の進行を開始時点まで戻します。', () =>
         this.cb.onRestartChapter(),
       )
     })
-    const wipe = this.el('button', 'btn danger clickable', '進行データの消去')
+    const wipe = this.el('button', 'btn danger clickable', 'すべての進行を消去')
     wipe.addEventListener('click', () => {
-      this.confirm('進行データを消す', '記録も、覚え書きも、すべて消える。見たエンディングの記録だけが残る。', () =>
+      this.confirm('進行データを消す', 'セーブデータと覚え書きをすべて消去します。見届けたエンディングの記録は残ります。', () =>
         this.cb.onResetProgress(),
       )
     })
@@ -1198,8 +1198,8 @@ export class GameUI {
     // showPanel, not the fields directly: it is what actually puts the panel on
     // screen. Setting the title alone left the scrim up over an invisible panel.
     this.showPanel(
-      mode === 'new' ? '新しく始める' : mode === 'load' ? 'つづきから' : 'この場面を記録する',
-      '記録は三つまで',
+      mode === 'new' ? '新しく始める' : mode === 'load' ? 'つづきから' : '現在の進行を記録',
+      '記録できる枠は三つです',
     )
 
     const metas = this.cb.slotMetas()
@@ -1219,7 +1219,7 @@ export class GameUI {
         body.textContent = `${m.areaLabel}　謎 ${m.solvedCount}　${formatPlaytime(m.playtimeMs)}`
         const when = this.el('div', 'slot-when', formatSavedAt(m.savedAt))
         body.appendChild(when)
-        if (m.endingId) name.appendChild(this.el('span', 'slot-tag', '結末を見た'))
+        if (m.endingId) name.appendChild(this.el('span', 'slot-tag', 'クリア済み'))
       } else {
         body.textContent = '空'
       }
@@ -1250,8 +1250,8 @@ export class GameUI {
     this.confirm(
       `${which}に上書きする`,
       mode === 'new'
-        ? `${which}に入っている進行は消える。`
-        : `${which}に入っている進行を、いまの場面で置き換える。`,
+        ? `${which}の記録を上書きします。元の記録は戻せません。`
+        : `${which}を現在の進行で上書きします。`,
       () => this.cb.onSlotChosen(mode, slot),
       () => this.renderSlots(),
     )

@@ -167,7 +167,7 @@ export function buildBuilding(mats: MaterialLibrary): BuildingRefs {
   // origin belongs on a jamb, not in the middle of the opening. Placed at the
   // centre - as both of these were - a shut door covers half its doorway and
   // overhangs the other half into the wall: the office door announced
-  // 「錠がかかっている」 beside a permanent 45 cm gap with the lit office
+  // 「扉には鍵が掛かっている」 beside a permanent 45 cm gap with the lit office
   // visible through it, which reads as the refusal being a lie.
   const darkroomDoorLeaf = makeDoorLeaf(mats, 0.9, 2.0, 'darkroom')
   // hinge on the north jamb; at +90 degrees the slab grows toward -z

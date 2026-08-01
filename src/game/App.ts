@@ -117,7 +117,7 @@ export class App {
         this.state.recordDetail(item.id, detail.id)
         this.audio.play('discovery')
         this.ui.onDetailFound(detail.title, detail.text)
-        this.ui.toast(detail.title, '気づいた')
+        this.ui.toast(detail.title, '覚え書きに追加')
         if (detail.clue) {
           this.state.addClue(detail.clue)
         }
@@ -533,7 +533,7 @@ export class App {
   private async onSlotChosen(mode: SlotMode, slot: number): Promise<void> {
     if (mode === 'save') {
       const ok = this.save.save(slot)
-      this.ui.toast(ok ? UI_TEXT.saved : '記録できなかった')
+      this.ui.toast(ok ? UI_TEXT.saved : '記録に失敗しました')
       this.refreshTitle()
       return
     }
@@ -611,7 +611,7 @@ export class App {
     this.save.clearProgress()
     this.state.resetProgress(true)
     this.chapter.syncWorldToState()
-    this.ui.toast('進行データを消した')
+    this.ui.toast('進行データを消去しました')
     this.returnToTitle()
   }
 

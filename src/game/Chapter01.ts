@@ -816,7 +816,7 @@ export class Chapter01 {
             this.say(
               this.flag('fuse_seated')
                 ? '新しい筒が座っている。'
-                : '空の受け金。奥の板が、丸く焦げている。同じ形のものが、この館のどこかにあるはずだ。',
+                : '真ん中の受け金だけが空いている。奥の板には、筒の形に焦げ跡が残っている。',
             )
           } else {
             this.say('磁器の筒。中の線は繋がっている。触る理由がない。')
@@ -2101,7 +2101,7 @@ export class Chapter01 {
           this.clue(
             'clue_tray_warning',
             '順は書に在り',
-            '暗室の壁に、赤の下でだけ読める字。「順は書に在り　台をこれに合わせよ」。台のバットの並びは当てにならないから、書いてあるほうに合わせて並べ替えろ、という意味だ。赤の下に浮かぶ三つの書き付けとは、別のものらしい。',
+            '赤い光の下で、壁の文字が浮かぶ。「順は書に在り　台をこれに合わせよ」。台の並びではなく、書き残された手順に従えということだ。赤の下に浮かぶ三つの書き付けとは、別のものらしい。',
             '安全灯の下　暗室',
           )
           this.d.save.save()
@@ -2480,7 +2480,7 @@ export class Chapter01 {
       return
     }
     // The two negatives are the one thing in this room a player genuinely
-    // mixes up, so say which is which rather than 「それはここに使うものではない」.
+    // mixes up, so say which is which rather than 「ここで使うものではない。」.
     if (selected === 'negative_old') {
       this.wrong('こちらのネガはもう像が出ている。現像しても何も変わらない。液に浸すのは、まだ像の出ていないほうだ。')
       return
@@ -2980,7 +2980,7 @@ export class Chapter01 {
     const recipe = findRecipe(a, b)
     if (!recipe) {
       this.d.audio.play('wrong')
-      this.d.ui.toast('この二つは合わない')
+      this.d.ui.toast('この二つは組み合わせられない。')
       return
     }
     for (const id of recipe.consume) this.d.state.removeItem(id)

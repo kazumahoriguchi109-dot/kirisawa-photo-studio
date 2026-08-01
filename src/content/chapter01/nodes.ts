@@ -141,14 +141,14 @@ export const EXITS: Record<string, NodeExit> = {
     to: 'darkroom_e',
     label: '暗室の扉',
     requires: 'darkroom_open',
-    blockedMessage: '把手は回るが、錠が落ちたままだ。',
+    blockedMessage: '把手は回る。しかし、内側の錠が落ちたままだ。',
   },
   darkroom_e: { to: 'studio_w', label: '撮影室へ戻る扉' },
   studio_e: {
     to: 'office_w',
     label: '事務室の扉',
     requires: 'office_open',
-    blockedMessage: 'すりガラスの向こうは暗い。錠がかかっている。',
+    blockedMessage: 'すりガラスの向こうは暗い。扉には鍵が掛かっている。',
   },
   office_w: { to: 'studio_e', label: '撮影室へ戻る扉' },
 }

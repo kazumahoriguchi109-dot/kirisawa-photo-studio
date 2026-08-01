@@ -19,10 +19,10 @@ function boot(): void {
                     padding:8vw;text-align:center;font-family:'Hiragino Sans','Yu Gothic',sans-serif;
                     color:#ded2ba;line-height:2;letter-spacing:.08em;pointer-events:auto">
           <div>
-            <p style="font-size:1.1em">この環境では館に入れませんでした。</p>
+            <p style="font-size:1.1em">霧沢写真館を開けませんでした。</p>
             <p style="font-size:.86em;color:#a2957e">
-              WebGL を使えるブラウザで開き直してください。<br>
-              別のタブを閉じてから、もう一度お試しください。
+              WebGLに対応したブラウザで開き直してください。<br>
+              動作が重い場合は、ほかのタブを閉じてからもう一度お試しください。
             </p>
           </div>
         </div>`
