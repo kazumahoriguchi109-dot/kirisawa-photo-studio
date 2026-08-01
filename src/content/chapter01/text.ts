@@ -355,38 +355,40 @@ export const ENDINGS: Record<string, EndingText> = {
   },
 } as const
 
-export const CREDITS = `　　　　　　　　霧沢写真館　　最後の一枚
+/* The credits are an end-roll, not a document.
+   The other papers (the 予約控, the 暗室作業手順, あそびかた) are read to solve
+   something, so they are one preformatted string in a monospaced cell grid.
+   This screen is read once, at the end, and wants the opposite: centred blocks
+   at different weights with air between them. So it is structured data the UI
+   sets rather than a string it prints, and only the 撮影/現像/停止/定着・水洗
+   motif keeps the character cell - 水洗 sits under the middle of the four
+   because the full-width spaces put it there. */
+export type CreditKind = 'prose' | 'role' | 'name' | 'ai' | 'process' | 'sign'
 
+export const CREDITS_TITLE = '制作について'
 
-　　　　企画・脚本・演出・美術・造形・効果音・実装
-
-　　　　　　　　　　（個人制作）
-
-
-　　　　　　　　　　　　　—
-
-
-　この作品に登場する写真館、人物、町はすべて架空のものです。
-　現実の写真館、写真技術者、および出来事とは関係がありません。
-
-　劇中の暗室作業手順は、昭和期の一般的な白黒写真処理を
-　物語のために簡略化したものです。
-
-　本作の三次元形状、質感、音は、すべて実行時に生成されています。
-　外部の画像、音声、モデルは一切使用していません。
-
-
-　　　　　　　　　　　　　—
-
-
-　　　　　撮影　現像　停止　定着
-　　　　　　　　　水洗
-
-
-　　　　　　霧沢写真館にお越しいただき、ありがとうございました
-
-
-　　　　　　　　　　　　　—`
+export const CREDITS: readonly { kind: CreditKind; lines: readonly string[] }[] = [
+  { kind: 'prose', lines: ['この写真館は、', 'もう存在しません。'] },
+  {
+    kind: 'prose',
+    lines: ['けれど、', 'ここで撮られた写真は、', '誰かの記憶の中で、', '静かに残り続けています。'],
+  },
+  {
+    kind: 'prose',
+    lines: ['この作品も、', 'あなたにとっての', '「最後の一枚」になれたなら幸いです。'],
+  },
+  { kind: 'role', lines: ['Story / Direction / Design / Implementation'] },
+  { kind: 'name', lines: ['Kazuma Horiguchi'] },
+  { kind: 'role', lines: ['Creative Partner'] },
+  { kind: 'ai', lines: ['Claude Code', 'ChatGPT'] },
+  { kind: 'prose', lines: ['初めてAIとともに、', '一つのゲームを最後まで完成させました。'] },
+  {
+    kind: 'prose',
+    lines: ['この作品は、', '人とAIが対話を重ねながら生まれた、', '最初の一枚です。'],
+  },
+  { kind: 'process', lines: ['撮影　　現像　　停止　　定着', '', '　　　　　　水洗'] },
+  { kind: 'sign', lines: ['with AI'] },
+]
 
 export const HOW_TO_PLAY = `向きを変える
 画面の左右端をクリックする　／　← → キー

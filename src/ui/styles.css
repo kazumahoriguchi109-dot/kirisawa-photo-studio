@@ -1057,6 +1057,123 @@ button {
   background: rgba(90, 74, 50, 0.14);
 }
 
+/* --- the end-roll (制作について) ------------------------------------------
+   Same paper, different job. A document scrolls as a whole and its 閉じる,
+   being absolutely placed inside the scroll box, rides up out of sight with
+   the text. That is tolerable for a puzzle document the player scrolls back
+   up through anyway; it is not tolerable here, where the roll is long, the
+   window may be short, and 閉じる is the only way out. So the paper holds
+   still and the roll inside it scrolls. */
+.doc.is-credits {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: clamp(1.6em, 3.4vw, 2.6em) clamp(1.4em, 3.4vw, 2.6em);
+}
+.doc.is-credits .credits-roll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  /* room for 閉じる at the top right, and a breath at the foot so `with AI`
+     is not flush against the edge of the paper when scrolled to the bottom */
+  padding: 1.4em 0.2em 0.6em;
+  font-family: var(--f-mincho);
+  text-align: center;
+  color: #241d15;
+}
+.doc.is-credits .cr-line {
+  margin: 0;
+  line-height: 2.05;
+}
+/* Every block is separated by air rather than by a rule: the gaps are what
+   make it read as a roll instead of a list. */
+.doc.is-credits .cr {
+  margin: 2.6em 0 0;
+}
+.doc.is-credits .cr-title {
+  font-size: clamp(0.68em, 1.1vw, 0.78em);
+  letter-spacing: 0.42em;
+  /* the letter-spacing adds a trailing gap that pushes the centring left */
+  text-indent: 0.42em;
+  color: rgba(58, 47, 34, 0.6);
+}
+.doc.is-credits .cr-prose {
+  font-size: clamp(0.8em, 1.3vw, 0.92em);
+  letter-spacing: 0.04em;
+  color: #33291d;
+}
+/* Roles are the quietest thing on the paper - they label the credit under
+   them and should not compete with it. */
+.doc.is-credits .cr-role {
+  margin-top: 3.4em;
+  font-size: clamp(0.62em, 1vw, 0.7em);
+  letter-spacing: 0.26em;
+  text-indent: 0.26em;
+  color: rgba(58, 47, 34, 0.62);
+}
+.doc.is-credits .cr-role + .cr {
+  margin-top: 0.9em;
+}
+/* The author's name is the largest thing here. The two AI credits are set a
+   step down from it and in slightly lighter ink, so the hierarchy reads the
+   same way at any of the three window sizes. */
+.doc.is-credits .cr-name {
+  font-size: clamp(1.12em, 1.9vw, 1.3em);
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  color: #201a12;
+}
+.doc.is-credits .cr-ai {
+  font-size: clamp(0.9em, 1.45vw, 1em);
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+  color: #3a2f22;
+}
+.doc.is-credits .cr-ai .cr-line + .cr-line {
+  margin-top: 0.5em;
+}
+/* The closing motif keeps the character cell: 水洗 is centred under the four
+   by the full-width spaces in the string, so the block is centred as a unit
+   and its own spacing is left exactly as written. */
+.doc.is-credits .cr-process {
+  margin-top: 3.6em;
+}
+.doc.is-credits .cr-cell {
+  display: inline-block;
+  margin: 0;
+  font-family: var(--f-mono), var(--f-mincho);
+  font-feature-settings: "palt" 0;
+  font-size: clamp(0.7em, 1.15vw, 0.82em);
+  line-height: 1.9;
+  letter-spacing: 0.06em;
+  white-space: pre;
+  text-align: left;
+  color: rgba(45, 36, 25, 0.82);
+}
+.doc.is-credits .cr-sign {
+  margin-top: 2.2em;
+  font-size: clamp(0.76em, 1.2vw, 0.86em);
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  color: rgba(58, 47, 34, 0.72);
+}
+/* A short window gets the same roll with the air taken out of it, so the
+   whole thing still fits inside two or three flicks of the wheel. */
+@media (max-height: 560px) {
+  .doc.is-credits .cr {
+    margin-top: 1.7em;
+  }
+  .doc.is-credits .cr-role {
+    margin-top: 2.2em;
+  }
+  .doc.is-credits .cr-process {
+    margin-top: 2.3em;
+  }
+  .doc.is-credits .cr-line {
+    line-height: 1.85;
+  }
+}
+
 /* --- clue book (覚え書き) --------------------------------------------------- */
 .clue {
   padding: 0.9em 0 1em;

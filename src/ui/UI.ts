@@ -1,6 +1,13 @@
 import { TEXT_SPEED_CPS, type GameSettings, type SettingsStore } from '../core/Settings'
 import type { GameState } from '../state/GameState'
-import { CREDITS, DOCUMENTS, HOW_TO_PLAY, UI_TEXT, type EndingText } from '../content/chapter01/text'
+import {
+  CREDITS,
+  CREDITS_TITLE,
+  DOCUMENTS,
+  HOW_TO_PLAY,
+  UI_TEXT,
+  type EndingText,
+} from '../content/chapter01/text'
 import { ITEMS } from '../content/chapter01/items'
 import type { Inspector } from '../systems/Inspector'
 import { VERB_LABEL, type HoverInfo } from '../systems/Interaction'
@@ -623,7 +630,7 @@ export class GameUI {
         this.renderSlots()
         break
       case 'credits':
-        this.renderPaper('制作について', CREDITS)
+        this.renderCredits()
         break
       case 'howto':
         this.renderPaper('あそびかた', HOW_TO_PLAY)
@@ -644,8 +651,45 @@ export class GameUI {
     this.renderPaper(d.title, d.body)
   }
 
+  /* The end-roll. Same paper as the documents, laid out as centred blocks
+     instead of a printed page: the paper itself stops scrolling and the roll
+     inside it scrolls, so 閉じる stays on the paper at any window height
+     instead of sliding off the top with the text. */
+  private renderCredits(): void {
+    this.doc.innerHTML = ''
+    this.doc.classList.add('is-credits')
+    const close = this.el('button', 'doc-close clickable', UI_TEXT.close)
+    close.addEventListener('click', () => this.closeTop())
+    const roll = this.el('div', 'credits-roll')
+    const title = this.el('div', 'cr-title')
+    title.textContent = CREDITS_TITLE
+    roll.append(title)
+    for (const block of CREDITS) {
+      const b = this.el('div', `cr cr-${block.kind}`)
+      if (block.kind === 'process') {
+        const pre = this.el('pre', 'cr-cell')
+        pre.textContent = block.lines.join('\n')
+        b.append(pre)
+      } else {
+        for (const line of block.lines) {
+          const p = this.el('p', 'cr-line')
+          p.textContent = line
+          b.append(p)
+        }
+      }
+      roll.append(b)
+    }
+    this.doc.append(close, roll)
+    this.doc.style.display = ''
+    requestAnimationFrame(() => {
+      this.doc.dataset.open = '1'
+      this.doc.focus()
+    })
+  }
+
   private renderPaper(title: string, body: string): void {
     this.doc.innerHTML = ''
+    this.doc.classList.remove('is-credits')
     const close = this.el('button', 'doc-close clickable', UI_TEXT.close)
     close.addEventListener('click', () => this.closeTop())
     const pre = this.el('pre', 'jp')
